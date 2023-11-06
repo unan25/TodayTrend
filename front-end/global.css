@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Lemon:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Knewave:wght@400&display=swap");
+body {
+  margin: 0;
+  line-height: normal;
+}
+:root {
+  /* fonts */
+  --font-knewave: Knewave;
+  --font-lemon: Lemon;
+
+  /* font sizes */
+  --font-size-2xs: 0.69rem;
+  --font-size-3xs: 0.63rem;
+
+  /* Colors */
+  --color-white: #fff;
+  --color-black: #000;
+  --naver-bg: #03c75a;
+  --color-gray: #7e7e7e;
+
+  /* Border radiuses */
+  --br-81xl: 100px;
+  --br-9980xl: 9999px;
+  --br-11xl: 30px;
+}

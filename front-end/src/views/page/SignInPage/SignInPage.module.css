@@ -1,0 +1,14 @@
+.mainForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 10rem;
+}
+
+.fg input {
+  margin-top: 3rem;
+}
+
+.submitButton {
+  margin: 3rem 0px;
+}
