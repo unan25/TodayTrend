@@ -13,6 +13,11 @@ spring:
         predicates:
           - Path=/user-service/**
 
+      - id: auth-service
+        uri: lb://AUTH-SERVICE
+        predicates:
+          - Path=/auth-service/**
+
 # Eureka
 eureka:
   instance:
@@ -21,4 +26,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:8888/eureka # discovery-server
+      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
