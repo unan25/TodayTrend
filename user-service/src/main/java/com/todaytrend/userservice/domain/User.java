@@ -7,26 +7,30 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
 @Entity @Table(name = "user")
 @Getter @AllArgsConstructor @Builder
 @NoArgsConstructor
-public class UserInfo {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long user_id;
+
+    private String email;
 
     private String phone;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private LocalDateTime birth;
+    private String birth;
 
-    private String name; // 별명
+    private String name;
 
     private String nickname; // 아이디 @nickname
 
@@ -36,12 +40,18 @@ public class UserInfo {
 
     private String profile_image;
 
-    private LocalDateTime creatAt;
+    @CreatedDate
+    @Column(updatable = false, name = "create_at")
+    private LocalDateTime createAt;
 
+    @LastModifiedDate
+    @Column(insertable = false, name = "update_at")
     private LocalDateTime updateAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     private boolean active;
+
+    private String uuid;
 }
