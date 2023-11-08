@@ -28,6 +28,7 @@ public class RequestCreateUserDto {
 
     private String uuid;
 
+    /////////////
     public LocalUser toEntity(){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
