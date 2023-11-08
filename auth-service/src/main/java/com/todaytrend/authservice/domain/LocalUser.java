@@ -22,5 +22,5 @@ public class LocalUser {
 
     private String password;
 
-
+    private String uuid;
 }
