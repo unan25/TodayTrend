@@ -1,6 +1,6 @@
 package com.todaytrend.postservice.controller;
 
-import com.todaytrend.postservice.dto.RequestDeletePostDto;
+import com.todaytrend.postservice.dto.RequestDeleteReadPostDto;
 import com.todaytrend.postservice.dto.RequestPostDto;
 import com.todaytrend.postservice.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,13 @@ public class PostController {
     }
 
     @DeleteMapping("")
-    public ResponseEntity<?> deletePost(@RequestBody RequestDeletePostDto requestDeletePostDto){
+    public ResponseEntity<?> deletePost(@RequestBody RequestDeleteReadPostDto requestDeletePostDto){
         return new ResponseEntity(postService.removePost(requestDeletePostDto),HttpStatus.OK);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> findPost(@RequestBody RequestDeleteReadPostDto requestReadPostDto){
+        return new ResponseEntity(postService.findPost(requestReadPostDto),HttpStatus.OK);
     }
 
 }
