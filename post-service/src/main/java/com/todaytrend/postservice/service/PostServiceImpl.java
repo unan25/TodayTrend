@@ -1,5 +1,6 @@
 package com.todaytrend.postservice.service;
 
+import com.todaytrend.postservice.dto.RequestDeletePostDto;
 import com.todaytrend.postservice.dto.RequestPostDto;
 import com.todaytrend.postservice.entity.Category;
 import com.todaytrend.postservice.entity.HashTag;
@@ -28,6 +29,8 @@ public class PostServiceImpl implements PostService {
     private final PostUserTagRepository postUserTagRepo;
     private final HashTagRepository hashTagRepo;
 
+
+//--------------------------- 포스트 생성 --------------------------------
     @Override
     public String makePost(RequestPostDto requestPostDto) {
 
@@ -126,4 +129,23 @@ public class PostServiceImpl implements PostService {
         return null;
     }
 
+//---------------------------------------------------------------------------
+
+//--------------------------포스트 삭제----------------------------------------
+    @Override
+    public String removePost(RequestDeletePostDto requestDeletePostDto) {
+        //IMAGE SERVER에서 삭제 후 → / HASHTAG → POSTUSERTAG → POSTLIKE → CATEGORY → POST
+        Integer postId = requestDeletePostDto.getPostId();
+        String userUuid = requestDeletePostDto.getUserUuid();
+
+        if(userUuid.equals(postRepo.findById(postId).get().getUserUuid())){
+            hashTagRepo.deleteAllByPostId(postId);
+            postUserTagRepo.deleteAllByPostId(postId);
+            postLikeRepo.deleteAllByPostId(postId);
+            categoryRepo.deleteAllByPostId(postId);
+            postRepo.deleteAllByPostId(postId);
+            return "postServiceImpl : post delete is finish -----------";
+        }
+        return "postServiceImpl : post delete has error -----------";
+    }
 }

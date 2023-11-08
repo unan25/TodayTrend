@@ -8,4 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public interface HashTagRepository extends JpaRepository<HashTag,Integer>{
+
+    void deleteAllByPostId(Integer postId);
+
 }

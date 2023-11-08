@@ -8,4 +8,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public interface PostLikeRepository extends JpaRepository<PostLike,Integer>{
+    void deleteAllByPostId(Integer postId);
 }
