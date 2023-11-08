@@ -1,12 +1,26 @@
 package com.todaytrend.postservice.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 public class Category {
 
     @Id
-    private Integer category_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer categoryId;
 
+    private String categoryName;
+    private Integer postId;
+
+    @Builder
+    public Category(String categoryName, Integer postId){
+        this.categoryName = categoryName;
+        this.postId = postId;
+    }
 }
