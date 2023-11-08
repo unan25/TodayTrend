@@ -9,10 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-@Entity @Table(name = "user")
+@Entity @Table(name = "users")
 @Getter @AllArgsConstructor @Builder
 @NoArgsConstructor
 public class User {
@@ -49,8 +50,9 @@ public class User {
     private LocalDateTime updateAt;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.USER;
 
+    @Column(columnDefinition = "boolean default true", nullable = false)
     private boolean active;
 
     private String uuid;

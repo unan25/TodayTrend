@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
+import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -40,17 +41,17 @@ public class RequestCreateUserDto {
 
     private String introduce;
 
-    private String profile_image;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private boolean active;
+    private String profile_image;
 
     private String uuid;
 
-    public User toEntity() {
+    @Column(columnDefinition = "boolean default true", nullable = false)
+    private boolean active;
 
+    public User toEntity() {
         return User.builder()
                 .email(this.email)
                 .phone(this.phone)
@@ -60,12 +61,11 @@ public class RequestCreateUserDto {
                 .website(this.website)
                 .introduce(this.introduce)
                 .profile_image(this.profile_image)
-                .role(this.role)
-                .active(this.active)
-                .uuid(UUID.randomUUID().toString())
+                .role(Role.USER)
+                .active(true)
+                .uuid(this.uuid) // 추후에 auth에서 받아올 예정 auth -> react -> user
                 .createAt(LocalDateTime.now())
                 .birth(this.birth)
                 .build();
     }
-    // todo : Auth 만들어서 email, password 가져오기 -> response에 가져오기.
 }
