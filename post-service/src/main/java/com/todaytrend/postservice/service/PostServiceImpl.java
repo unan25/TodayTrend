@@ -1,7 +1,8 @@
 package com.todaytrend.postservice.service;
 
-import com.todaytrend.postservice.dto.RequestDeletePostDto;
+import com.todaytrend.postservice.dto.RequestDeleteReadPostDto;
 import com.todaytrend.postservice.dto.RequestPostDto;
+import com.todaytrend.postservice.dto.ResponsePostDto;
 import com.todaytrend.postservice.entity.Category;
 import com.todaytrend.postservice.entity.HashTag;
 import com.todaytrend.postservice.entity.Post;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -133,12 +135,11 @@ public class PostServiceImpl implements PostService {
 
 //--------------------------포스트 삭제----------------------------------------
     @Override
-    public String removePost(RequestDeletePostDto requestDeletePostDto) {
-        //IMAGE SERVER에서 삭제 후 → / HASHTAG → POSTUSERTAG → POSTLIKE → CATEGORY → POST
+    public String removePost(RequestDeleteReadPostDto requestDeletePostDto) {
         Integer postId = requestDeletePostDto.getPostId();
         String userUuid = requestDeletePostDto.getUserUuid();
 
-        if(userUuid.equals(postRepo.findById(postId).get().getUserUuid())){
+        if(userUuid.equals(postRepo.findById(postId).get().getUserUuid())){//postid로 해당 post작성자의 uuid를 받아와서 본인의 게시물이 맞는지 판별
             hashTagRepo.deleteAllByPostId(postId);
             postUserTagRepo.deleteAllByPostId(postId);
             postLikeRepo.deleteAllByPostId(postId);
@@ -147,5 +148,34 @@ public class PostServiceImpl implements PostService {
             return "postServiceImpl : post delete is finish -----------";
         }
         return "postServiceImpl : post delete has error -----------";
+    }
+
+//----------------------------------------------------------------------------
+
+//----------------------------포스트 불러오기------------------------------------
+
+    @Override
+    public ResponsePostDto findPost(RequestDeleteReadPostDto requestReadPostDto) {
+        //todo : post 상세보기에서 해당 포스트가 본인의 것인지 판별하는 로직은 어디서 할지 정해야함(화면에서 수정하기 버튼 있어야하니까!)
+        Integer postId = requestReadPostDto.getPostId();
+        String userUuid = requestReadPostDto.getUserUuid();
+
+        boolean myPost = userUuid.equals(postRepo.findById(postId).get().getUserUuid()) ? true : false ;// T- 본인 포스트
+
+        Post post = postRepo.findById(postId).get();
+        List<String> categoryList = new ArrayList<>();
+        categoryRepo.findAllByPostId(postId)
+                .forEach(category -> categoryList.add(category.getCategoryName()));
+        boolean checkClickLike = postLikeRepo.findByUserUuid(userUuid) != null ? true : false; //T-좋아요 누른 사람
+
+
+        return ResponsePostDto.builder()
+                .postId(post.getPostId())
+                .content(post.getContent())
+                .updatedAt(post.getUpdatedAt())
+                .categoryList(categoryList)
+                .likeCnt(postLikeRepo.findAllByPostId(postId).size())
+                .like(checkClickLike)
+                .build();
     }
 }
