@@ -3,8 +3,7 @@ server:
 
 spring:
   application:
-    name: tt-auth-service
-
+    name: auth-service
 
   # MySQL
   datasource:
@@ -37,4 +36,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:8888/eureka # discovery-server
+      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
