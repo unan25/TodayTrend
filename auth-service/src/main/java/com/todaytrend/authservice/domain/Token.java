@@ -9,9 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 //@Entity
-@Table(name = "token")
-@Getter @AllArgsConstructor @Builder
-@NoArgsConstructor
+//@Table(name = "token")
+//@Getter @AllArgsConstructor @Builder
+//@NoArgsConstructor
 public class Token {
 
 
