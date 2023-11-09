@@ -12,4 +12,6 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category,Integer>{
     void deleteAllByPostId(Integer postId);
     List<Category> findAllByPostId(Integer postId);
+
+    Category findByPostIdAndCategoryName(Integer postId, String categoryName);
 }

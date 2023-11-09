@@ -3,10 +3,7 @@ package com.todaytrend.postservice.service;
 import com.todaytrend.postservice.dto.RequestDeleteReadPostDto;
 import com.todaytrend.postservice.dto.RequestPostDto;
 import com.todaytrend.postservice.dto.ResponsePostDto;
-import com.todaytrend.postservice.entity.Category;
-import com.todaytrend.postservice.entity.HashTag;
-import com.todaytrend.postservice.entity.Post;
-import com.todaytrend.postservice.entity.PostUserTag;
+import com.todaytrend.postservice.entity.*;
 import com.todaytrend.postservice.enumulator.CategoryNames;
 import com.todaytrend.postservice.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -166,8 +163,63 @@ public class PostServiceImpl implements PostService {
         List<String> categoryList = new ArrayList<>();
         categoryRepo.findAllByPostId(postId)
                 .forEach(category -> categoryList.add(category.getCategoryName()));
-        boolean checkClickLike = postLikeRepo.findByUserUuid(userUuid) != null ? true : false; //T-좋아요 누른 사람
+        boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
 
+
+        return ResponsePostDto.builder()
+                .postId(post.getPostId())
+                .content(post.getContent())
+                .updatedAt(post.getUpdatedAt())
+                .categoryList(categoryList)
+                .likeCnt(postLikeRepo.findAllByPostId(postId).size())
+                .like(checkClickLike)
+                .build();
+    }
+
+//----------------------------------------------------------------------------
+
+//----------------------------포스트 좋아요 누르기------------------------------------
+    @Override
+    public String clickLike(RequestDeleteReadPostDto requestLikeDto) {
+
+        Integer postId = requestLikeDto.getPostId();
+        String userUuid = requestLikeDto.getUserUuid();
+        boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
+
+        if(checkClickLike){
+            postLikeRepo.deleteByUserUuidAndPostId(userUuid,postId);
+            return "postServiceImpl : post unlike btn click -----------";
+        }else{
+            postLikeRepo.save(PostLike.builder().userUuid(userUuid).postId(postId).build());
+            return "postServiceImpl : post like btn click -----------";
+        }
+    }
+
+//----------------------------------------------------------------------------
+
+//----------------------------포스트 업데이트------------------------------------
+    @Override
+    @Transactional
+    public ResponsePostDto updatePost(RequestPostDto requestPostDto, Integer postId) {
+
+        String userUuid = requestPostDto.getUserUuid();
+        Post updatePost = postRepo.findById(postId).get();
+
+        if(userUuid.equals(postRepo.findById(postId).get().getUserUuid())){//수정하려는 user와 수정하는 게시물 작성자의 일치 여부 확인
+            updatePost.updatePostContent(requestPostDto.getContent());
+            categoryRepo.deleteAllByPostId(postId);
+            hashTagRepo.deleteAllByPostId(postId);
+            postUserTagRepo.deleteAllByPostId(postId);
+            checkCategory(requestPostDto.getCategoryList(),postId);
+            checkUserTagAndHashTag(requestPostDto.getContent(),postId);
+        }
+
+        Post post = postRepo.findById(postId).get();
+        List<String> categoryList = new ArrayList<>();
+        categoryRepo.findAllByPostId(postId)
+                .forEach(category -> categoryList.add(category.getCategoryName()));
+
+        boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
 
         return ResponsePostDto.builder()
                 .postId(post.getPostId())

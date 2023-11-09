@@ -25,4 +25,8 @@ public class Category {
         this.categoryName = categoryName;
         this.postId = postId;
     }
+
+    public void changeCategory(String categoryName){
+        this.categoryName = categoryName;
+    }
 }

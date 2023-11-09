@@ -12,6 +12,7 @@ import java.util.List;
 public interface PostLikeRepository extends JpaRepository<PostLike,Integer>{
     void deleteAllByPostId(Integer postId);
     List<PostLike> findAllByPostId(Integer postId);
+    PostLike findByUserUuidAndPostId(String userUuid, Integer postId);
 
-    PostLike findByUserUuid(String userUuid);
+    void deleteByUserUuidAndPostId(String userUuid, Integer postId);
 }
