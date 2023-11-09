@@ -31,4 +31,14 @@ public class PostController {
         return new ResponseEntity(postService.findPost(requestReadPostDto),HttpStatus.OK);
     }
 
+    @PatchMapping("")
+    public ResponseEntity<?> clickLike(@RequestBody RequestDeleteReadPostDto requestDeleteReadPostDto){
+        return new ResponseEntity(postService.clickLike(requestDeleteReadPostDto), HttpStatus.OK);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<?> updatePost(@RequestBody RequestPostDto requestPostDto, @RequestParam Integer postId){
+        return new ResponseEntity(postService.updatePost(requestPostDto, postId), HttpStatus.OK);
+    }
+
 }

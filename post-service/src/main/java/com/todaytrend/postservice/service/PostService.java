@@ -10,4 +10,8 @@ public interface PostService {
     String removePost(RequestDeleteReadPostDto requestDeletePostDto);
 
     ResponsePostDto findPost(RequestDeleteReadPostDto requestReadPostDto);
+
+    String clickLike(RequestDeleteReadPostDto requestLikeDto);
+
+    ResponsePostDto updatePost(RequestPostDto requestPostDto, Integer postId);
 }

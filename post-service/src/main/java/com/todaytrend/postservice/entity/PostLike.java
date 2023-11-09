@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,5 +19,11 @@ public class PostLike {
 
     private String userUuid;
     private Integer postId;
+
+    @Builder
+    public PostLike(String userUuid, Integer postId){
+        this.userUuid = userUuid;
+        this.postId = postId;
+    }
 
 }

@@ -33,4 +33,8 @@ public class Post {
         this.content = content;
         this.userUuid = userUuid;
     }
+
+    public void updatePostContent(String content){
+        this.content = content;
+    }
 }
