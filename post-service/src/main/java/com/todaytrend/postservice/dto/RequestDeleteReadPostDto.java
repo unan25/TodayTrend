@@ -1,15 +1,11 @@
 package com.todaytrend.postservice.dto;
 
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
-public class RequestPostDto {//Post 입력 하기
+public class RequestDeleteReadPostDto { // POST 지울 때 받아오는 값
+    private Integer postId;
     private String userUuid;
-    private String content;
-    private List<String> categoryList;
 }

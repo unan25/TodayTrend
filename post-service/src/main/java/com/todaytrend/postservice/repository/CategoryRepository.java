@@ -2,25 +2,16 @@ package com.todaytrend.postservice.repository;
 
 import com.todaytrend.postservice.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+@Repository
+@Transactional
 public interface CategoryRepository extends JpaRepository<Category,Integer>{
+    void deleteAllByPostId(Integer postId);
+    List<Category> findAllByPostId(Integer postId);
+
+    Category findByPostIdAndCategoryName(Integer postId, String categoryName);
 }
-
-
-/*
-* package com.todaytrend.postservice;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class postserviceApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(postserviceApplication.class, args);
-    }
-
-}
-
-*
-* */
