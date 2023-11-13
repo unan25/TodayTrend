@@ -4,13 +4,15 @@ server:
 spring:
   application:
     name: auth-service
+  profiles:
+    active: db
 
   # MySQL
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/todaytrend
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${url}
+    username: ${username_}
+    password: ${password}
+    driver-class-name: ${driver-class-name}
 
   # JPA
   jpa:
