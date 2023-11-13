@@ -13,5 +13,5 @@ public interface PostService {
 
     String clickLike(RequestDeleteReadPostDto requestLikeDto);
 
-    ResponsePostDto updatePost(RequestPostDto requestPostDto, Integer postId);
+    ResponsePostDto updatePost(RequestPostDto requestPostDto, Long postId);
 }

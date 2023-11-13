@@ -9,10 +9,10 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface PostLikeRepository extends JpaRepository<PostLike,Integer>{
-    void deleteAllByPostId(Integer postId);
-    List<PostLike> findAllByPostId(Integer postId);
-    PostLike findByUserUuidAndPostId(String userUuid, Integer postId);
+public interface PostLikeRepository extends JpaRepository<PostLike,Long>{
+    void deleteAllByPostId(Long postId);
+    List<PostLike> findAllByPostId(Long postId);
+    PostLike findByUserUuidAndPostId(String userUuid, Long postId);
 
-    void deleteByUserUuidAndPostId(String userUuid, Integer postId);
+    void deleteByUserUuidAndPostId(String userUuid, Long postId);
 }
