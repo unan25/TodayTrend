@@ -7,6 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public interface PostUserTagRepository extends JpaRepository<PostUserTag,Integer>{
-    void deleteAllByPostId(Integer postId);
+public interface PostUserTagRepository extends JpaRepository<PostUserTag,Long>{
+    void deleteAllByPostId(Long postId);
 }

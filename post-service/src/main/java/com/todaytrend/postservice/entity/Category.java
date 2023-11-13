@@ -15,13 +15,13 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer categoryId;
+    private Long categoryId;
 
     private String categoryName;
-    private Integer postId;
+    private Long postId;
 
     @Builder
-    public Category(String categoryName, Integer postId){
+    public Category(String categoryName, Long postId){
         this.categoryName = categoryName;
         this.postId = postId;
     }

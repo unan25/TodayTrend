@@ -15,13 +15,13 @@ public class PostLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userPostLikeId;
+    private Long userPostLikeId;
 
     private String userUuid;
-    private Integer postId;
+    private Long postId;
 
     @Builder
-    public PostLike(String userUuid, Integer postId){
+    public PostLike(String userUuid, Long postId){
         this.userUuid = userUuid;
         this.postId = postId;
     }
