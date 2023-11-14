@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export function useAccountValidation() {
   const [Fields, setFields] = useState({
@@ -30,7 +30,9 @@ export function useAccountValidation() {
         value === Fields.password ? "" : "비밀번호가 일치하지 않습니다."
       );
     }
+  };
 
+  useEffect(() => {
     if (
       Fields.email.trim() !== "" &&
       Fields.password.trim() !== "" &&
@@ -40,7 +42,7 @@ export function useAccountValidation() {
     } else {
       setIsValidated(false);
     }
-  };
+  }, [Fields.email, Fields.password, Fields.confirmPassword]);
 
   return { Fields, handleChange, Message, IsValidated };
 }

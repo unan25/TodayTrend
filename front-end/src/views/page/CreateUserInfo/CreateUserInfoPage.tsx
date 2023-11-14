@@ -8,15 +8,24 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserInfo } from "../../../state/_actions/user_action";
 
+// hook
+import { useUserInfoValidation } from "../../../hook/useUserInfoValidation";
+
 // style
 import styles from "./CreateUserInfoPage.module.css";
 
+// components
 import OnChangeInput from "../../components/OnChangeInput/OnChangeInput";
-
 import DropZone from "../../components/DropZone/DropZone";
 import SelectBox from "../../components/SelectBox/SelectBox";
+import AlertBox from "../../components/AlertBox/AlertBox";
+
+// State
+import { RootState } from "state/store";
 
 function AccountPage() {
+  // state
+  const UUID = useSelector((state: RootState) => state.user.UUID);
   // dispatch & state
   const dispatch = useDispatch<any>();
 
@@ -27,57 +36,26 @@ function AccountPage() {
 
   // State
   const [UploadedFile, SetUploadedFile] = useState("");
-  const [Name, SetName] = useState("");
-  const [Nickname, SetNickname] = useState("");
-  const [PhoneNumber, SetPhoneNumber] = useState("");
-  const [Birth, SetBirth] = useState("");
-  const [Website, SetWebsite] = useState("");
-  const [Gender, SetGender] = useState("MALE");
-  const genders = ["MALE", "FEMALE"];
-  const [Introduction, SetIntroduction] = useState("");
+  const genders = ["", "MALE", "FEMALE"];
 
   //------------------------------------------------------------------------------
 
-  const nameHandler = (name: string) => {
-    SetName(name);
-  };
-
-  const nicknameHandler = (nickname: string) => {
-    SetNickname(nickname);
-  };
-
-  const phoneNumberHandler = (phone: string) => {
-    SetPhoneNumber(phone);
-  };
-
-  const birthHandler = (birth: string) => {
-    SetBirth(birth);
-  };
-
-  const websiteHandler = (website: string) => {
-    SetWebsite(website);
-  };
-
-  const genderHandler = (gender: string) => {
-    SetGender(gender);
-  };
-
-  const introductionHandler = (introdcution: string) => {
-    SetIntroduction(introdcution);
-  };
+  const { Fields, handleChange, Message, IsValidated } =
+    useUserInfoValidation();
 
   // sign-up
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let userInfo = {
-      name: Name,
-      nickname: Nickname,
-      phone: PhoneNumber,
-      gender: Gender,
-      birth: Birth,
-      website: Website,
-      introduction: Introduction,
+      uuid: UUID,
+      name: Fields.name,
+      nickname: Fields.nickname,
+      phone: Fields.phone,
+      gender: Fields.gender,
+      birth: Fields.birth,
+      website: Fields.website,
+      introduction: Fields.introduction,
     };
 
     dispatch(updateUserInfo(userInfo));
@@ -95,34 +73,50 @@ function AccountPage() {
     <div className="page-body">
       <form onSubmit={submitHandler} className={styles.mainForm}>
         <DropZone setFunction={SetUploadedFile} />
-        <OnChangeInput type="text" placeholder="이름" onChange={nameHandler} />
+        <OnChangeInput
+          type="text"
+          placeholder="이름"
+          onChange={handleChange("name")}
+        />
         <OnChangeInput
           type="text"
           placeholder="사용자 이름"
-          onChange={nicknameHandler}
+          onChange={handleChange("nickname")}
+          required={true}
         />
         <OnChangeInput
           type="date"
           placeholder="생년월일"
-          onChange={birthHandler}
+          onChange={handleChange("birth")}
         />
         <OnChangeInput
           type="text"
           placeholder="전화번호"
-          onChange={phoneNumberHandler}
+          onChange={handleChange("phone")}
         />
-        <SelectBox options={genders} onChange={genderHandler} />
+        <SelectBox
+          options={genders}
+          onChange={handleChange("gender")}
+          required={true}
+        />
         <OnChangeInput
           type="url"
           placeholder="링크"
-          onChange={websiteHandler}
+          onChange={handleChange("website")}
         />
         <OnChangeInput
           type="text"
           placeholder="소개"
-          onChange={introductionHandler}
+          onChange={handleChange("introduction")}
         />
-        <button type="submit">등록</button>
+        <AlertBox isError={true} message={Message} />
+        <button
+          type="submit"
+          className={styles.submitButton}
+          disabled={!IsValidated}
+        >
+          등록
+        </button>
       </form>
     </div>
   );
