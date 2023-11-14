@@ -17,7 +17,7 @@ export const createAccount = createAsyncThunk(
   async (account: Account, { rejectWithValue }) => {
     try {
       const response = await axios.post("/auth-service/signup", account);
-      return response.data;
+      return { UUID: response.data.uuid };
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -29,7 +29,7 @@ export const updateUserInfo = createAsyncThunk(
   async (userInfo: UserInfo, { rejectWithValue }) => {
     try {
       const response = await axios.post("/user-service/signup", userInfo);
-      return response.data;
+      return { UUID: response.data.uuid };
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }

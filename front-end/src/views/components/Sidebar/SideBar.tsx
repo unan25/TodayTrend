@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import "./SideBar.css";
+import styles from "./SideBar.module.css";
+import "../../../../global.css";
 
 const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,20 +10,26 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div>
-      <ul className={`sidebar ${isOpen ? "" : "close"}`}>
-        <button onClick={toggleSidebar}>{isOpen ? "Close" : "Menu"}</button>
+    <div
+      className={
+        isOpen ? styles.sidebar : `${styles.sidebar} ${styles.sidebar_closed}`
+      }
+    >
+      <ul>
+        <button className={styles.button} onClick={toggleSidebar}>
+          {isOpen ? "Close" : "Menu"}
+        </button>
         <a href="/">
-          <li>Home</li>
+          <li className={styles.menu}>Home</li>
         </a>
         <a href="/search">
-          <li>Search</li>
+          <li className={styles.menu}>Search</li>
         </a>
         <a href="/upload-post">
-          <li>Post</li>
+          <li className={styles.menu}>Post</li>
         </a>
         <a href="/profile">
-          <li>Profile</li>
+          <li className={styles.menu}>Profile</li>
         </a>
       </ul>
     </div>

@@ -7,11 +7,7 @@ import {
 } from "../_actions/user_action";
 import { Account, UUID } from "../../interface/UserInterface";
 
-interface UserState {
-  UUID?: UUID;
-}
-
-const initialState: UserState = {};
+const initialState = {};
 
 const userSlice = createSlice({
   name: "user",
@@ -21,7 +17,7 @@ const userSlice = createSlice({
     builder
       .addCase(
         createAccount.fulfilled,
-        (state, action: PayloadAction<Account>) => {
+        (state, action: PayloadAction<UUID>) => {
           return { ...state, ...action.payload };
         }
       )
@@ -31,15 +27,12 @@ const userSlice = createSlice({
           ...action.payload,
         };
       })
-      .addCase(
-        signInUser.fulfilled,
-        (state, action: PayloadAction<Account>) => {
-          return {
-            ...state,
-            ...action.payload,
-          };
-        }
-      )
+      .addCase(signInUser.fulfilled, (state, action: PayloadAction<UUID>) => {
+        return {
+          ...state,
+          ...action.payload,
+        };
+      })
       .addCase(signInUser.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
