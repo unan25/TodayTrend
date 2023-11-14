@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class ResponsePostDto {//Post 상세페이지 정보 보내주기
 
-    private Integer postId;
+    private Long postId;
     private String content;
     private LocalDateTime updatedAt;
     private List<String> categoryList;

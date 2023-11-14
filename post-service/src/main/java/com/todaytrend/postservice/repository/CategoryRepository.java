@@ -9,9 +9,9 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface CategoryRepository extends JpaRepository<Category,Integer>{
-    void deleteAllByPostId(Integer postId);
-    List<Category> findAllByPostId(Integer postId);
+public interface CategoryRepository extends JpaRepository<Category,Long>{
+    void deleteAllByPostId(Long postId);
+    List<Category> findAllByPostId(Long postId);
 
-    Category findByPostIdAndCategoryName(Integer postId, String categoryName);
+    Category findByPostIdAndCategoryName(Long postId, String categoryName);
 }

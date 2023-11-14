@@ -13,13 +13,13 @@ public class HashTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer hashtagId;
+    private Long hashtagId;
 
     private String hashtag;
-    private Integer postId;
+    private Long postId;
 
     @Builder
-    public HashTag(String hashtag, Integer postId){
+    public HashTag(String hashtag, Long postId){
         this.hashtag = hashtag;
         this.postId = postId;
     }

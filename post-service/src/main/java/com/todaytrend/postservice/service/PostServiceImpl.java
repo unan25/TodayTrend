@@ -43,7 +43,7 @@ public class PostServiceImpl implements PostService {
                         .build();
 
         Post resultPost = postRepo.save(post);//save는 저장한 객체를 그대로 반환
-        Integer postId = resultPost.getPostId();
+        Long postId = resultPost.getPostId();
 
         checkUserTagAndHashTag(content,postId);
         checkCategory(categoryList,postId);
@@ -52,7 +52,7 @@ public class PostServiceImpl implements PostService {
     }
 
     //category중 어느 카테고리인지 확인
-    private void checkCategory(List<String> categoryList, Integer postId){
+    private void checkCategory(List<String> categoryList, Long postId){
         for (String categoryName : categoryList){
             switch (categoryName){
                 case "CATEGORY1" -> {
@@ -69,7 +69,7 @@ public class PostServiceImpl implements PostService {
     }
 
     //category insert
-    private void makeCategory(String category, Integer postId){
+    private void makeCategory(String category, Long postId){
         categoryRepo.save(Category.builder()
                 .categoryName(category)//todo : catecory 이름은 임의로 enum으로 일단 선언해둠 나중에 변경 필요
                 .postId(postId)
@@ -78,7 +78,7 @@ public class PostServiceImpl implements PostService {
     }
 
     //Content에서 #과 @분리 및 save(PostUserTag, HashTag)
-    private void checkUserTagAndHashTag(String content,Integer postId){
+    private void checkUserTagAndHashTag(String content,Long postId){
         String postContent = content;
         // hashtag - 내용 - usertag 순으로 작성된다고 가정, todo: 나중에 변경 할 것
         String[] checkHashTag = Stream.of(postContent.split("#")).map(String::trim).toArray(String[]::new);
@@ -104,7 +104,7 @@ public class PostServiceImpl implements PostService {
     }
 
     //PostUserTag insert
-    private void makePostUserTag(String checkUserTag, Integer postId){
+    private void makePostUserTag(String checkUserTag, Long postId){
         postUserTagRepo.save( PostUserTag.builder()
                 .userUuid(findUserUuidByNickname(checkUserTag))
                 .postId(postId)
@@ -113,7 +113,7 @@ public class PostServiceImpl implements PostService {
     }
 
     //hashTag insert
-    private void makeHashTag(String hashTag, Integer postId){
+    private void makeHashTag(String hashTag, Long postId){
         hashTagRepo.save( HashTag.builder()
                 .hashtag(hashTag)
                 .postId(postId)
@@ -133,7 +133,7 @@ public class PostServiceImpl implements PostService {
 //--------------------------포스트 삭제----------------------------------------
     @Override
     public String removePost(RequestDeleteReadPostDto requestDeletePostDto) {
-        Integer postId = requestDeletePostDto.getPostId();
+        Long postId = requestDeletePostDto.getPostId();
         String userUuid = requestDeletePostDto.getUserUuid();
 
         if(userUuid.equals(postRepo.findById(postId).get().getUserUuid())){//postid로 해당 post작성자의 uuid를 받아와서 본인의 게시물이 맞는지 판별
@@ -154,7 +154,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponsePostDto findPost(RequestDeleteReadPostDto requestReadPostDto) {
         //todo : post 상세보기에서 해당 포스트가 본인의 것인지 판별하는 로직은 어디서 할지 정해야함(화면에서 수정하기 버튼 있어야하니까!)
-        Integer postId = requestReadPostDto.getPostId();
+        Long postId = requestReadPostDto.getPostId();
         String userUuid = requestReadPostDto.getUserUuid();
 
         boolean myPost = userUuid.equals(postRepo.findById(postId).get().getUserUuid()) ? true : false ;// T- 본인 포스트
@@ -182,7 +182,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public String clickLike(RequestDeleteReadPostDto requestLikeDto) {
 
-        Integer postId = requestLikeDto.getPostId();
+        Long postId = requestLikeDto.getPostId();
         String userUuid = requestLikeDto.getUserUuid();
         boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
 
@@ -200,7 +200,7 @@ public class PostServiceImpl implements PostService {
 //----------------------------포스트 업데이트------------------------------------
     @Override
     @Transactional
-    public ResponsePostDto updatePost(RequestPostDto requestPostDto, Integer postId) {
+    public ResponsePostDto updatePost(RequestPostDto requestPostDto, Long postId) {
 
         String userUuid = requestPostDto.getUserUuid();
         Post updatePost = postRepo.findById(postId).get();
