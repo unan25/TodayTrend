@@ -5,7 +5,7 @@ spring:
   application:
     name: auth-service
   profiles:
-    active: db
+    active: db, jwt
 
   # MySQL
   datasource:
@@ -39,3 +39,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka # discovery-server
+
+# JWT
+jwt:
+  issuer: ${issuer}
+  secret_key: ${secret_key}
