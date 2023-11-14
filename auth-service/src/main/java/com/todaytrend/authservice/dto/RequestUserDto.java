@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @Builder
-public class RequestCreateUserDto {
+public class RequestUserDto {
 
     @Email(message = "email 형식에 맞게 작성하여야 합니다.")
     @NotBlank(message = "email은 반드시 작성하여야 합니다.")

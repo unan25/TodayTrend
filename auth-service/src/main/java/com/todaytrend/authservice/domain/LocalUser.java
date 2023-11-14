@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "localuser")
+@Table(name = "localuser",
+        indexes = {@Index(name = "index_uuid", columnList = "uuid", unique = true)})
+//@Table 어노테이션에 indexes 속성을 추가, @Index 어노테이션을 사용하여 uuid 컬럼에 인덱스를 추가
 @Getter
 @AllArgsConstructor
 @Builder
@@ -22,5 +24,6 @@ public class LocalUser {
 
     private String password;
 
+    @Column(unique = true)
     private String uuid;
 }
