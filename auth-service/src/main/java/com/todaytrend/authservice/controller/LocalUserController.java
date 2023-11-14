@@ -1,9 +1,11 @@
 package com.todaytrend.authservice.controller;
 
-import com.todaytrend.authservice.dto.LoginResponseDto;
+import com.todaytrend.authservice.dto.CreateAccessTokenRequest;
+import com.todaytrend.authservice.dto.CreateAccessTokenResponse;
 import com.todaytrend.authservice.dto.RequestUserDto;
 import com.todaytrend.authservice.service.CreateUserService;
 import com.todaytrend.authservice.service.LoginService;
+import com.todaytrend.authservice.service.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ public class LocalUserController {
 
     private final CreateUserService createUserService;
     private final LoginService loginService;
+    private final TokenService tokenService;
 
     @GetMapping("health-check")
     public String healthCheck(){
@@ -24,9 +27,9 @@ public class LocalUserController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<RequestUserDto> createUser(@Valid @RequestBody RequestUserDto requestUserDto) {
+    public ResponseEntity<Void> createUser(@Valid @RequestBody RequestUserDto requestUserDto) {
         createUserService.createUser(requestUserDto);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("login")
@@ -34,5 +37,13 @@ public class LocalUserController {
         return loginService.login(requestUserDto);
     }
 
+    @PostMapping("token")
+    public ResponseEntity<CreateAccessTokenResponse> createNewAccessToken(
+            @RequestBody CreateAccessTokenRequest request) {
+        String newAccessToken = tokenService.createNewAccessToken(request.getRefreshToken());
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new CreateAccessTokenResponse(newAccessToken));
+    }
 
 }

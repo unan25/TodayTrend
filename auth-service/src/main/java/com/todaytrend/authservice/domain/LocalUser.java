@@ -1,29 +1,71 @@
 package com.todaytrend.authservice.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Table(name = "localuser",
-        indexes = {@Index(name = "index_uuid", columnList = "uuid", unique = true)})
-//@Table 어노테이션에 indexes 속성을 추가, @Index 어노테이션을 사용하여 uuid 컬럼에 인덱스를 추가
+@Table(name = "localuser")
 @Getter
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
-public class LocalUser {
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // ?
+public class LocalUser implements UserDetails { // UserDetails를 상속받아 인증 객체로 사용
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long local_user_id;
+    @Column(name = "local_user_id")
+    private Long localUserId;
 
+    @Column(unique = true)
     private String email;
 
     private String password;
 
     @Column(unique = true)
     private String uuid;
+
+    @Override // 권한 반환
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("USER"));
+    }
+
+    // 사용자의 id를 반환 (고유한 값)
+    @Override
+    public String getUsername() {
+        return getEmail();
+    }
+
+    // 계정 만료 여부 반환
+    // true -> 만료 되지 않음
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    // 계정 잠금 여부 반환
+    // true 잠금 되지 않음
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    // 패스워드 만료 여부 반환
+    // true 만료 되지 않음
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    // 계정 사용 가능 여부 반환
+    // true 사용 가능
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
