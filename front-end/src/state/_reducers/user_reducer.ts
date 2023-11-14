@@ -1,10 +1,14 @@
 // redux
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { signUpUser, signInUser, auth_client } from "../_actions/user_action";
-import { SignIn, SignUp, UserInfo } from "../../interface/UserInterface";
+import {
+  createAccount,
+  signInUser,
+  auth_client,
+} from "../_actions/user_action";
+import { Account, UUID } from "../../interface/UserInterface";
 
 interface UserState {
-  currentUser?: UserInfo;
+  UUID?: UUID;
 }
 
 const initialState: UserState = {};
@@ -15,21 +19,27 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(signUpUser.fulfilled, (state, action: PayloadAction<SignUp>) => {
-        return { ...state, ...action.payload };
-      })
-      .addCase(signUpUser.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(
+        createAccount.fulfilled,
+        (state, action: PayloadAction<Account>) => {
+          return { ...state, ...action.payload };
+        }
+      )
+      .addCase(createAccount.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
           ...action.payload,
         };
       })
-      .addCase(signInUser.fulfilled, (state, action: PayloadAction<SignIn>) => {
-        return {
-          ...state,
-          ...action.payload,
-        };
-      })
+      .addCase(
+        signInUser.fulfilled,
+        (state, action: PayloadAction<Account>) => {
+          return {
+            ...state,
+            ...action.payload,
+          };
+        }
+      )
       .addCase(signInUser.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
