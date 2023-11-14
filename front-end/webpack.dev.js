@@ -8,5 +8,15 @@ module.exports = merge(common, {
     historyApiFallback: true,
     port: 3000,
     hot: true,
+    proxy: {
+      "/user-service/": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+      "/auth-service/": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+    },
   },
 });

@@ -17,6 +17,7 @@ import SideBar from "../../components/Sidebar/SideBar";
 import { AppDispatch } from "../../../state/store";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 function LandingPage() {
   const dispatch = useDispatch<any>();
@@ -25,16 +26,7 @@ function LandingPage() {
     dispatch(auth_client());
   }, []);
 
-  return (
-    <Container className="mx-0 px-0">
-      <Row>
-        <Col md={4} className="px-0">
-          <SideBar />
-        </Col>
-        <Col md={8}></Col>
-      </Row>
-    </Container>
-  );
+  return <div className="page-body">시작 페이지</div>;
 }
 
 export default LandingPage;

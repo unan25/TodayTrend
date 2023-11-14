@@ -1,0 +1,33 @@
+.mainForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.fg input {
+  margin-bottom: 3rem;
+}
+
+.submitButton {
+  margin: 0px 0px;
+}
+
+.green {
+  background-color: #031633;
+  color: #75b798;
+}
+
+.red {
+  background-color: #2c0b0e;
+  color: #ea868f;
+}
+
+.alertBox {
+  position: absolute;
+  width: 100%;
+  top: -50px;
+  border: 1px solid black;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+}

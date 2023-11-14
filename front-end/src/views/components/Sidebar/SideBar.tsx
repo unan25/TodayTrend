@@ -1,45 +1,32 @@
-import React from "react";
-import { Accordion, Container, Row, Button } from "react-bootstrap";
-import style from "./SideBar.module.css";
+import React, { useState } from "react";
+import "./SideBar.css";
 
-function SideBar() {
+const Sidebar: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div>
-      <Container>
-        <Row>
-          <div> profile </div>
-        </Row>
-        <Row>
-          <Accordion>
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>menu 1</Accordion.Header>
-              <Accordion.Body>
-                <Button>button1</Button>
-                <Button>button2</Button>
-                <Button>button3</Button>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>menu 2</Accordion.Header>
-              <Accordion.Body>
-                <Button>button1</Button>
-                <Button>button2</Button>
-                <Button>button3</Button>
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>menu 3</Accordion.Header>
-              <Accordion.Body>
-                <Button>button1</Button>
-                <Button>button2</Button>
-                <Button>button3</Button>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        </Row>
-      </Container>
+      <ul className={`sidebar ${isOpen ? "" : "close"}`}>
+        <button onClick={toggleSidebar}>{isOpen ? "Close" : "Menu"}</button>
+        <a href="/">
+          <li>Home</li>
+        </a>
+        <a href="/search">
+          <li>Search</li>
+        </a>
+        <a href="/upload-post">
+          <li>Post</li>
+        </a>
+        <a href="/profile">
+          <li>Profile</li>
+        </a>
+      </ul>
     </div>
   );
-}
+};
 
-export default SideBar;
+export default Sidebar;
