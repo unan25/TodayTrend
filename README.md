@@ -8,8 +8,8 @@ Git Pull & Request 규칙
 4. git add . -> commit & push
 5. Pull & Request
 6. 승인 후 Rebase & Merge 딸깍
-**7. 한 줄 요약
-**- git reabase develop (자기 브런치에서) -> 리베이스 -- 수정 --> 에드 커밋 푸시 -> 풀리퀘 -> 리베이스 머지 딸깍
+7. 한 줄 요약
+git reabase develop (자기 브런치에서) -> 리베이스 -- 수정 --> 에드 커밋 푸시 -> 풀리퀘 -> 리베이스 머지 딸깍
 
 Git 명령어
 - git branch 생성 : git bracnh feature/1-user-signup
