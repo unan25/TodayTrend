@@ -29,6 +29,7 @@ public class LocalUserController {
     @PostMapping("signup")
     public ResponseEntity<Void> createUser(@Valid @RequestBody RequestUserDto requestUserDto) {
         createUserService.createUser(requestUserDto);
+
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

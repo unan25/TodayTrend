@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { signInUser } from "../../../state/_actions/user_action";
+import { signInUser } from "../../../redux/_actions/user_action";
 
 // component
 import { Form, FloatingLabel, Button } from "react-bootstrap";
@@ -16,7 +16,7 @@ import { Form, FloatingLabel, Button } from "react-bootstrap";
 import styles from "./SignInPage.module.css";
 
 // State
-import { RootState } from "state/store";
+import { RootState } from "redux/store";
 
 function SignInPage() {
   // state & dispatch

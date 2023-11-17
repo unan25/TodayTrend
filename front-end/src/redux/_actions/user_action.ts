@@ -2,7 +2,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // axios
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Account, UserInfo } from "interface/UserInterface";
 
 // action types
@@ -16,8 +16,8 @@ export const createAccount = createAsyncThunk(
   CREATE_ACCOUNT_USER,
   async (account: Account, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/auth-service/signup", account);
-      return { UUID: response.data.uuid };
+      const response = await axios.post("/api/auth/signup", account);
+      return { UUID: response.data };
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -28,7 +28,7 @@ export const updateUserInfo = createAsyncThunk(
   UPDATE_USERINFO_USER,
   async (userInfo: UserInfo, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/user-service/signup", userInfo);
+      const response = await axios.post("/api/user/signup", userInfo);
       return { UUID: response.data.uuid };
     } catch (err: any) {
       return rejectWithValue(err.response.data);
