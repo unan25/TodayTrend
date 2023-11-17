@@ -25,7 +25,7 @@ public class TokenService {
 
     public RefreshTokenResponseDto createNewRefreshToken(LocalUser localUser) {
         // 새로운 리프레시 토큰 생성
-        Duration expiredAt = Duration.ofDays(1); // 만료 기간 하루
+        Duration expiredAt = Duration.ofDays(1); // 만료 기간 1일
         String refreshToken = tokenProvider.generateToken(localUser, expiredAt);
         
         // 리프레시 토큰 DTO에 저장
