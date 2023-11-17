@@ -9,11 +9,7 @@ module.exports = merge(common, {
     port: 3000,
     hot: true,
     proxy: {
-      "/user-service/": {
-        target: "http://localhost:8000",
-        changeOrigin: true,
-      },
-      "/auth-service/": {
+      "/api/": {
         target: "http://localhost:8000",
         changeOrigin: true,
       },

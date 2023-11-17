@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createAccount } from "../../../state/_actions/user_action";
+import { createAccount } from "../../../redux/_actions/user_action";
 import styles from "./CreateAccountPage.module.css";
 import OnChangeInput from "../../components/OnChangeInput/OnChangeInput";
 import AlertBox from "../../components/AlertBox/AlertBox";
 import { useAccountValidation } from "../../../hook/useAccountValidation";
 // State
-import { RootState } from "state/store";
+import { RootState } from "redux/store";
 
 function AccountPage() {
   const UUID = useSelector((state: RootState) => state.user.UUID);

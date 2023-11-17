@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 // redux & action
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserInfo } from "../../../state/_actions/user_action";
+import { updateUserInfo } from "../../../redux/_actions/user_action";
 
 // hook
 import { useUserInfoValidation } from "../../../hook/useUserInfoValidation";
@@ -16,12 +16,12 @@ import styles from "./CreateUserInfoPage.module.css";
 
 // components
 import OnChangeInput from "../../components/OnChangeInput/OnChangeInput";
-import DropZone from "../../components/DropZone/DropZone";
+import DropZone from "../../components/DropZone/ProfileDropZone/ProfileDropZone";
 import SelectBox from "../../components/SelectBox/SelectBox";
 import AlertBox from "../../components/AlertBox/AlertBox";
 
 // State
-import { RootState } from "state/store";
+import { RootState } from "redux/store";
 
 function AccountPage() {
   // state
