@@ -1,0 +1,9 @@
+.body {
+  padding: 1rem;
+}
+
+.textarea {
+  width: 20rem;
+  height: 30rem;
+  border-radius: 1rem;
+}

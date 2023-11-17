@@ -7,16 +7,16 @@ import { useNavigate } from "react-router-dom";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { signInUser } from "../../../state/_actions/user_action";
+import { signInUser } from "../../../redux/_actions/user_action";
 
 // component
 import { Form, FloatingLabel, Button } from "react-bootstrap";
 
-import Input from "../../components/Input/Input";
-
 // CSS
 import styles from "./SignInPage.module.css";
-import { RootState } from "state/store";
+
+// State
+import { RootState } from "redux/store";
 
 function SignInPage() {
   // state & dispatch
@@ -43,12 +43,12 @@ function SignInPage() {
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let userInfo = {
+    let account = {
       email: Email,
       password: Password,
     };
 
-    dispatch(signInUser(userInfo));
+    dispatch(signInUser(account));
   };
 
   // signIn Success
@@ -68,7 +68,6 @@ function SignInPage() {
           />
         </FloatingLabel>
         <FloatingLabel controlId="Password" label="비밀번호">
-          <Input />
           <Form.Control
             type="password"
             placeholder="Password"

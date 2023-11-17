@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 
 // redux
 import { Provider } from "react-redux";
-import store from "./src/state/store";
+import store from "./src/redux/store";
 
 import "./node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./global.css";
