@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/todaytrend
     username: root
-    password: 1234
+    password: jyjlover119
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # JPA
@@ -37,4 +37,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:8888/eureka # discovery-server
+      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
