@@ -1,3 +1,48 @@
-button {
-  width: 100%;
+.sidebar {
+  background-color: white;
+  padding: 1rem;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  transition: 0.3s ease-out 0s;
+  border: 3px solid black;
+  position: fixed;
+  top: 10rem;
+  left: 1rem;
+  border-radius: 1rem;
+}
+
+.sidebar_closed {
+  left: -5rem;
+}
+
+.button {
+  width: 7rem;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.link {
+  text-decoration-line: none;
+}
+
+.menu {
+  padding: 0.8rem;
+  color: black;
+  border-radius: 1rem;
+  width: auto;
+}
+
+@keyframes Animation_hover {
+  to {
+    transform: scale(1.025);
+    box-shadow: 0px 0px 10px var(--color-hover);
+  }
+}
+
+.menu:hover {
+  animation: Animation_hover 0.1s ease-in-out 0s;
+  animation-fill-mode: forwards;
 }

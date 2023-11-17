@@ -14,6 +14,8 @@ type UserInfo = {
   introduction?: string;
 };
 
-type UUID = string;
+type UUID = {
+  UUID?: string;
+};
 
 export { Account, UserInfo, UUID };

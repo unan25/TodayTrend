@@ -23,6 +23,11 @@ button {
   cursor: pointer;
 }
 
+ul {
+  all: unset;
+  list-style-type: none;
+}
+
 :root {
   /* fonts */
   --font-knewave: Knewave;
@@ -37,16 +42,10 @@ button {
   --color-black: #000;
   --naver-bg: #03c75a;
   --color-gray: #7e7e7e;
+  --color-hover: rgb(200, 200, 200);
 
   /* Border radiuses */
   --br-81xl: 100px;
   --br-9980xl: 9999px;
   --br-11xl: 30px;
-}
-
-@keyframes hover {
-  to {
-    transform: scale(1.025);
-    box-shadow: 0px 0px 10px #d6d6d6;
-  }
 }
