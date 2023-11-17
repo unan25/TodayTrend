@@ -37,7 +37,7 @@ public class LocalUserController {
     public ResponseEntity<LoginResponseDto> login(@RequestBody RequestUserDto requestUserDto, HttpServletResponse response) {
         LoginResponseDto loginResponseDto = userService.login(requestUserDto);
 
-        // 헤더에 토큰 추가
+        // 헤더 토큰 추가
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + loginResponseDto.getAccessToken());
         headers.add("Refresh-Token", loginResponseDto.getRefreshToken());
