@@ -2,12 +2,15 @@ package com.todaytrend.authservice.controller;
 
 import com.todaytrend.authservice.dto.CreateAccessTokenRequest;
 import com.todaytrend.authservice.dto.CreateAccessTokenResponse;
+import com.todaytrend.authservice.dto.LoginResponseDto;
 import com.todaytrend.authservice.dto.RequestUserDto;
-import com.todaytrend.authservice.service.CreateUserService;
-import com.todaytrend.authservice.service.LoginService;
+import com.todaytrend.authservice.service.UserService;
 import com.todaytrend.authservice.service.TokenService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LocalUserController {
 
-    private final CreateUserService createUserService;
-    private final LoginService loginService;
+    private final UserService userService;
     private final TokenService tokenService;
 
     @GetMapping("health-check")
@@ -26,24 +28,24 @@ public class LocalUserController {
         return "Auth-service is available.";
     }
 
+    // 회원가입, 회원 가입 시 uuid body에 반환
     @PostMapping("signup")
-    public ResponseEntity<Void> createUser(@Valid @RequestBody RequestUserDto requestUserDto) {
-        createUserService.createUser(requestUserDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<?> createUser(@Valid @RequestBody RequestUserDto requestUserDto) {
+        String userUuid = userService.createUser(requestUserDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userUuid);
     }
 
+    // login 성공 시 Access, Refresh 토큰 발급
     @PostMapping("login")
-    public String login(@RequestBody RequestUserDto requestUserDto) {
-        return loginService.login(requestUserDto);
-    }
+    public ResponseEntity<LoginResponseDto> login(@RequestBody RequestUserDto requestUserDto, HttpServletResponse response) {
+        LoginResponseDto loginResponseDto = userService.login(requestUserDto);
 
-    @PostMapping("token")
-    public ResponseEntity<CreateAccessTokenResponse> createNewAccessToken(
-            @RequestBody CreateAccessTokenRequest request) {
-        String newAccessToken = tokenService.createNewAccessToken(request.getRefreshToken());
+        // 헤더에 토큰 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + loginResponseDto.getAccessToken());
+        headers.add("Refresh-Token", loginResponseDto.getRefreshToken());
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new CreateAccessTokenResponse(newAccessToken));
+        return new ResponseEntity<>(loginResponseDto, headers, HttpStatus.OK);
     }
 
 }
