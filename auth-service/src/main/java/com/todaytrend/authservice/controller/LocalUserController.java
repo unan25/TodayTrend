@@ -2,8 +2,8 @@ package com.todaytrend.authservice.controller;
 
 import com.todaytrend.authservice.dto.LoginResponseDto;
 import com.todaytrend.authservice.dto.RequestUserDto;
-import com.todaytrend.authservice.service.TokenService;
 import com.todaytrend.authservice.service.UserService;
+import com.todaytrend.authservice.service.TokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
