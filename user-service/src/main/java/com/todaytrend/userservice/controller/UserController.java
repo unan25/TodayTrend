@@ -4,11 +4,12 @@ import com.todaytrend.userservice.dto.RequestCreateUserDto;
 import com.todaytrend.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("user-service")
+@RequestMapping("api/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -22,6 +23,7 @@ public class UserController {
     @PostMapping("signup")
     public ResponseEntity<?> createUser(@Valid @RequestBody RequestCreateUserDto requestCreateUserDto){
         userService.createUser(requestCreateUserDto);
-        return ResponseEntity.ok("회원 가입 완료");
+        return new ResponseEntity(HttpStatus.CREATED);
+
     }
 }
