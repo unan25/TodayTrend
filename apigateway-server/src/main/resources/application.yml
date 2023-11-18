@@ -18,6 +18,11 @@ spring:
         predicates:
           - Path=/api/auth/**
 
+      - id: post-service
+        uri: lb://POST-SERVICE
+        predicates:
+          - Path=/api/post/**
+
 # Eureka
 eureka:
   instance:

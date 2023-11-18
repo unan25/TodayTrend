@@ -9,18 +9,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
-import java.text.DateFormat;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter @Setter
 @AllArgsConstructor
 @Builder
 public class RequestCreateUserDto {
-
-    @NotBlank(message = "이메일은 반드시 입력하여야 합니다.")
-    @Email
-    private String email;
 
     @NotBlank(message = "전화번호는 반드시 입력하여야 합니다.")
     @Pattern(regexp = "^01(?:0|1|[6-9])-\\d{3,4}-\\d{4}$", message = "유효한 전화번호를 입력해주세요.")
@@ -39,7 +33,7 @@ public class RequestCreateUserDto {
 
     private String website;
 
-    private String introduce;
+    private String introduction;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -53,14 +47,13 @@ public class RequestCreateUserDto {
 
     public User toEntity() {
         return User.builder()
-                .email(this.email)
                 .phone(this.phone)
                 .gender(this.gender)
                 .name(this.name)
                 .nickname(this.nickname)
                 .website(this.website)
-                .introduce(this.introduce)
-                .profile_image(this.profile_image)
+                .introduction(this.introduction)
+//                .profile_image(this.profile_image)
                 .role(Role.USER)
                 .active(true)
                 .uuid(this.uuid) // 추후에 auth에서 받아올 예정 auth -> react -> user
