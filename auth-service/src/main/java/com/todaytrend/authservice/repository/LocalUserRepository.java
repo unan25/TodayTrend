@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface LocalUserRepository extends JpaRepository<LocalUser, Long> {
     Optional<LocalUser> findByEmail(String email);
     Optional<LocalUser> findByLocalUserId(Long local_user_id);
+    Optional<LocalUser> findByUuid(String uuid);
 }
