@@ -20,4 +20,6 @@ public class Image {
 
     private String imageUrl;
 
+    private Long postId;
+
 }

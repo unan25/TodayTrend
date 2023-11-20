@@ -1,0 +1,35 @@
+.button {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  width: max-content;
+  height: 32px;
+  border: 1px solid rgb(238, 238, 238);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 0px 10px;
+  word-break: keep-all;
+  white-space: nowrap;
+  color: rgb(153, 153, 153);
+  cursor: pointer;
+}
+
+.selected {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  width: max-content;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 0px 10px;
+  word-break: keep-all;
+  white-space: nowrap;
+  cursor: pointer;
+  color: rgb(34, 149, 255);
+  background-color: rgb(238, 247, 255);
+  border: 1px solid rgb(238, 247, 255);
+  font-weight: bold;
+}

@@ -1,12 +1,12 @@
 cloud:
   aws:
     s3:
-      bucket: tt.image
+      bucket: ${bucket}
     credentials:
-      access-key: AKIAYWTZSIEKWO3QOSJU
-      secret-key: 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
+      access-key: ${access-key}
+      secret-key: ${secret-key}
     region:
-      static: ap-northeast-2
+      static: ${region}
       auto: false
     stack:
       auto: false
@@ -17,6 +17,9 @@ spring:
     url: jdbc:mysql://localhost:3306/todaytrend
     username: root
     password: 1234
+
+  profiles:
+    active: db
 
   jpa:
     database: mysql
