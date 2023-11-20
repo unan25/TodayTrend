@@ -2,7 +2,6 @@ package com.todaytrend.postservice.controller;
 
 import com.todaytrend.postservice.dto.RequestDeleteReadPostDto;
 import com.todaytrend.postservice.dto.RequestPostDto;
-import com.todaytrend.postservice.dto.RequestPostListForMain;
 import com.todaytrend.postservice.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
