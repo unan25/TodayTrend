@@ -2,6 +2,7 @@ package com.todaytrend.postservice.service;
 
 import com.todaytrend.postservice.dto.RequestDeleteReadPostDto;
 import com.todaytrend.postservice.dto.RequestPostDto;
+import com.todaytrend.postservice.dto.RequestPostListForMain;
 import com.todaytrend.postservice.dto.ResponsePostDto;
 import com.todaytrend.postservice.entity.*;
 import com.todaytrend.postservice.enumulator.CategoryNames;
@@ -9,6 +10,7 @@ import com.todaytrend.postservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +33,14 @@ public class PostServiceImpl implements PostService {
 
 //--------------------------- 포스트 생성 --------------------------------
     @Override
-    public String makePost(RequestPostDto requestPostDto) {
+    public String makePost(/*RequestPostDto requestPostDto*/ MultipartFile[] images, String userUuid, String content) {
 
-        String u_uuid = requestPostDto.getUserUuid();
+        /*String u_uuid = requestPostDto.getUserUuid();
         String content = requestPostDto.getContent();
-        List<String> categoryList = requestPostDto.getCategoryList();
+        List<String> categoryList = requestPostDto.getCategoryList();*/
 
         Post post = Post.builder()
-                        .userUuid(u_uuid)
+                        .userUuid(userUuid)
                         .content(content)
                         .build();
 
@@ -46,7 +48,7 @@ public class PostServiceImpl implements PostService {
         Long postId = resultPost.getPostId();
 
         checkUserTagAndHashTag(content,postId);
-        checkCategory(categoryList,postId);
+//        checkCategory(categoryList,postId);
 
         return "postServiceImpl : postInsert is finish -----------";
     }
@@ -125,14 +127,14 @@ public class PostServiceImpl implements PostService {
     //@nickname으로 멘션시 nickname을 이용해서 userUuid값 가져오기
     private String findUserUuidByNickname(String nickname){
         //todo: User서버로 넘어가서 uuid가져오는 로직
-        return null;
+        return "userUuid2";
     }
 
 //---------------------------------------------------------------------------
 
 //--------------------------포스트 삭제----------------------------------------
     @Override
-    public String removePost(RequestDeleteReadPostDto requestDeletePostDto) {
+    public boolean removePost(RequestDeleteReadPostDto requestDeletePostDto) {
         Long postId = requestDeletePostDto.getPostId();
         String userUuid = requestDeletePostDto.getUserUuid();
 
@@ -142,9 +144,9 @@ public class PostServiceImpl implements PostService {
             postLikeRepo.deleteAllByPostId(postId);
             categoryRepo.deleteAllByPostId(postId);
             postRepo.deleteAllByPostId(postId);
-            return "postServiceImpl : post delete is finish -----------";
+            return true;
         }
-        return "postServiceImpl : post delete has error -----------";
+        return false;
     }
 
 //----------------------------------------------------------------------------
@@ -163,6 +165,7 @@ public class PostServiceImpl implements PostService {
         List<String> categoryList = new ArrayList<>();
         categoryRepo.findAllByPostId(postId)
                 .forEach(category -> categoryList.add(category.getCategoryName()));
+
         boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
 
 
@@ -229,5 +232,26 @@ public class PostServiceImpl implements PostService {
                 .likeCnt(postLikeRepo.findAllByPostId(postId).size())
                 .like(checkClickLike)
                 .build();
+    }
+
+//----------------------------메인 페이지에서 post 추천-----------------------------------------
+
+
+    @Override
+    public List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain) {
+
+        String userUuid = requestPostListForMain.getUserUuid();
+        Integer tab = requestPostListForMain.getTab();
+        //관리자가 관리하는 카테고리가 현재 없으므로 enum의 순서를 관리자가 만든 카테고리의 id값이라고 가정
+        List<String> categoryList = requestPostListForMain.getCategoryList();
+        List<String> followings = findFollowingUuids(userUuid);
+
+        return postRepo.findPostIdBy(userUuid,followings, tab, categoryList);
+    }
+
+    //todo : user서버가서 user에 대한 following Uuid 가져오기
+    public List<String> findFollowingUuids(String userUuid){
+        // 무언가 로직이 있겠지...
+        return List.of("userUuid2","userUuid3");
     }
 }
