@@ -27,5 +27,8 @@ public class ItemInfoTag {
     // 태그를 렌더링 할 초기 좌표값
     private Long locationX;
     private Long locationY;
+
+    // 이미지 식별자
+    private Long imageId;
 }
 
