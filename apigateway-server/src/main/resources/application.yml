@@ -23,6 +23,11 @@ spring:
         predicates:
           - Path=/api/post/**
 
+      - id: image-service
+        uri: lb://IMAGE-SERVICE
+        predicates:
+          - Path=/api/image/**
+
 # Eureka
 eureka:
   instance:
