@@ -12,15 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("api/post")
-@RequestMapping("post")
+@RequestMapping("api/post")
+//@RequestMapping("post")
 //@CrossOrigin("http://127.0.0.1:5500")
 public class PostController {
 
     private final PostService postService;
 
     @PostMapping("")
-    public ResponseEntity<?> makePost(/*@RequestBody RequestPostDto requestPostDto*/@RequestPart("images") MultipartFile[] images,
+    public ResponseEntity<?> makePost(/*@RequestBody RequestPostDto requestPostDto*/@RequestPart(value = "images",required = false) MultipartFile[] images,
                                                                                     @RequestPart("UUID")String uuid, @RequestPart("content")String content){
         return new ResponseEntity(/*postService.makePost(requestPostDto)*/postService.makePost(images, uuid, content), HttpStatus.OK);
     }

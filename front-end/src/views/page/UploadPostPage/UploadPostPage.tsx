@@ -21,27 +21,37 @@ const CreatePostPage: React.FC = () => {
   useEffect(() => {}, [Images]);
   // Send files to the server using Axios
 
-  const onSumitHandle = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSumitHandle = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    formData.delete("images");
+    formData.delete("images");    
+
+    formData.append("content", Content);
+    formData.append("UUID", UUID);
+    
+    
+
+    const postResponse = await axios.post("/api/post", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     Images.forEach((image) => {
       formData.append("images", image);
     });
+    
 
-    formData.append("content", Content);
+    formData.append('postId', postResponse.data)
 
-    formData.append("UUID", "user1");
-    // formData.append("UUID", UUID);
+    const imageResponse = await axios.post("/api/image/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }, 
+    });
 
-    console.log(formData.getAll("images"));
-
-    // const response = axios.post("YOUR_SERVER_UPLOAD_ENDPOINT", formData, {
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // });
+    console.log(imageResponse);
+    
   };
 
   return (

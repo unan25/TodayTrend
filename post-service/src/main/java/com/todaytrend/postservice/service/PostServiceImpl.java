@@ -33,7 +33,7 @@ public class PostServiceImpl implements PostService {
 
 //--------------------------- 포스트 생성 --------------------------------
     @Override
-    public String makePost(/*RequestPostDto requestPostDto*/ MultipartFile[] images, String userUuid, String content) {
+    public Long makePost(/*RequestPostDto requestPostDto*/ MultipartFile[] images, String userUuid, String content) {
 
         /*String u_uuid = requestPostDto.getUserUuid();
         String content = requestPostDto.getContent();
@@ -47,10 +47,10 @@ public class PostServiceImpl implements PostService {
         Post resultPost = postRepo.save(post);//save는 저장한 객체를 그대로 반환
         Long postId = resultPost.getPostId();
 
-        checkUserTagAndHashTag(content,postId);
+//        checkUserTagAndHashTag(content,postId);
 //        checkCategory(categoryList,postId);
 
-        return "postServiceImpl : postInsert is finish -----------";
+        return postId;
     }
 
     //category중 어느 카테고리인지 확인

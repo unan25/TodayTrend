@@ -4,18 +4,21 @@ server:
 spring:
   application:
     name: auth-service
+  profiles:
+    active: db, jwt
 
   # MySQL
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/todaytrend
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${url}
+    username: ${username_}
+    password: ${password}
+    driver-class-name: ${driver-class-name}
+
 
   # JPA
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -37,3 +40,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka # discovery-server
+
+# JWT
+jwt:
+  issuer: ${issuer}
+  secret_key: ${secret_key}
