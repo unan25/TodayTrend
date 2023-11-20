@@ -39,7 +39,7 @@ public class TokenProvider {
                 .setIssuer(jwtProperties.getIssuer()) // yml에 저장한 issuer 값
                 .setIssuedAt(now) // iat : 현재 시간
                 .setExpiration(expiry) // expiry 멤버 변숫값
-                .setSubject(localUser.getEmail()) // 내용 sub : 유저의 이메일 추후에 uuid 대체?
+                .setSubject(localUser.getUuid()) // uuid로 생성
                 .claim("localUserId", localUser.getLocalUserId()) // 클레임 id : 유저 ID
                 // 서명 : 비밀값과 함께 해시값을 HS256 방식으로 암호화
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
@@ -65,23 +65,30 @@ public class TokenProvider {
 
         return new UsernamePasswordAuthenticationToken(
                 localUser, token, localUser.getAuthorities());
-        // 내가 짠 거
-//        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-//        return new UsernamePasswordAuthenticationToken(
-//                new org.springframework.security.core.userdetails.User(
-//                        claims.getSubject()," ", authorities), token, authorities);
     }
 
     private LocalUser findLocalUserByEmail(String email) {
         return localUserRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 이메일 입니다. : " + email));
     }
+
+    private LocalUser findLocalUserByUuid(String uuid) {
+        return localUserRepository.findByUuid(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 UUID 입니다. : " + uuid ));
+    }
     
-    // 토큰 기반으로 유저 ID를 가져오는 메서드
-    public Long getLocalUserId(String token) {
+//    // 토큰 기반으로 유저 ID를 가져오는 메서드
+//    public Long getLocalUserId(String token) {
+//        Claims claims = getClaims(token);
+//        System.out.println("claims = " + claims.get("localUserId", Long.class));
+//        return claims.get("localUserId", Long.class);
+//    }
+
+    // 토큰 기반으로 유저 UUID를 가져오는 메서드
+    public String getLocalUserUuid(String token) {
         Claims claims = getClaims(token);
-        System.out.println("claims = " + claims.get("localUserId", Long.class));
-        return claims.get("localUserId", Long.class);
+        System.out.println("claims = " + claims.getSubject());
+        return claims.getSubject();
     }
 
     private Claims getClaims(String token) {
