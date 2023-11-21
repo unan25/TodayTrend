@@ -1,16 +1,26 @@
+// react
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+// redux
 import { useDispatch, useSelector } from "react-redux";
 import { createAccount } from "../../../redux/_actions/user_action";
-import styles from "./CreateAccountPage.module.css";
+
+// component
 import OnChangeInput from "../../components/OnChangeInput/OnChangeInput";
 import AlertBox from "../../components/AlertBox/AlertBox";
+
+// custom hook
 import { useAccountValidation } from "../../../hook/useAccountValidation";
+
 // State
 import { RootState } from "redux/store";
 
+// style
+import styles from "./CreateAccountPage.module.css";
+
 function AccountPage() {
-  const UUID = useSelector((state: RootState) => state.user.UUID);
+  const UUID = useSelector((state: RootState) => state.user.UUID_temp);
   const dispatch = useDispatch<any>();
   const navigate = useNavigate();
 

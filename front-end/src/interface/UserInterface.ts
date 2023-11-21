@@ -15,6 +15,7 @@ type UserInfo = {
 };
 
 type UUID = {
+  UUID_temp?: string;
   UUID?: string;
 };
 

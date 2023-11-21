@@ -66,7 +66,7 @@ const CreatePostPage: React.FC = () => {
             setHashtag={setHashTag}
           />
         </div>
-        <button>업로드</button>
+        <button disabled={Images.length ? false : true}>업로드</button>
       </form>
     </div>
   );

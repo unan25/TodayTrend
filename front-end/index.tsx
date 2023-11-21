@@ -4,7 +4,11 @@ import ReactDOM from 'react-dom/client';
 
 // redux
 import { Provider } from "react-redux";
-import store from "./src/redux/store";
+import { Persistor } from "redux-persist";
+import { store, persistor } from "./src/redux/store";
+
+// redux - psersist
+import { PersistGate } from "redux-persist/integration/react";
 
 
 // react-query
@@ -23,9 +27,17 @@ const root: ReactDOM.Root = ReactDOM.createRoot(rootElement);
 const queryClient = new QueryClient();
 
 root.render(
+<<<<<<< Updated upstream
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
       <App />
     </Provider>
   </QueryClientProvider>
+=======
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor as Persistor}>
+      <App />
+    </PersistGate>
+  </Provider>
+>>>>>>> Stashed changes
 );
