@@ -27,12 +27,12 @@ public class ImageController {
 
     // 이미지파일 S3업로드 후 DB에 URL저장
     @PostMapping("upload")
-    public ResponseEntity<?> imageUpload(@RequestPart(value = "postId" ,required = false)  Long postId,
-    @RequestPart(value = "images") List<MultipartFile> images) throws IOException {
+    public ResponseEntity<?> imageUpload(@RequestPart(value = "postId" ,required = false) String postId,
+    @RequestPart(value = "images") MultipartFile[] images) throws IOException {
         // 프론트에서 주는 데이터형식에 따라 수정 필요 (이건 이미지리스트 + postId만 줄때)
         RequestImageDto requestImageDto = new RequestImageDto();
-        requestImageDto.setImages(images);
-        requestImageDto.setPostId(postId);
+        requestImageDto.setImages(List.of(images));
+        requestImageDto.setPostId(Long.parseLong(postId));
        return new ResponseEntity<>(imageService.uploadImageToS3(requestImageDto), HttpStatus.OK) ;
     }
 

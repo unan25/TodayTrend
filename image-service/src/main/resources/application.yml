@@ -1,3 +1,5 @@
+
+
 cloud:
   aws:
     s3:
@@ -17,6 +19,8 @@ spring:
     url: jdbc:mysql://localhost:3306/todaytrend
     username: root
     password: 1234
+  application:
+    name: image-service
 
   profiles:
     active: db
@@ -28,4 +32,5 @@ spring:
     properties:
       hibernate:
         show_sql: true
-
+server:
+  port: 0

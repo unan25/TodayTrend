@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface PostService {
-    String makePost(/*RequestPostDto requestPostDto*/MultipartFile[] images, String userUuid, String content);
+    Long makePost(/*RequestPostDto requestPostDto*/MultipartFile[] images, String userUuid, String content);
 
     boolean removePost(RequestDeleteReadPostDto requestDeletePostDto);
 
