@@ -4,11 +4,11 @@ import React, { useEffect, useState } from "react";
 // react-router-dom
 import { useNavigate } from "react-router-dom";
 
-// redux & action
+// redux
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserInfo } from "../../../redux/_actions/user_action";
 
-// hook
+// custom hook
 import { useUserInfoValidation } from "../../../hook/useUserInfoValidation";
 
 // style

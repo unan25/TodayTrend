@@ -24,7 +24,6 @@ const userSlice = createSlice({
       .addCase(createAccount.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
-          ...action.payload,
         };
       })
       .addCase(signInUser.fulfilled, (state, action: PayloadAction<UUID>) => {
@@ -36,10 +35,9 @@ const userSlice = createSlice({
       .addCase(signInUser.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
-          ...action.payload,
         };
       })
-      .addCase(auth_client.fulfilled, (state, action: PayloadAction<any>) => {
+      .addCase(auth_client.fulfilled, (state, action: PayloadAction<UUID>) => {
         return {
           ...state,
           ...action.payload,
@@ -48,7 +46,6 @@ const userSlice = createSlice({
       .addCase(auth_client.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
-          ...action.payload,
         };
       });
   },

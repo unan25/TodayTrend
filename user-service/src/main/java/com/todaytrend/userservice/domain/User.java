@@ -49,8 +49,5 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
-    @Column(columnDefinition = "boolean default true", nullable = false)
-    private boolean active;
-
     private String uuid;
 }

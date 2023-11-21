@@ -40,6 +40,22 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
     });
   };
 
+  [];
+
+  const handDelete = () => {
+    setSelectedFiles((prevFiles) => {
+      const newImages = [...prevFiles];
+      newImages.pop();
+      return newImages;
+    });
+
+    setImages((prevFiles) => {
+      const newImages = [...prevFiles];
+      newImages.pop();
+      return newImages;
+    });
+  };
+
   useEffect(() => {
     const urls = SelectedFiles.map((file) => URL.createObjectURL(file));
     setImageURLs(urls);
@@ -64,10 +80,13 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
         <input {...getInputProps()} />
       </div>
       <div className={styles.dzopzone__img__buttonBox}>
-        <div className={styles.button_previous} onClick={handlePrevious}>
+        <div className={styles.button__previous} onClick={handlePrevious}>
           이전
         </div>
-        <div className={styles.button_next} onClick={handleNext}>
+        <div className={styles.button__delete} onClick={handDelete}>
+          지우기
+        </div>
+        <div className={styles.button__next} onClick={handleNext}>
           다음
         </div>
       </div>

@@ -22,9 +22,7 @@ function SignInPage() {
   // state & dispatch
   const dispatch = useDispatch<any>();
 
-  const signInSuccess = useSelector(
-    (state: RootState) => state.user.signInSuccess
-  );
+  const UUID = useSelector((state: RootState) => state.user.UUID);
 
   // navigate
   const navigate = useNavigate();
@@ -53,8 +51,8 @@ function SignInPage() {
 
   // signIn Success
   useEffect(() => {
-    if (signInSuccess) navigate("/");
-  }, [signInSuccess]);
+    if (UUID) navigate("/");
+  }, [UUID]);
 
   return (
     <Form className={styles.mainForm} onSubmit={submitHandler}>

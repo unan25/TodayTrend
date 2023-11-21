@@ -46,7 +46,13 @@ const TextWithHashtag: React.FC<Props> = ({
         const tagType = charBeforeCursor === "#" ? "패션" : "유저";
         console.log(`${tagType} 해시태그 검색중...`);
         setTagOn({ startPoint: cursorPosition, tagOn: true });
-      } else if (TagOn.tagOn && charBeforeCursor === " ") {
+      }
+
+      if (TagOn.tagOn) {
+        console.log(content.substring(TagOn.startPoint, cursorPosition));
+      }
+
+      if (TagOn.tagOn && charBeforeCursor === " ") {
         console.log("태그 검색 종료");
         setTagOn({ startPoint: 0, tagOn: false });
         console.log(content.substring(TagOn.startPoint, cursorPosition - 1));
