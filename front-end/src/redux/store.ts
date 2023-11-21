@@ -1,14 +1,8 @@
-<<<<<<< Updated upstream
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import UserReducer from './_reducers/user_reducer';
-import { ToolkitStore } from '@reduxjs/toolkit/dist/configureStore';
-=======
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import sessionStorage from "redux-persist/es/storage/session";
 import UserReducer from "./_reducers/user_reducer";
 import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
->>>>>>> Stashed changes
 
 const userPersistConfig = {
   key: "user",
@@ -23,7 +17,7 @@ const store: ToolkitStore = configureStore({
     user: userPersistedReducer,
   },
   middleware: [...getDefaultMiddleware()],
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: process.env.NODE_ENV !== "production",
 });
 
 export type RootState = ReturnType<typeof store.getState>;
