@@ -14,9 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +22,9 @@ public class TokenProvider {
 
     private final JwtProperties jwtProperties;
     private final LocalUserRepository localUserRepository;
+
+    // 무효화된 토큰을 저장하는 리스트
+    private List<String> invalidatedTokens = new ArrayList<>();
 
     public String generateToken(LocalUser localUser, Duration expiredAt) {
         Date now = new Date();
@@ -52,6 +53,10 @@ public class TokenProvider {
             Jwts.parser()
                     .setSigningKey(jwtProperties.getSecretKey()) // 비밀값으로 복호화
                     .parseClaimsJws(token);
+            // 토큰이 무효화된 토큰 리스트에 있으면 유효하지 않음
+            if (invalidatedTokens.contains(token)) {
+                return false;
+            }
             return true;
         } catch (Exception e) { // 복호화 과정에서 에러가 나면 유효하지 않은 토큰
             return false;
@@ -96,5 +101,10 @@ public class TokenProvider {
                 .setSigningKey(jwtProperties.getSecretKey())
                 .parseClaimsJws(token)
                 .getBody();
+    }
+    
+    // JWT 토큰 무효화
+    public void invalidateJwt(String token) {
+        invalidatedTokens.add(token);
     }
 }

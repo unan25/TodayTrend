@@ -30,6 +30,9 @@ public class LocalUser implements UserDetails { // UserDetails를 상속받아 �
     @Column(unique = true)
     private String uuid;
 
+    @Column(columnDefinition = "boolean default true", nullable = false)
+    private boolean active;
+
     @Override // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("USER"));
@@ -67,5 +70,10 @@ public class LocalUser implements UserDetails { // UserDetails를 상속받아 �
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    // 회원 탈퇴 (active -> false)
+    public void deactivate() {
+        this.active = false;
     }
 }
