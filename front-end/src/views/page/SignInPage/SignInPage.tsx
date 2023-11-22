@@ -7,24 +7,22 @@ import { useNavigate } from "react-router-dom";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { signInUser } from "../../../state/_actions/user_action";
+import { signInUser } from "../../../redux/_actions/user_action";
 
 // component
 import { Form, FloatingLabel, Button } from "react-bootstrap";
 
-import Input from "../../components/Input/Input";
-
 // CSS
 import styles from "./SignInPage.module.css";
-import { RootState } from "state/store";
+
+// State
+import { RootState } from "redux/store";
 
 function SignInPage() {
   // state & dispatch
   const dispatch = useDispatch<any>();
 
-  const signInSuccess = useSelector(
-    (state: RootState) => state.user.signInSuccess
-  );
+  const UUID = useSelector((state: RootState) => state.user.UUID);
 
   // navigate
   const navigate = useNavigate();
@@ -43,18 +41,18 @@ function SignInPage() {
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let userInfo = {
+    let account = {
       email: Email,
       password: Password,
     };
 
-    dispatch(signInUser(userInfo));
+    dispatch(signInUser(account));
   };
 
   // signIn Success
   useEffect(() => {
-    if (signInSuccess) navigate("/");
-  }, [signInSuccess]);
+    if (UUID) navigate("/");
+  }, [UUID]);
 
   return (
     <Form className={styles.mainForm} onSubmit={submitHandler}>
@@ -68,7 +66,6 @@ function SignInPage() {
           />
         </FloatingLabel>
         <FloatingLabel controlId="Password" label="비밀번호">
-          <Input />
           <Form.Control
             type="password"
             placeholder="Password"

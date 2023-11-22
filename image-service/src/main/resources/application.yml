@@ -1,0 +1,36 @@
+
+
+cloud:
+  aws:
+    s3:
+      bucket: ${bucket}
+    credentials:
+      access-key: ${access-key}
+      secret-key: ${secret-key}
+    region:
+      static: ${region}
+      auto: false
+    stack:
+      auto: false
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/todaytrend
+    username: root
+    password: 1234
+  application:
+    name: image-service
+
+  profiles:
+    active: db
+
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+server:
+  port: 0
