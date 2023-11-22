@@ -47,12 +47,12 @@ public class ImageService {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(image.getSize());
             metadata.setContentType(image.getContentType());
-            //저장할 postId 폴더
-            String folderName =   requestImageDto.getPostId() + "/" + imageName;
+            //저장할 postId 폴더가 붙은 이름 = key
+            String key =   requestImageDto.getPostId() + "/" + imageName;
             // 3. S3에 파일 업로드
-            amazonS3.putObject(bucket, folderName, image.getInputStream(), metadata);
+            amazonS3.putObject(bucket, key, image.getInputStream(), metadata);
             // 4. S3에 업로드된 파일 Url을 String으로 변환
-            String imageUrl = amazonS3.getUrl(bucket, imageName).toString();
+            String imageUrl = amazonS3.getUrl(bucket, key).toString();
             // 5. Dto를 Entity로 변환, 업로드된 파일의 URL과 postId Repository에 저장
             Image imageEntity = Image.builder()
                     .postId(requestImageDto.getPostId())

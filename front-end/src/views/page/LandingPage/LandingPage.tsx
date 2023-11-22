@@ -34,17 +34,15 @@ function LandingPage() {
   );
   // 카테고리 설정
   const [selectedCategories, setSelectedCategories] = useState<any>([]);
-
+  const postId = [1, 2, 3, 10, 11];
   // 포스트리스트 받아오는 요청
   const { data: postList } = useQuery(
     ['postList', selectedCategories],
     async () => {
-      const response = await axios.post(
-        'http://localhost:8080/api/image/test1',
-        {
-          selectedCategories,
-        }
-      );
+      const response = await axios.get('http://localhost:8000/api/image/test', {
+        // selectedCategories,
+        params: { postId: postId.join(',') },
+      });
       return console.log(response.data);
       // return response.data;
     }
@@ -63,7 +61,7 @@ function LandingPage() {
         ))}
       </div>
       <div className={styles.pageBody}>
-        <PostList postList={postList}></PostList>
+        {/* <PostList postList={postList}></PostList> */}
       </div>
     </>
   );
