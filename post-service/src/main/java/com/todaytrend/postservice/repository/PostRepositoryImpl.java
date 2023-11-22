@@ -18,6 +18,21 @@ import static com.todaytrend.postservice.entity.QPost.*;
 
 public class PostRepositoryImpl implements CustomPostRepository{
 
+   /* public List<Long> findPostIdsByCategoryIds(List<Long> categoryIds) {
+        BooleanExpression whereClause = post.category.id.eq(categoryIds.get(0));
+
+        for (int i = 1; i < categoryIds.size(); i++) {
+            whereClause = whereClause.and(post.category.id.eq(categoryIds.get(i)));
+        }
+
+        return queryFactory
+                .select(post.id)
+                .from(post)
+                .where(whereClause)
+                .fetch();
+    }
+    */
+
     private final JPAQueryFactory queryFactory;
 
     public PostRepositoryImpl(EntityManager em){
@@ -25,8 +40,8 @@ public class PostRepositoryImpl implements CustomPostRepository{
     }
 
     @Override
-    public List<Long> findPostIdBy(String userUuid, List<String> followings, Integer tab, List<String> categoryList) {
-        BooleanExpression whereClause = Expressions.TRUE;
+    public List<Long> findPostIdBy(List<String> categoryName/*String userUuid, List<String> followings, Integer tab, List<String> categoryList*/) {
+   /*     BooleanExpression whereClause = Expressions.TRUE;
 
         if(tab != 1){//1은 ALL 전체 조회이므로 조건 필요 없음
             if(followings != null && !followings.isEmpty()){//내가 팔로잉 하는 사람이 있을 경우
@@ -43,14 +58,14 @@ public class PostRepositoryImpl implements CustomPostRepository{
             whereClause = whereClause.and(category.categoryName.in(categoryNameList));
         }
 
-        return /*queryFactory
+        return *//*queryFactory
                 .select(post.postId)
                 .from(post)
                 .join(category)
                 .on(post.postId.eq(category.postId))
                 .where(whereClause)
                 .orderBy(post.createAt.desc())
-                .fetch();*/
+                .fetch();*//*
                 queryFactory
                         .select(category.postId)
                         .from(category)
@@ -58,6 +73,18 @@ public class PostRepositoryImpl implements CustomPostRepository{
                         .on(category.postId.eq(post.postId))
                         .where(whereClause)
                         .orderBy(post.createAt.desc())
-                        .fetch();
+                        .fetch();*/
+        BooleanExpression whereClause = category.categoryName.eq(categoryName.get(0));
+
+        for (int i = 1; i < categoryName.size(); i++) {
+            whereClause = whereClause.and(category.categoryName.eq(categoryName.get(i)));
+        }
+
+        return queryFactory
+                .select(category.postId)
+                .from(category)
+                .where(whereClause)
+                .fetch();
+
     }
 }

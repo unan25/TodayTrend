@@ -2,37 +2,34 @@ package com.todaytrend.postservice;
 
 import com.todaytrend.postservice.entity.*;
 import com.todaytrend.postservice.enumulator.CategoryNames;
-import com.todaytrend.postservice.repository.PostRepository;
+import com.todaytrend.postservice.repository.*;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
+@Component
+@RequiredArgsConstructor
+public class initDB {
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+    private final InitService initService;
 
-@SpringBootTest
-@Transactional
-public class RecommendPostsTest {
-
-
-    @Autowired
-    private EntityManager em;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @BeforeEach
+    @PostConstruct
     public void init(){
-        Post1();
-        Post2();
-        Post3();
-        Post4();
+        initService.Post1();
+        initService.Post2();
+        initService.Post3();
+        initService.Post4();
     }
+
+    @Component
+    @Transactional
+    @RequiredArgsConstructor
+    public static class InitService{
+
+        private final EntityManager em;
         public void Post1(){
             String user1 = "user1";
             String user2 = "user2";
@@ -170,25 +167,5 @@ public class RecommendPostsTest {
         }
 
 
-    @Test
-    void findPostIdBy() {
-
-
-        // 테스트용 데이터
-        String userUuid = "user1";
-        List<String> followings = Arrays.asList("user2");
-        Integer tab = 2;
-        List<String> categoryList = Arrays.asList(CategoryNames.CATEGORY1.name()/*,
-                CategoryNames.CATEGORY2.name(),
-                CategoryNames.CATEGORY3.name()*/);
-
-        // 테스트 메서드 호출
-        List<Long> result = postRepository.findPostIdBy(/*userUuid, followings, tab, */categoryList);
-
-        System.out.println("Result: " + result);
-
-        // 결과 검증
-        //assertThat(result).containsExactly(post1.getPostId());
     }
-
 }
