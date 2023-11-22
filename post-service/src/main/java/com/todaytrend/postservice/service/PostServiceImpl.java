@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -236,22 +238,34 @@ public class PostServiceImpl implements PostService {
 
 //----------------------------메인 페이지에서 post 추천-----------------------------------------
 
-
     @Override
     public List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain) {
 
         String userUuid = requestPostListForMain.getUserUuid();
         Integer tab = requestPostListForMain.getTab();
-        //관리자가 관리하는 카테고리가 현재 없으므로 enum의 순서를 관리자가 만든 카테고리의 id값이라고 가정
         List<String> categoryList = requestPostListForMain.getCategoryList();
-        List<String> followings = findFollowingUuids(userUuid);
 
-        return postRepo.findPostIdBy(userUuid,followings, tab, categoryList);
+        switch (tab){
+            case 1 -> {
+                return Optional.ofNullable(categoryList)
+                        .filter(list -> !list.isEmpty())
+                        .map(list -> categoryRepo.findPostIdByCategoryNameIn(list))
+                        .orElseGet(() -> postRepo.findPostIdBy());
+            }
+            case 2 -> {
+                return Optional.ofNullable(categoryList)
+                        .filter(list -> !list.isEmpty())
+                        .map(list -> postRepo.findPostIdByUserUuidInAndPostIdIn(findFollowingUuids(userUuid),
+                                                                                categoryRepo.findPostIdByCategoryNameIn(categoryList)))
+                        .orElseGet(() -> postRepo.findPostIdByUserUuidIn(findFollowingUuids(userUuid)));
+            }
+        }
+        return List.of();
     }
 
     //todo : user서버가서 user에 대한 following Uuid 가져오기
     public List<String> findFollowingUuids(String userUuid){
         // 무언가 로직이 있겠지...
-        return List.of("userUuid2","userUuid3");
+        return List.of("user2","user3");
     }
 }

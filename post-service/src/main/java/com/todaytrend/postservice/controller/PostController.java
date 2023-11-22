@@ -10,11 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/post")
 //@RequestMapping("post")
-//@CrossOrigin("http://127.0.0.1:5500")
+@CrossOrigin("http://127.0.0.1:5500")
 public class PostController {
 
     private final PostService postService;
@@ -47,8 +49,10 @@ public class PostController {
 
 //    --- sns Main에서 postid추천
     @GetMapping("/main")
-    public ResponseEntity<?> recommendPost(@RequestBody RequestPostListForMain requestPostListForMain){
+    public ResponseEntity<?> recommendPost(@RequestHeader("userUuid")String userUuid,
+                                           @RequestHeader("tab")String tab,
+                                           @RequestHeader("categoryList")List<String> categoryList){
+        RequestPostListForMain requestPostListForMain = new RequestPostListForMain(userUuid, Integer.parseInt(tab), categoryList);
         return new ResponseEntity<>(postService.recommendPostForMain(requestPostListForMain),HttpStatus.OK);
     }
-
 }
