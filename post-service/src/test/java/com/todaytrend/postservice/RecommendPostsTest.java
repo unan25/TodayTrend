@@ -50,7 +50,7 @@ public class RecommendPostsTest {
         List<String> categoryList = Arrays.asList(CategoryNames.CATEGORY1.name());
 
         // 테스트 메서드 호출
-        List<Long> result = postRepository.findPostIdBy(userUuid, followings, tab, categoryList);
+        List<Long> result = postRepository.findPostIdBy(/*userUuid, followings, tab, */categoryList);
 
         System.out.println("Result: " + result);
 
