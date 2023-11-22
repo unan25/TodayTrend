@@ -1,5 +1,3 @@
-
-
 cloud:
   aws:
     s3:
@@ -33,4 +31,4 @@ spring:
       hibernate:
         show_sql: true
 server:
-  port: 0
+  port: 8000

@@ -9,7 +9,7 @@ type Prosps = {
   switch: boolean;
 };
 
-const Post: React.FC<any> = ({ post, swith }) => {
+const Post: React.FC<any> = ({ post, swich }) => {
   //post 상세정보
   const [postdetails, setPostDetails] = useState();
   const navigate = useNavigate();
@@ -18,9 +18,7 @@ const Post: React.FC<any> = ({ post, swith }) => {
   const handlePostClick = async () => {
     //함수 파람으로 받아오기
     //게시물 상세정보 가져오는 요청
-    const res = await axios.get(
-      `https://jsonplaceholder.typicode.com/posts/${post.id}`
-    );
+    const res = await axios.get('/api/post');
     setPostDetails(res.data);
     navigate(`/post/${post.id}`);
   };
@@ -31,7 +29,7 @@ const Post: React.FC<any> = ({ post, swith }) => {
         className={styles.post}
         src={post.url}
         alt={`게시물 ${post.id}`}
-        onClick={swith ? handlePostClick : undefined}
+        onClick={swich ? handlePostClick : undefined}
       ></img>
     </div>
   );
