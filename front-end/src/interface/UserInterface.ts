@@ -14,9 +14,11 @@ type UserInfo = {
   introduction?: string;
 };
 
-type UUID = {
+type CurrentUser = {
   UUID_temp?: string;
   UUID?: string;
+  uuid?: string;
+  accessToken?: string;
 };
 
-export { Account, UserInfo, UUID };
+export { Account, UserInfo, CurrentUser };

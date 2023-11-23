@@ -9,7 +9,7 @@ body {
 
 .page-body {
   display: flex;
-  padding: 5rem 12rem 0rem 12rem;
+  padding: 5rem 11rem 0rem 11rem;
   flex-direction: column;
 }
 

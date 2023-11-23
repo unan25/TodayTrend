@@ -13,6 +13,8 @@ import { useUserInfoValidation } from "../../../hook/useUserInfoValidation";
 
 // style
 import styles from "./CreateUserInfoPage.module.css";
+import buttonStyle from "../../../module/styles/button.module.css";
+import formStyle from "../../../module/styles/form.module.css";
 
 // components
 import OnChangeInput from "../../components/OnChangeInput/OnChangeInput";
@@ -58,20 +60,19 @@ function AccountPage() {
       introduction: Fields.introduction,
     };
 
-    dispatch(updateUserInfo(userInfo));
+    try {
+      dispatch(updateUserInfo(userInfo));
+      navigate("/");
+    } catch (err: any) {
+      console.error(err);
+    }
   };
-
-  //------------------------------------------------------------------------------\
-  // state control
-  useEffect(() => {
-    if (signUpSuccess) navigate("/");
-  }, [signUpSuccess]);
 
   //------------------------------------------------------------------------------
 
   return (
     <div className="page-body">
-      <form onSubmit={submitHandler} className={styles.mainForm}>
+      <form onSubmit={submitHandler} className={formStyle.mainForm}>
         <DropZone setFunction={SetUploadedFile} />
         <OnChangeInput
           type="text"
@@ -112,7 +113,7 @@ function AccountPage() {
         <AlertBox isError={true} message={Message} />
         <button
           type="submit"
-          className={styles.submitButton}
+          className={buttonStyle.submitButton}
           disabled={!IsValidated}
         >
           등록

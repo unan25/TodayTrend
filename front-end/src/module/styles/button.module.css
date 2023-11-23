@@ -1,0 +1,11 @@
+.submitButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-black);
+  height: 3rem;
+  color: whitesmoke;
+  margin: 3rem 0px;
+  border-radius: 0.7rem;
+  width: 100%;
+}

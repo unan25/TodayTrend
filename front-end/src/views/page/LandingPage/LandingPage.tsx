@@ -1,25 +1,25 @@
 // react
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 // react-query
-import { useQuery } from 'react-query';
+import { useQuery } from "react-query";
 
 // react-bootstrap
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from "react-bootstrap";
 
 // styles
-import styles from './LandingPage.module.css';
+import styles from "./LandingPage.module.css";
 
 // components
-import SideBar from '../../components/Sidebar/SideBar';
-import PostList from '../../components/PostList/PostList';
-import Category from '../../../views/components/Category/Category';
+import SideBar from "../../components/Sidebar/SideBar";
+import PostList from "../../components/PostList/PostList";
+import Category from "../../../views/components/Category/Category";
 
 // type
-import { CategoryType } from 'interface/Categoryinterface';
+import { CategoryType } from "interface/Categoryinterface";
 
 // axios
-import axios from 'axios';
+import axios from "axios";
 
 function LandingPage() {
   // 카테고리리스트 받아오는 요청 get
@@ -48,10 +48,11 @@ function LandingPage() {
     }
   );
 
+
   return (
     <>
       <div className={styles.category}>
-        {categoryList?.map((category: any) => (
+        {/* {categoryList?.map((category: any) => (
           <Category
             key={category.id}
             category={category}
