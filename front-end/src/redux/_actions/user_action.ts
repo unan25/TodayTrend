@@ -3,12 +3,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // axios
 import axios from "axios";
-import { Account, UserInfo } from "interface/UserInterface";
+import { Account, UUID, UserInfo } from "interface/UserInterface";
 
 // action types
 const CREATE_ACCOUNT_USER = "user/createAccount";
 const UPDATE_USERINFO_USER = "user/updateUserInfo";
 const SIGN_IN_USER = "user/signInUser";
+const LOG_OUT_USER = "user/logOut";
 const AUTH_USER = "user/authUser";
 //
 
@@ -28,7 +29,7 @@ export const updateUserInfo = createAsyncThunk(
   UPDATE_USERINFO_USER,
   async (userInfo: UserInfo, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/api/user/signup", userInfo);
+      const response = await axios.post("/api/users/signup", userInfo);
       return response.data;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -41,7 +42,19 @@ export const signInUser = createAsyncThunk(
   async (account: Account, { rejectWithValue }) => {
     try {
       const response = await axios.post("/api/auth/login", account);
-      return { UUID: response.data };
+      return { UUID: response.data.uuid };
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const logOut = createAsyncThunk(
+  LOG_OUT_USER,
+  async (uuid: UUID, { rejectWithValue }) => {
+    try {
+      await axios.post("/api/auth/logout", uuid);
+      return { UUID: "" };
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }

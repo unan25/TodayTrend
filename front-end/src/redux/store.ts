@@ -16,7 +16,8 @@ const store: ToolkitStore = configureStore({
   reducer: {
     user: userPersistedReducer,
   },
-  middleware: [...getDefaultMiddleware()],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
   devTools: process.env.NODE_ENV !== "production",
 });
 

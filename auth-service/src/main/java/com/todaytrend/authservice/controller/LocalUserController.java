@@ -64,15 +64,15 @@ public class LocalUserController {
 
 
         // 로그아웃 처리
-        SecurityContextHolder.getContext().setAuthentication(null);
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        for (Cookie cookie : request.getCookies()) {
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
-        }
+//        SecurityContextHolder.getContext().setAuthentication(null);
+//        HttpSession session = request.getSession(false);
+//        if (session != null) {
+//            session.invalidate();
+//        }
+//        for (Cookie cookie : request.getCookies()) {
+//            cookie.setMaxAge(0);
+//            response.addCookie(cookie);
+//        }
 
         return ResponseEntity.ok().build();
     }
