@@ -2,3 +2,8 @@ declare module "*.css" {
   const content: { [className: string]: string };
   export = content;
 }
+
+declare module "*.png" {
+  const content: string;
+  export default content;
+}

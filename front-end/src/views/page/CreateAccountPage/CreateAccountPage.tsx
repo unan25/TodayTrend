@@ -18,6 +18,8 @@ import { RootState } from "redux/store";
 
 // style
 import styles from "./CreateAccountPage.module.css";
+import buttonStyle from "../../../module/styles/button.module.css";
+import formStyle from "../../../module/styles/form.module.css";
 
 function AccountPage() {
   const UUID = useSelector((state: RootState) => state.user.UUID_temp);
@@ -42,8 +44,8 @@ function AccountPage() {
   }, [UUID]);
 
   return (
-    <div className={styles.body}>
-      <form className={styles.mainForm} onSubmit={submitHandler}>
+    <div className="page-body">
+      <form className={formStyle.mainForm} onSubmit={submitHandler}>
         <OnChangeInput
           type="email"
           placeholder="이메일"
@@ -68,7 +70,7 @@ function AccountPage() {
         <AlertBox isError={true} message={Message} />
         <button
           type="submit"
-          className={styles.submitButton}
+          className={buttonStyle.submitButton}
           disabled={!IsValidated}
         >
           회원가입

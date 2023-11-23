@@ -24,34 +24,28 @@ const CreatePostPage: React.FC = () => {
   const onSumitHandle = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    formData.delete("images");    
+    formData.delete("images");
 
-    formData.append("content", Content);
-    formData.append("UUID", UUID);
-    
-    
+    const data = {
+      content: Content,
+      UUID: UUID,
+    };
 
-    const postResponse = await axios.post("/api/post", formData, {
+    const postResponse = await axios.post("/api/post", formData);
+
+    Images.forEach((image) => {
+      formData.append("images", image);
+    });
+
+    formData.append("postId", postResponse.data);
+
+    const imageResponse = await axios.post("/api/image/upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
 
-    Images.forEach((image) => {
-      formData.append("images", image);
-    });
-    
-
-    formData.append('postId', postResponse.data)
-
-    const imageResponse = await axios.post("/api/image/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      }, 
-    });
-
     console.log(imageResponse);
-    
   };
 
   return (
