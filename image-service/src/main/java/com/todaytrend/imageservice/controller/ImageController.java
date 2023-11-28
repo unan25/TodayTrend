@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/image")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class ImageController {
 
      private final ImageService imageService;
@@ -38,7 +40,7 @@ public class ImageController {
 
     // imageUrlList전달
     @GetMapping("{postId}")
-    public ResponseEntity<?> getImageByPostID(@PathVariable Long postId ) {
+    public ResponseEntity<?> getImageByPostId(@PathVariable Long postId ) {
         return new ResponseEntity<>(imageService.findImageByPostId(postId), HttpStatus.OK);
     }
 
@@ -47,5 +49,15 @@ public class ImageController {
     public ResponseEntity<?> test(@RequestPart("images")ResponseImageDto dto) {
         System.out.println("dto :" + dto);
         return new ResponseEntity<>("Successfully received data", HttpStatus.OK);
+    }
+
+    @GetMapping("test")
+    public ResponseEntity<?> test1(@RequestParam("postId") Long[] postIdList) {
+       List<ResponseImageDto> responseImageDtoList = new ArrayList<>();
+        for (Long postId : postIdList) {
+            ResponseImageDto dto = imageService.findImageByPostId(postId);
+            responseImageDtoList.add(dto);
+        }
+        return new ResponseEntity<>(responseImageDtoList, HttpStatus.OK);
     }
 }

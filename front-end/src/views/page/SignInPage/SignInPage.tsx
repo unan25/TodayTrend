@@ -14,9 +14,12 @@ import { Form, FloatingLabel, Button } from "react-bootstrap";
 
 // CSS
 import styles from "./SignInPage.module.css";
+import buttonStyle from "../../../module/styles/button.module.css";
 
 // State
-import { RootState } from "redux/store";
+import { RootState } from "../../../redux/store";
+import GoogleLogin from "../../../views/components/SocialLoginButton/Google/GoogleLogin";
+import KakaoLogin from "../../../views/components/SocialLoginButton/Kakao/KakaoLogin";
 
 function SignInPage() {
   // state & dispatch
@@ -55,29 +58,33 @@ function SignInPage() {
   }, [UUID]);
 
   return (
-    <Form className={styles.mainForm} onSubmit={submitHandler}>
-      <Form.Group className={styles.fg} controlId="SignUpForm">
-        <FloatingLabel controlId="Email" label="이메일">
-          <Form.Control
-            type="email"
-            placeholder="name@example.com"
-            value={Email}
-            onChange={emailHandler}
-          />
-        </FloatingLabel>
-        <FloatingLabel controlId="Password" label="비밀번호">
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={Password}
-            onChange={passwordHandler}
-          />
-        </FloatingLabel>
-      </Form.Group>
-      <Button className={styles.submitButton} variant="primary" type="submit">
-        로그인
-      </Button>
-    </Form>
+    <div className="page-body">
+      <form className={styles.mainForm} onSubmit={submitHandler}>
+        <Form.Group className={styles.fg} controlId="SignUpForm">
+          <FloatingLabel controlId="Email" label="이메일">
+            <Form.Control
+              type="email"
+              placeholder="name@example.com"
+              value={Email}
+              onChange={emailHandler}
+            />
+          </FloatingLabel>
+          <FloatingLabel controlId="Password" label="비밀번호">
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={Password}
+              onChange={passwordHandler}
+            />
+          </FloatingLabel>
+        </Form.Group>
+        <button className={buttonStyle.submitButton} type="submit">
+          로그인
+        </button>
+      </form>
+      <GoogleLogin />
+      <KakaoLogin />
+    </div>
   );
 }
 

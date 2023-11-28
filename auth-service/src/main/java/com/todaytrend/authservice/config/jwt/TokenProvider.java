@@ -1,6 +1,7 @@
 package com.todaytrend.authservice.config.jwt;
 
 import com.todaytrend.authservice.domain.LocalUser;
+import com.todaytrend.authservice.domain.SocialUser;
 import com.todaytrend.authservice.dto.RequestUserDto;
 import com.todaytrend.authservice.repository.LocalUserRepository;
 import io.jsonwebtoken.Claims;
@@ -41,6 +42,18 @@ public class TokenProvider {
         response.addCookie(tokenCookie);
     }
 
+    public void generateToken(SocialUser socialUser, Duration expiredAt, String tokenName, HttpServletResponse response) {
+        Date now = new Date();
+        String token = makeToken(new Date(now.getTime() + expiredAt.toMillis()), socialUser);
+
+        // 쿠키에 토큰 저장
+        Cookie tokenCookie = new Cookie(tokenName, token);
+        tokenCookie.setHttpOnly(true);
+        tokenCookie.setMaxAge((int) expiredAt.getSeconds());
+        tokenCookie.setPath("/");
+        response.addCookie(tokenCookie);
+    }
+
     
     // JWT 토큰 생성 메서드
     private String makeToken(Date expiry, LocalUser localUser){
@@ -52,8 +65,24 @@ public class TokenProvider {
                 .setIssuedAt(now) // iat : 현재 시간
                 .setExpiration(expiry) // expiry 멤버 변숫값
                 .setSubject(localUser.getUuid()) // uuid로 생성
-                .claim("localUserId", localUser.getLocalUserId()) // 유저 ID
+//                .claim("localUserId", localUser.getLocalUserId()) // 유저 ID
                 .claim("role", localUser.getRole()) // 유저 Role
+                // 서명 : 비밀값과 함께 해시값을 HS256 방식으로 암호화
+                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
+                .compact();
+    }
+
+    private String makeToken(Date expiry, SocialUser socialUser){
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE) // 헤더 typ :JWT
+                .setIssuer(jwtProperties.getIssuer()) // yml에 저장한 issuer 값
+                .setIssuedAt(now) // iat : 현재 시간
+                .setExpiration(expiry) // expiry 멤버 변숫값
+                .setSubject(socialUser.getUuid()) // uuid로 생성
+//                .claim("localUserId", localUser.getLocalUserId()) // 유저 ID
+                .claim("role", socialUser.getRole()) // 유저 Role
                 // 서명 : 비밀값과 함께 해시값을 HS256 방식으로 암호화
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
                 .compact();
@@ -119,4 +148,6 @@ public class TokenProvider {
     public void invalidateJwt(String token) {
         invalidatedTokens.add(token);
     }
+
+
 }

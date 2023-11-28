@@ -7,7 +7,7 @@ import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 const userPersistConfig = {
   key: "user",
   storage: sessionStorage,
-  whitelist: ["UUID"],
+  whitelist: ["UUID", "userType", "role"],
 };
 
 const userPersistedReducer = persistReducer(userPersistConfig, UserReducer);
@@ -16,7 +16,8 @@ const store: ToolkitStore = configureStore({
   reducer: {
     user: userPersistedReducer,
   },
-  middleware: [...getDefaultMiddleware()],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
   devTools: process.env.NODE_ENV !== "production",
 });
 
