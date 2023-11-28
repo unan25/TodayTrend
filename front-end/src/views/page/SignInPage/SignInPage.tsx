@@ -17,8 +17,9 @@ import styles from "./SignInPage.module.css";
 import buttonStyle from "../../../module/styles/button.module.css";
 
 // State
-import { RootState } from "redux/store";
-import GoogleLogin from "views/components/SocialLoginButton/Google/GoogleLogin";
+import { RootState } from "../../../redux/store";
+import GoogleLogin from "../../../views/components/SocialLoginButton/Google/GoogleLogin";
+import KakaoLogin from "../../../views/components/SocialLoginButton/Kakao/KakaoLogin";
 
 function SignInPage() {
   // state & dispatch
@@ -82,6 +83,7 @@ function SignInPage() {
         </button>
       </form>
       <GoogleLogin />
+      <KakaoLogin />
     </div>
   );
 }

@@ -5,8 +5,9 @@ import {
   signInUser,
   auth_client,
   logOut,
+  signInSocialUser,
 } from "../_actions/user_action";
-import { Account, UUID } from "../../interface/UserInterface";
+import { CurrentUser } from "../../interface/UserInterface";
 
 const initialState = {};
 
@@ -16,9 +17,10 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // CreateAccount
       .addCase(
         createAccount.fulfilled,
-        (state, action: PayloadAction<UUID>) => {
+        (state, action: PayloadAction<CurrentUser>) => {
           return { ...state, ...action.payload };
         }
       )
@@ -27,34 +29,61 @@ const userSlice = createSlice({
           ...state,
         };
       })
-      .addCase(signInUser.fulfilled, (state, action: PayloadAction<UUID>) => {
-        return {
-          ...state,
-          ...action.payload,
-        };
-      })
+      // SignInUser
+      .addCase(
+        signInUser.fulfilled,
+        (state, action: PayloadAction<CurrentUser>) => {
+          return {
+            ...state,
+            ...action.payload,
+          };
+        }
+      )
       .addCase(signInUser.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
         };
       })
-      .addCase(logOut.fulfilled, (state, action: PayloadAction<UUID>) => {
+      // SignInSocialuser
+      .addCase(
+        signInSocialUser.fulfilled,
+        (state, action: PayloadAction<CurrentUser>) => {
+          return {
+            ...state,
+            ...action.payload,
+          };
+        }
+      )
+      .addCase(signInSocialUser.rejected, (state, action: any) => {
         return {
           ...state,
-          ...action.payload,
         };
       })
+      // LogOut
+      .addCase(
+        logOut.fulfilled,
+        (state, action: PayloadAction<CurrentUser>) => {
+          return {
+            ...state,
+            ...action.payload,
+          };
+        }
+      )
       .addCase(logOut.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
         };
       })
-      .addCase(auth_client.fulfilled, (state, action: PayloadAction<UUID>) => {
-        return {
-          ...state,
-          ...action.payload,
-        };
-      })
+      // Auth
+      .addCase(
+        auth_client.fulfilled,
+        (state, action: PayloadAction<CurrentUser>) => {
+          return {
+            ...state,
+            ...action.payload,
+          };
+        }
+      )
       .addCase(auth_client.rejected, (state, action: PayloadAction<any>) => {
         return {
           ...state,
