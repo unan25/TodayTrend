@@ -1,6 +1,5 @@
 package com.todaytrend.authservice.config;
 
-import com.todaytrend.authservice.config.handler.CustomLoginSuccessHandler;
 import com.todaytrend.authservice.config.jwt.TokenProvider;
 import com.todaytrend.authservice.repository.LocalUserRepository;
 import com.todaytrend.authservice.repository.RefreshTokenRepository;
@@ -60,10 +59,10 @@ public class WebSecurityConfig {
     // 로그인 성공 시 실행할 토큰 발급 핸들러
     // 직접 만든 로그인에는 핸들러 필요 x , oauth에만 적용하면됨.
     // oauth 회원가입 생성 시 적용 예정
-    @Bean
-    public CustomLoginSuccessHandler loginSuccessHandler() {
-        return new CustomLoginSuccessHandler(tokenProvider, refreshTokenRepository, userService, localUserRepository);
-    }
+//    @Bean
+//    public CustomLoginSuccessHandler loginSuccessHandler() {
+//        return new CustomLoginSuccessHandler(tokenProvider, refreshTokenRepository, userService, localUserRepository);
+//    }
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
