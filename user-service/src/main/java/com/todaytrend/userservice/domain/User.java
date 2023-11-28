@@ -1,7 +1,6 @@
 package com.todaytrend.userservice.domain;
 
 import com.todaytrend.userservice.domain.enum_.Gender;
-import com.todaytrend.userservice.domain.enum_.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,9 +44,6 @@ public class User {
     @LastModifiedDate
     @Column(insertable = false, name = "update_at")
     private LocalDateTime updateAt;
-
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
 
     private String uuid;
 }
