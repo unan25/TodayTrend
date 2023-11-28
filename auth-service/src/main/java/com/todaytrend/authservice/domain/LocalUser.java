@@ -1,5 +1,7 @@
 package com.todaytrend.authservice.domain;
 
+import com.todaytrend.authservice.domain.enum_.Role;
+import com.todaytrend.authservice.domain.enum_.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +34,12 @@ public class LocalUser implements UserDetails { // UserDetails를 상속받아 �
 
     @Column(columnDefinition = "boolean default true", nullable = false)
     private boolean active;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Override // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
