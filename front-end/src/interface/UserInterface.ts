@@ -3,6 +3,11 @@ type Account = {
   password: string;
 };
 
+type SocialUser = {
+  email: string;
+  UUID?: string;
+};
+
 type UserInfo = {
   email?: string;
   name?: string;
@@ -21,4 +26,4 @@ type CurrentUser = {
   accessToken?: string;
 };
 
-export { Account, UserInfo, CurrentUser };
+export { Account, UserInfo, CurrentUser, SocialUser };

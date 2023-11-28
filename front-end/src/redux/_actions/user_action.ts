@@ -3,11 +3,17 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // axios
 import axios from "axios";
-import { Account, UUID, UserInfo } from "interface/UserInterface";
+import {
+  Account,
+  CurrentUser,
+  SocialUser,
+} from "../../interface/UserInterface";
 
 // action types
 const CREATE_ACCOUNT_USER = "user/createAccount";
+const SIGN_IN_SOCIALUSER = "user/signInSocialUser";
 const UPDATE_USERINFO_USER = "user/updateUserInfo";
+
 const SIGN_IN_USER = "user/signInUser";
 const LOG_OUT_USER = "user/logOut";
 const AUTH_USER = "user/authUser";
@@ -25,9 +31,24 @@ export const createAccount = createAsyncThunk(
   }
 );
 
+export const signInSocialUser = createAsyncThunk(
+  SIGN_IN_SOCIALUSER,
+  async (socialUser: SocialUser, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "/api/auth/socialuser/signin",
+        socialUser
+      );
+      return { UUID: response.data };
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const updateUserInfo = createAsyncThunk(
   UPDATE_USERINFO_USER,
-  async (userInfo: UserInfo, { rejectWithValue }) => {
+  async (userInfo: CurrentUser, { rejectWithValue }) => {
     try {
       const response = await axios.post("/api/users/signup", userInfo);
       return response.data;
@@ -51,7 +72,7 @@ export const signInUser = createAsyncThunk(
 
 export const logOut = createAsyncThunk(
   LOG_OUT_USER,
-  async (uuid: UUID, { rejectWithValue }) => {
+  async (uuid: CurrentUser, { rejectWithValue }) => {
     try {
       await axios.post("/api/auth/logout", uuid);
       return { UUID: "" };
