@@ -1,7 +1,11 @@
 package com.todaytrend.authservice.dto;
 
 import com.todaytrend.authservice.domain.LocalUser;
+import com.todaytrend.authservice.domain.enum_.Role;
+import com.todaytrend.authservice.domain.enum_.UserType;
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -32,6 +36,12 @@ public class RequestUserDto {
     @Column(columnDefinition = "boolean default true", nullable = false)
     private boolean active;
 
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     public LocalUser toEntity(){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
@@ -40,6 +50,8 @@ public class RequestUserDto {
                 .password(bCryptPasswordEncoder.encode(this.password))
                 .uuid(UUID.randomUUID().toString())
                 .active(true)
+                .userType(UserType.LOCAL)
+                .role(Role.USER)
                 .build();
     }
 }

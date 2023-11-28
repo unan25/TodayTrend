@@ -1,11 +1,14 @@
 package com.todaytrend.authservice.config.jwt;
 
 import com.todaytrend.authservice.domain.LocalUser;
+import com.todaytrend.authservice.dto.RequestUserDto;
 import com.todaytrend.authservice.repository.LocalUserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,10 +29,18 @@ public class TokenProvider {
     // 무효화된 토큰을 저장하는 리스트
     private List<String> invalidatedTokens = new ArrayList<>();
 
-    public String generateToken(LocalUser localUser, Duration expiredAt) {
+    public void generateToken(LocalUser localUser, Duration expiredAt, String tokenName, HttpServletResponse response) {
         Date now = new Date();
-        return makeToken(new Date(now.getTime() + expiredAt.toMillis()), localUser);
+        String token = makeToken(new Date(now.getTime() + expiredAt.toMillis()), localUser);
+
+        // 쿠키에 토큰 저장
+        Cookie tokenCookie = new Cookie(tokenName, token);
+        tokenCookie.setHttpOnly(true);
+        tokenCookie.setMaxAge((int) expiredAt.getSeconds());
+        tokenCookie.setPath("/");
+        response.addCookie(tokenCookie);
     }
+
     
     // JWT 토큰 생성 메서드
     private String makeToken(Date expiry, LocalUser localUser){
@@ -41,7 +52,8 @@ public class TokenProvider {
                 .setIssuedAt(now) // iat : 현재 시간
                 .setExpiration(expiry) // expiry 멤버 변숫값
                 .setSubject(localUser.getUuid()) // uuid로 생성
-                .claim("localUserId", localUser.getLocalUserId()) // 클레임 id : 유저 ID
+                .claim("localUserId", localUser.getLocalUserId()) // 유저 ID
+                .claim("role", localUser.getRole()) // 유저 Role
                 // 서명 : 비밀값과 함께 해시값을 HS256 방식으로 암호화
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecretKey())
                 .compact();
@@ -66,7 +78,7 @@ public class TokenProvider {
     // 토큰 기반으로 인증 정보를 가져오는 메서드
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
-        LocalUser localUser = findLocalUserByEmail(claims.getSubject());
+        LocalUser localUser = findLocalUserByUuid(claims.getSubject());
 
         return new UsernamePasswordAuthenticationToken(
                 localUser, token, localUser.getAuthorities());
