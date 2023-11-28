@@ -1,5 +1,6 @@
 package com.todaytrend.authservice.domain;
 
+import com.todaytrend.authservice.domain.enum_.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,10 +24,14 @@ public class SocialUser {
     @Column(columnDefinition = "boolean default true", nullable = false)
     private boolean active;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Builder(toBuilder = true)
-    public SocialUser(String email, String uuid) {
+    public SocialUser(String email, String uuid, Role role) {
         this.email = email;
         this.uuid = uuid;
+        this.role = role;
     }
 
 }

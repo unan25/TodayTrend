@@ -1,10 +1,13 @@
 package com.todaytrend.authservice.controller;
 
 import com.todaytrend.authservice.config.jwt.TokenProvider;
+import com.todaytrend.authservice.dto.CreateSocialUserDto;
 import com.todaytrend.authservice.dto.LoginResponseDto;
 import com.todaytrend.authservice.dto.RequestUserDto;
 import com.todaytrend.authservice.dto.ResponseUserDto;
 import com.todaytrend.authservice.repository.RefreshTokenRepository;
+
+import com.todaytrend.authservice.service.SocialUserService;
 import com.todaytrend.authservice.service.TokenService;
 import com.todaytrend.authservice.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -27,6 +30,7 @@ public class AuthController {
     private final UserService userService;
     private final TokenService tokenService;
     private final TokenProvider tokenProvider;
+    private final SocialUserService socialUserService;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @GetMapping("health-check")
@@ -45,6 +49,12 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody RequestUserDto requestUserDto, HttpServletResponse response) {
         LoginResponseDto loginResponseDto = userService.login(requestUserDto, response);
+        return ResponseEntity.ok(loginResponseDto);
+    }
+
+    @PostMapping("social-login")
+    public ResponseEntity<?> socialLogin(@RequestBody CreateSocialUserDto requestUserDto, HttpServletResponse response) {
+        LoginResponseDto loginResponseDto = socialUserService.login(requestUserDto, response);
         return ResponseEntity.ok(loginResponseDto);
     }
 

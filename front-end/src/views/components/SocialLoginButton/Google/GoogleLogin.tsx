@@ -26,6 +26,13 @@ function GoogleLogin() {
     window.location.assign(GoogleAccessTokenUrl);
   };
 
+  const fetchUser = async (accessToken: string) => {
+    const response = await GoogleLoginService.getUserInfo(accessToken);
+    dispatch(signInSocialUser(response!))
+
+    return response;
+  } 
+
   // signIn Success
   useEffect(() => {
     const hash = window.location.hash.substring(1);
@@ -33,8 +40,9 @@ function GoogleLogin() {
     const accessToken = urlParams.get("access_token");
 
     if (accessToken) {
-      GoogleLoginService.getUserInfo(accessToken);
-      GoogleLoginService.logOut(accessToken);
+      const response = fetchUser(accessToken)
+      
+      // GoogleLoginService.logOut(accessToken);
     }
   }, []);
 
