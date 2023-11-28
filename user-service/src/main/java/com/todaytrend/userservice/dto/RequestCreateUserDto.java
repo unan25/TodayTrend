@@ -2,9 +2,7 @@ package com.todaytrend.userservice.dto;
 
 import com.todaytrend.userservice.domain.User;
 import com.todaytrend.userservice.domain.enum_.Gender;
-import com.todaytrend.userservice.domain.enum_.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -37,9 +35,6 @@ public class RequestCreateUserDto {
 
     private String introduction;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
     private String profile_image;
 
     private String uuid;
@@ -53,7 +48,6 @@ public class RequestCreateUserDto {
                 .website(this.website)
                 .introduction(this.introduction)
 //                .profile_image(this.profile_image)
-                .role(Role.USER)
                 .uuid(this.uuid) // 추후에 auth에서 받아올 예정 auth -> react -> user
                 .createAt(LocalDateTime.now())
                 .birth(this.birth)
