@@ -1,6 +1,5 @@
 package com.todaytrend.imageservice.controller;
 
-import com.todaytrend.imageservice.dto.request.RequestImageDto;
 import com.todaytrend.imageservice.dto.response.ResponseImageDto;
 import com.todaytrend.imageservice.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("api/image")
+@RequestMapping("api/images")
 @RequiredArgsConstructor
 public class ImageController {
 
@@ -27,30 +24,31 @@ public class ImageController {
         return "Image-service is available.";
     }
 
-    // 이미지파일 S3업로드 후 DB에 URL저장
-    @PostMapping("upload")
-    public ResponseEntity<?> imageUpload(@RequestPart(value = "postId" ,required = false) String postId,
+    // 게시물 이미지 저장
+    @PostMapping("")
+    public ResponseEntity<?> imageUpload(@RequestParam(value = "postId") Long postId,
     @RequestPart(value = "images") MultipartFile[] images) throws IOException {
-        // 프론트에서 주는 데이터형식에 따라 수정 필요 (이건 이미지리스트 + postId만 줄때)
-        RequestImageDto requestImageDto = new RequestImageDto();
-        requestImageDto.setImages(List.of(images));
-        requestImageDto.setPostId(Long.parseLong(postId));
-       return new ResponseEntity<>(imageService.uploadImageToS3(requestImageDto), HttpStatus.OK) ;
+       return new ResponseEntity<>(imageService.uploadImages(postId, images), HttpStatus.OK) ;
     }
 
-    // imageUrlList전달
+    // 게시물 이미지 조회
     @GetMapping("{postId}")
     public ResponseEntity<?> getImageByPostId(@PathVariable Long postId ) {
         return new ResponseEntity<>(imageService.findImageByPostId(postId), HttpStatus.OK);
     }
 
-    // 테스트용
-    @PostMapping("test")
-    public ResponseEntity<?> test(@RequestPart("images")ResponseImageDto dto) {
-        System.out.println("dto :" + dto);
-        return new ResponseEntity<>("Successfully received data", HttpStatus.OK);
+    // 게시물 이미지 삭제
+    @DeleteMapping("{postId}")
+    public ResponseEntity<?> deleteImages(@PathVariable Long postId) {
+        return new ResponseEntity<>(imageService.deleteImages(postId), HttpStatus.OK);
     }
-
+    // 게시물 이미지 수정
+    @PostMapping("{postId}")
+    public ResponseEntity<?> updateImages(@PathVariable Long postId,
+                                          @RequestPart MultipartFile[] images ) throws IOException {
+        return new ResponseEntity<>(imageService.updateImages(postId, images), HttpStatus.OK);
+    }
+    // 테스트용
     @GetMapping("test")
     public ResponseEntity<?> test1(@RequestParam("postId") Long[] postIdList) {
        List<ResponseImageDto> responseImageDtoList = new ArrayList<>();
