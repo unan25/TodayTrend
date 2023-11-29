@@ -1,23 +1,25 @@
 package com.todaytrend.postservice.service;
 
-import com.todaytrend.postservice.dto.RequestDeleteReadPostDto;
-import com.todaytrend.postservice.dto.RequestPostDto;
+import com.todaytrend.postservice.dto.CRUD.requestUpdatePostDto;
+import com.todaytrend.postservice.dto.CRUD.responseDetailPostsDto;
+import com.todaytrend.postservice.dto.CRUD.responseMakePostDto;
+import com.todaytrend.postservice.dto.CRUD.responsePostDetailDto;
 import com.todaytrend.postservice.dto.RequestPostListForMain;
-import com.todaytrend.postservice.dto.ResponsePostDto;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface PostService {
-    Long makePost(/*RequestPostDto requestPostDto*/MultipartFile[] images, String userUuid, String content);
+    Long makePost(String userUuid,responseMakePostDto responseMakePostDto);
 
-    boolean removePost(RequestDeleteReadPostDto requestDeletePostDto);
+    boolean removePost(String userUuid, Long postId);
 
-    ResponsePostDto findPost(RequestDeleteReadPostDto requestReadPostDto);
+    responsePostDetailDto findPost(String userUuid, Long postId);
 
-    String clickLike(RequestDeleteReadPostDto requestLikeDto);
+    String clickLike(String userUuid, Long postId);
 
-    ResponsePostDto updatePost(RequestPostDto requestPostDto, Long postId);
+    responsePostDetailDto updatePost(String userUuid, Long postId ,requestUpdatePostDto requestUpdatePostDto);
 
     List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain);
+
+    responseDetailPostsDto detailPostsList(String userUuid, Long postId);
 }

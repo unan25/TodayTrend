@@ -28,4 +28,11 @@ public interface PostRepository extends JpaRepository<Post,Long>, CustomPostRepo
     @Query(value = "SELECT DISTINCT p.postId FROM Post p WHERE p.userUuid IN :followings AND p.postId IN :postIds ORDER BY p.postId DESC ")
     List<Long> findPostIdByUserUuidInAndPostIdIn(@Param("followings") List<String> followings, @Param("postIds") List<Long> postIds);
 
+    String findUserUuidByPostId(Long postId);
+
+    Long countByUserUuid(String userUuid);
+
+    List<Long> findPostIdByUserUuid(String userUuid);
+
+    Post findByPostId(Long postId);
 }

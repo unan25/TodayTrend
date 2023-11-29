@@ -1,20 +1,9 @@
 package com.todaytrend.postservice.repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.todaytrend.postservice.entity.QCategory;
-import com.todaytrend.postservice.entity.QPost;
-import com.todaytrend.postservice.enumulator.CategoryNames;
-import com.todaytrend.postservice.service.api.PostApiServiceImpl;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.todaytrend.postservice.entity.QCategory.*;
-import static com.todaytrend.postservice.entity.QPost.*;
 
 public class PostRepositoryImpl implements CustomPostRepository{
 

@@ -1,14 +1,13 @@
 package com.todaytrend.postservice.controller;
 
-import com.todaytrend.postservice.dto.RequestDeleteReadPostDto;
-import com.todaytrend.postservice.dto.RequestPostDto;
+import com.todaytrend.postservice.dto.CRUD.requestUpdatePostDto;
+import com.todaytrend.postservice.dto.CRUD.responseMakePostDto;
 import com.todaytrend.postservice.dto.RequestPostListForMain;
 import com.todaytrend.postservice.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,38 +20,51 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("")
-    public ResponseEntity<?> makePost(/*@RequestBody RequestPostDto requestPostDto*/@RequestPart(value = "images",required = false) MultipartFile[] images,
-                                                                                    @RequestPart("UUID")String uuid, @RequestPart("content")String content){
-        return new ResponseEntity(/*postService.makePost(requestPostDto)*/postService.makePost(images, uuid, content), HttpStatus.OK);
+    // Fixme : C )  완료 -ing
+    @PostMapping("{UUID}")
+    public ResponseEntity<?> makePost(@PathVariable("UUID")String userUuid, @RequestBody responseMakePostDto responseMakePostDto){
+        return new ResponseEntity(postService.makePost(userUuid,responseMakePostDto), HttpStatus.OK);
     }
 
-    @DeleteMapping("")
-    public ResponseEntity<?> deletePost(@RequestBody RequestDeleteReadPostDto requestDeletePostDto){
-        return new ResponseEntity(postService.removePost(requestDeletePostDto),HttpStatus.OK);
+    // Fixme : D ) 완료 -ing
+    @DeleteMapping("{UUID}")
+    public ResponseEntity<?> deletePost(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
+        return new ResponseEntity(postService.removePost(userUuid, postId),HttpStatus.OK);
     }
 
-    @GetMapping("")
-    public ResponseEntity<?> findPost(@RequestBody RequestDeleteReadPostDto requestReadPostDto){
-        return new ResponseEntity(postService.findPost(requestReadPostDto),HttpStatus.OK);
+    // Fixme : R ) 완료 -ing
+    @GetMapping("{UUID}")
+    public ResponseEntity<?> findPost(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
+        return new ResponseEntity(postService.findPost(userUuid,postId),HttpStatus.OK);
     }
 
-    @PatchMapping("")
-    public ResponseEntity<?> clickLike(@RequestBody RequestDeleteReadPostDto requestDeleteReadPostDto){
-        return new ResponseEntity(postService.clickLike(requestDeleteReadPostDto), HttpStatus.OK);
+    // Fixme : u ) 완료 -ing
+    @PatchMapping("{UUID}")
+    public ResponseEntity<?> clickLike(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
+        return new ResponseEntity(postService.clickLike(userUuid,postId), HttpStatus.OK);
     }
 
-    @PutMapping("")
-    public ResponseEntity<?> updatePost(@RequestBody RequestPostDto requestPostDto, @RequestParam Long postId){
-        return new ResponseEntity(postService.updatePost(requestPostDto, postId), HttpStatus.OK);
+    // Fixme : U ) 완료 -ing
+    @PutMapping("{UUID}")
+    public ResponseEntity<?> updatePost(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId, @RequestBody requestUpdatePostDto requestPostDto){
+        return new ResponseEntity(postService.updatePost(userUuid, postId, requestPostDto), HttpStatus.OK);
+    }
+
+    // Fixme : r ) 완료 -ing
+    // 게시물 상세 보기 하단 게시글 리스트
+    @GetMapping("posts/detailList/{UUID}")
+    public ResponseEntity<?> recommendPostWithDetail(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
+        return new ResponseEntity(postService.detailPostsList(userUuid,postId), HttpStatus.OK);
     }
 
 //    --- sns Main에서 postid추천
+//    Fixme : arrayTab , filter 해야함.
     @GetMapping("/main")
     public ResponseEntity<?> recommendPost(@RequestHeader("userUuid")String userUuid,
-                                           @RequestHeader("tab")String tab,
-                                           @RequestHeader("categoryList") List<String> categoryList){
-        RequestPostListForMain requestPostListForMain = new RequestPostListForMain(userUuid, Integer.parseInt(tab), categoryList);
+                                           @RequestHeader("tab")Long tab,
+                                           @RequestHeader("categoryList") List<Long> categoryList,
+                                           @RequestHeader("arrayTab")Long arrayTab ){
+        RequestPostListForMain requestPostListForMain = new RequestPostListForMain(userUuid, tab, categoryList, arrayTab);
         return new ResponseEntity<>(postService.recommendPostForMain(requestPostListForMain),HttpStatus.OK);
     }
 
