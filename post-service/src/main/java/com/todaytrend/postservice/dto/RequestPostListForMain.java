@@ -12,7 +12,8 @@ import java.util.List;
 public class RequestPostListForMain {
 
     private String userUuid;
-    private Integer tab;
-    private List<String> categoryList;
+    private Long tab;
+    private List<Long> categoryList;
+    private Long arrayTab;
 
 }

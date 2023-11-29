@@ -14,17 +14,16 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
-
-    private String categoryName;
+    private Long adminCategoryId;
     private Long postId;
 
     @Builder
-    public Category(String categoryName, Long postId){
-        this.categoryName = categoryName;
+    public Category(Long adminCategoryId, Long postId){
+        this.adminCategoryId = adminCategoryId;
         this.postId = postId;
     }
 
-    public void changeCategory(String categoryName){
-        this.categoryName = categoryName;
+    public void changeCategory(Long adminCategoryId){
+        this.adminCategoryId = adminCategoryId;
     }
 }

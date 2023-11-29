@@ -1,21 +1,16 @@
 package com.todaytrend.postservice.service;
 
-import com.todaytrend.postservice.dto.RequestDeleteReadPostDto;
-import com.todaytrend.postservice.dto.RequestPostDto;
+import com.todaytrend.postservice.dto.CRUD.*;
 import com.todaytrend.postservice.dto.RequestPostListForMain;
-import com.todaytrend.postservice.dto.ResponsePostDto;
 import com.todaytrend.postservice.entity.*;
-import com.todaytrend.postservice.enumulator.CategoryNames;
 import com.todaytrend.postservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 //@Transactional(readOnly = true)
@@ -30,116 +25,75 @@ public class PostServiceImpl implements PostService {
     private final PostLikeRepository postLikeRepo;
     private final PostUserTagRepository postUserTagRepo;
     private final HashTagRepository hashTagRepo;
+    private final AdminCategoryRepository adminCategoryRepo;
 
 
 //--------------------------- 포스트 생성 --------------------------------
     @Override
-    public Long makePost(/*RequestPostDto requestPostDto*/ MultipartFile[] images, String userUuid, String content) {
+    public Long makePost(String userUuid, responseMakePostDto responseMakePostDto) {
 
-        /*String u_uuid = requestPostDto.getUserUuid();
-        String content = requestPostDto.getContent();
-        List<String> categoryList = requestPostDto.getCategoryList();*/
-
+//        1. post생성
         Post post = Post.builder()
                         .userUuid(userUuid)
-                        .content(content)
+                        .content(responseMakePostDto.getContent())
                         .build();
 
         Post resultPost = postRepo.save(post);//save는 저장한 객체를 그대로 반환
         Long postId = resultPost.getPostId();
 
-//        checkUserTagAndHashTag(content,postId);
-//        checkCategory(categoryList,postId);
+//        2.해시태그 저장
+        makeHashTag(responseMakePostDto.getHashTagList(),postId);
+
+//        3. userTag저장(todo : 1 ) nickname -> userUuid)
+        makePostUserTag(responseMakePostDto.getUserTagList(),postId);
+
+//        3. category에 저장
+        makeCategory(responseMakePostDto.getCategoryIdList(),postId);
 
         return postId;
     }
 
-    //category중 어느 카테고리인지 확인
-    private void checkCategory(List<String> categoryList, Long postId){
-        for (String categoryName : categoryList){
-            switch (categoryName){
-                case "CATEGORY1" -> {
-                    makeCategory(CategoryNames.CATEGORY1.toString(),postId);
-                }
-                case "CATEGORY2" ->{
-                    makeCategory(CategoryNames.CATEGORY2.toString(),postId);
-                }
-                case "CATEGORY3" ->{
-                    makeCategory(CategoryNames.CATEGORY3.toString(),postId);
-                }
-            }
-        }
-    }
-
-    //category insert
-    private void makeCategory(String category, Long postId){
-        categoryRepo.save(Category.builder()
-                .categoryName(category)//todo : catecory 이름은 임의로 enum으로 일단 선언해둠 나중에 변경 필요
-                .postId(postId)
-                .build()
-        );
-    }
-
-    //Content에서 #과 @분리 및 save(PostUserTag, HashTag)
-    private void checkUserTagAndHashTag(String content,Long postId){
-        String postContent = content;
-        // hashtag - 내용 - usertag 순으로 작성된다고 가정, todo: 나중에 변경 할 것
-        String[] checkHashTag = Stream.of(postContent.split("#")).map(String::trim).toArray(String[]::new);
-        String[] checkUserTag = Stream.of(postContent.split("@")).map(String::trim).toArray(String[]::new);
-
-        if (checkHashTag.length > 1){
-            for (int i = 1 ; i< checkHashTag.length; i++){
-                String[] hashTag = checkHashTag[i].split(" ");
-                if(hashTag.length == 1){
-                    makeHashTag(checkHashTag[i],postId);
-                }else{
-                    makeHashTag(hashTag[0],postId);
-                    break;
-                }
-            }
-        }
-
-        if (checkUserTag.length>1){
-            for (int i =1; i< checkUserTag.length; i++){
-                makePostUserTag(checkUserTag[i],postId);
-            }
+    //hashTag insert
+    private void makeHashTag(List<String> hashTagList, Long postId){
+        for(String hashTag : hashTagList){
+            hashTagRepo.save(HashTag.builder()
+                    .hashtag(hashTag)
+                    .postId(postId)
+                    .build());
         }
     }
 
     //PostUserTag insert
-    private void makePostUserTag(String checkUserTag, Long postId){
-        postUserTagRepo.save( PostUserTag.builder()
-                .userUuid(findUserUuidByNickname(checkUserTag))
-                .postId(postId)
-                .build()
-        );
+    private void makePostUserTag(List<String> checkUserTag, Long postId){
+        for (String nickName :checkUserTag){
+            postUserTagRepo.save(PostUserTag.builder()
+                    .postId(postId)
+                    .userUuid("")//todo : 1-1 ) 여기에 userUuid바꾼거 넣어야함!
+                    .build());
+        }
     }
 
-    //hashTag insert
-    private void makeHashTag(String hashTag, Long postId){
-        hashTagRepo.save( HashTag.builder()
-                .hashtag(hashTag)
-                .postId(postId)
-                .build()
-        );
+    //Category insert
+    private void makeCategory(List<Long> categoryList, Long postId){
+        for(Long id : categoryList){
+            categoryRepo.save(Category.builder().adminCategoryId(id).postId(postId).build());
+        }
     }
 
 
     //@nickname으로 멘션시 nickname을 이용해서 userUuid값 가져오기
-    private String findUserUuidByNickname(String nickname){
-        //todo: User서버로 넘어가서 uuid가져오는 로직
+   /* private String findUserUuidByNickname(String nickname){
+        //todo: 1-2 ) User서버로 넘어가서 uuid가져오는 로직
         return "userUuid2";
-    }
+    }*/
 
 //---------------------------------------------------------------------------
 
 //--------------------------포스트 삭제----------------------------------------
     @Override
-    public boolean removePost(RequestDeleteReadPostDto requestDeletePostDto) {
-        Long postId = requestDeletePostDto.getPostId();
-        String userUuid = requestDeletePostDto.getUserUuid();
+    public boolean removePost(String userUuid, Long postId) {
 
-        if(userUuid.equals(postRepo.findById(postId).get().getUserUuid())){//postid로 해당 post작성자의 uuid를 받아와서 본인의 게시물이 맞는지 판별
+        if(postRepo.findUserUuidByPostId(postId).equals(userUuid)){//postid로 해당 post작성자의 uuid를 받아와서 본인의 게시물이 맞는지 판별
             hashTagRepo.deleteAllByPostId(postId);
             postUserTagRepo.deleteAllByPostId(postId);
             postLikeRepo.deleteAllByPostId(postId);
@@ -155,46 +109,57 @@ public class PostServiceImpl implements PostService {
 //----------------------------포스트 불러오기------------------------------------
 
     @Override
-    public ResponsePostDto findPost(RequestDeleteReadPostDto requestReadPostDto) {
-        //todo : post 상세보기에서 해당 포스트가 본인의 것인지 판별하는 로직은 어디서 할지 정해야함(화면에서 수정하기 버튼 있어야하니까!)
-        Long postId = requestReadPostDto.getPostId();
-        String userUuid = requestReadPostDto.getUserUuid();
-
-        boolean myPost = userUuid.equals(postRepo.findById(postId).get().getUserUuid()) ? true : false ;// T- 본인 포스트
-
-        Post post = postRepo.findById(postId).get();
-        List<String> categoryList = new ArrayList<>();
-        categoryRepo.findAllByPostId(postId)
-                .forEach(category -> categoryList.add(category.getCategoryName()));
-
-        boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
+    public responsePostDetailDto findPost(String userUuid, Long postId) {
+        //todo : 1. user-server에서 데이터 받기 ( profileImage, nickName )
 
 
-        return ResponsePostDto.builder()
+        //2. post불러오기 (내용, 업데이트 시간, 본인 포스트 여부)
+        Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("post가 없음"));
+        boolean postOwner = post.getPostId()==postId ? true : false ; //t - 본인 게시물 f - 타인 게시물
+
+        //3. postlike 불러오기 ( 좋아요 개수, 좋아요 누른 여부)
+        Long likeCnt = postLikeRepo.countByPostId(postId);
+        boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false ; //T-좋아요 누른 사람
+
+        //4. categoryList생성
+        List<selectedCategoryListDto> categoryList = new ArrayList<>();
+        for (Long id : categoryRepo.findAdminCategoryIdByPostId(postId)){
+            AdminCategory adminCategory = adminCategoryRepo.findById(id).orElseThrow(()->new RuntimeException("관리자 카테고리에 해당 카테고리id가 없습니다."));
+            categoryList.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(),adminCategory.getAdminCategoryName()));
+        }
+
+        return responsePostDetailDto.builder()
                 .postId(post.getPostId())
+                .profileImage("")
+                .nickName("")
                 .content(post.getContent())
-                .updatedAt(post.getUpdatedAt())
+                .updateAt(post.getUpdatedAt())
                 .categoryList(categoryList)
-                .likeCnt(postLikeRepo.findAllByPostId(postId).size())
-                .like(checkClickLike)
+                .likeCnt(likeCnt)
+                .liked(checkClickLike)
+                .postOwner(postOwner)
                 .build();
+
     }
 
 //----------------------------------------------------------------------------
 
 //----------------------------포스트 좋아요 누르기------------------------------------
     @Override
-    public String clickLike(RequestDeleteReadPostDto requestLikeDto) {
+    public String clickLike(String userUuid, Long postId) {
 
-        Long postId = requestLikeDto.getPostId();
-        String userUuid = requestLikeDto.getUserUuid();
         boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
 
         if(checkClickLike){
             postLikeRepo.deleteByUserUuidAndPostId(userUuid,postId);
+            postLikeRepo.countByPostId(postId);
+//            false;
+
             return "postServiceImpl : post unlike btn click -----------";
         }else{
             postLikeRepo.save(PostLike.builder().userUuid(userUuid).postId(postId).build());
+            postLikeRepo.countByPostId(postId);
+//            true;
             return "postServiceImpl : post like btn click -----------";
         }
     }
@@ -204,35 +169,44 @@ public class PostServiceImpl implements PostService {
 //----------------------------포스트 업데이트------------------------------------
     @Override
     @Transactional
-    public ResponsePostDto updatePost(RequestPostDto requestPostDto, Long postId) {
+    public responsePostDetailDto updatePost(String userUuid, Long postId, requestUpdatePostDto requestUpdatePostDto) {
 
-        String userUuid = requestPostDto.getUserUuid();
-        Post updatePost = postRepo.findById(postId).get();
-
-        if(userUuid.equals(postRepo.findById(postId).get().getUserUuid())){//수정하려는 user와 수정하는 게시물 작성자의 일치 여부 확인
-            updatePost.updatePostContent(requestPostDto.getContent());
-            categoryRepo.deleteAllByPostId(postId);
+        if(userUuid.equals(postRepo.findUserUuidByPostId(postId))){//수정하려는 user와 수정하는 게시물 작성자의 일치 여부 확인
+            Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("잘못된 게시물 업데이트 요청"));
+            post.updatePostContent(requestUpdatePostDto.getContent());
             hashTagRepo.deleteAllByPostId(postId);
             postUserTagRepo.deleteAllByPostId(postId);
-            checkCategory(requestPostDto.getCategoryList(),postId);
-            checkUserTagAndHashTag(requestPostDto.getContent(),postId);
+            categoryRepo.deleteAllByPostId(postId);
+
+            makeHashTag(requestUpdatePostDto.getHashTagList(),postId);
+            makePostUserTag(requestUpdatePostDto.getUserTagList(),postId);
+            makeCategory(requestUpdatePostDto.getCategoryIdList(),postId);
+
+            Long likeCnt = postLikeRepo.countByPostId(postId);
+            boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
+
+            boolean postOwner = post.getPostId()==postId ? true : false ; //t - 본인 게시물 f - 타인 게시물
+
+            List<selectedCategoryListDto> categoryList = new ArrayList<>();
+            for (Long id : categoryRepo.findAdminCategoryIdByPostId(postId)){
+                AdminCategory adminCategory = adminCategoryRepo.findById(id).orElseThrow(()->new RuntimeException("관리자 카테고리에 해당 카테고리id가 없습니다."));
+                categoryList.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(),adminCategory.getAdminCategoryName()));
+            }
+
+            return responsePostDetailDto.builder()
+                    .postId(postId)
+                    .profileImage("")//todo :
+                    .nickName("")//todo:
+                    .content(post.getContent())
+                    .updateAt(post.getUpdatedAt())
+                    .categoryList(categoryList)
+                    .likeCnt(likeCnt)
+                    .liked(checkClickLike)
+                    .postOwner(postOwner)
+                    .build();
         }
 
-        Post post = postRepo.findById(postId).get();
-        List<String> categoryList = new ArrayList<>();
-        categoryRepo.findAllByPostId(postId)
-                .forEach(category -> categoryList.add(category.getCategoryName()));
-
-        boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
-
-        return ResponsePostDto.builder()
-                .postId(post.getPostId())
-                .content(post.getContent())
-                .updatedAt(post.getUpdatedAt())
-                .categoryList(categoryList)
-                .likeCnt(postLikeRepo.findAllByPostId(postId).size())
-                .like(checkClickLike)
-                .build();
+        return null;
     }
 
 //----------------------------메인 페이지에서 post 추천-----------------------------------------
@@ -242,23 +216,20 @@ public class PostServiceImpl implements PostService {
     public List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain) {
 
         String userUuid = requestPostListForMain.getUserUuid();
-        Integer tab = requestPostListForMain.getTab();
-        List<String> categoryList = requestPostListForMain.getCategoryList();
+        Long tab = requestPostListForMain.getTab();
+        List<Long> categoryList = requestPostListForMain.getCategoryList();
 
-        switch (tab){
-            case 1 -> {
-                return Optional.ofNullable(categoryList)
-                        .filter(list -> !list.isEmpty())
-                        .map(list -> categoryRepo.findPostIdByCategoryNameIn(categoryList))
-                        .orElseGet(() -> postRepo.findPostIdBy());
-            }
-            case 2 -> {
-                return Optional.ofNullable(categoryList)
-                        .filter(list -> !list.isEmpty())
-                        .map(list -> postRepo.findPostIdByUserUuidInAndPostIdIn(findFollowingUuids(userUuid),
-                                categoryRepo.findPostIdByCategoryNameIn(categoryList)))
-                        .orElseGet(() -> postRepo.findPostIdByUserUuidIn(findFollowingUuids(userUuid)));
-            }
+        if (tab == 1L) {
+            return Optional.ofNullable(categoryList)
+                    .filter(list -> !list.isEmpty())
+                    .map(list -> categoryRepo.findPostIdByAdminCategoryIdIn(categoryList))
+                    .orElseGet(() -> postRepo.findPostIdBy());
+        } else if (tab == 2L) {
+            return Optional.ofNullable(categoryList)
+                    .filter(list -> !list.isEmpty())
+                    .map(list -> postRepo.findPostIdByUserUuidInAndPostIdIn(findFollowingUuids(userUuid),
+                            categoryRepo.findPostIdByAdminCategoryIdIn(categoryList)))
+                    .orElseGet(() -> postRepo.findPostIdByUserUuidIn(findFollowingUuids(userUuid)));
         }
         return List.of();
 
@@ -268,5 +239,41 @@ public class PostServiceImpl implements PostService {
     public List<String> findFollowingUuids(String userUuid){
         // 무언가 로직이 있겠지...
         return List.of("user2","user3");
+    }
+
+
+//----------------------------------------------------------
+//    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
+    @Override
+    public responseDetailPostsDto detailPostsList(String userUuid, Long postId) {
+        String title1 = "";
+        String title2 = "";
+        List<Long> postIdList1 = new ArrayList<>();
+        List<Long> postIdList2 = new ArrayList<>();
+        Post post = postRepo.findByPostId(postId);
+        if(!userUuid.equals(postRepo.findUserUuidByPostId(postId))&&postRepo.countByUserUuid(userUuid)>0){
+            title1 = "@Nickname 님의 게시물";
+            title2 = "@Nickname 님의 게시물과 비슷한 게시물";
+            postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId));
+
+        }else {
+            title1 = "추천 게시물";
+            title2 = "@Nickname님의 게시물과 비슷한 게시물";
+            postIdList1 = postRepo.findPostIdBy();
+        }
+        postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId));
+        List<selectedCategoryListDto> categoryListDtos = new ArrayList<>();
+        for (AdminCategory adminCategory : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))) {
+            categoryListDtos.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(), adminCategory.getAdminCategoryName()));
+        }
+
+        return responseDetailPostsDto.builder()
+                .title1(title1)
+                .title2(title2)
+                .postIdList1(postIdList1)
+                .postIdList2(postIdList2)
+                .categoryList(categoryListDtos)
+                .build();
+
     }
 }

@@ -1,12 +1,7 @@
 package com.todaytrend.postservice;
 
-import com.todaytrend.postservice.entity.*;
-import com.todaytrend.postservice.enumulator.CategoryNames;
-import com.todaytrend.postservice.repository.*;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +13,17 @@ public class initDB {
 
     @PostConstruct
     public void init(){
-        initService.Post1();
+  /*      initService.Post1();
         initService.Post2();
         initService.Post3();
-        initService.Post4();
+        initService.Post4();*/
     }
 
     @Component
     @Transactional
     @RequiredArgsConstructor
     public static class InitService{
+/*
 
         private final EntityManager em;
         public void Post1(){
@@ -42,8 +38,8 @@ public class initDB {
 
             Post post = new Post("user1 content",user1);
             em.persist(post);
-            Category category1 = new Category(CategoryNames.CATEGORY1.name(), post.getPostId());
-            Category category2 = new Category(CategoryNames.CATEGORY2.name(), post.getPostId());
+            Category category1 = new Category(, post.getPostId());
+            Category category2 = new Category(, post.getPostId());
             em.persist(category1);
             em.persist(category2);
 
@@ -165,6 +161,7 @@ public class initDB {
             em.persist(hashTag2);
             em.persist(hashTag3);
         }
+*/
 
 
     }
