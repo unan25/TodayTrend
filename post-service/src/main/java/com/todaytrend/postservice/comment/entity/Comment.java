@@ -1,5 +1,6 @@
 package com.todaytrend.postservice.comment.entity;
 
+import com.todaytrend.postservice.comment.dto.response.ResponseCommentDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,6 +34,21 @@ public class Comment {
     private String userUuid;
     private Long postId;
 
+    public void updateContent(String content){
+        this.content = content;
+        this.userUuid = null;
+    }
+
+    public ResponseCommentDto toDto() {
+        return ResponseCommentDto.builder()
+                .commentId(commentId)
+                .content(content)
+                .createAt(createAt)
+                .parentId(parentId)
+                .userUuid(userUuid)
+                .postId(postId)
+                .build();
+    }
 
 
 
