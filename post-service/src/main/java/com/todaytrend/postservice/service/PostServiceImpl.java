@@ -8,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 //@Transactional(readOnly = true)
@@ -219,20 +218,28 @@ public class PostServiceImpl implements PostService {
         Long tab = requestPostListForMain.getTab();
         List<Long> categoryList = requestPostListForMain.getCategoryList();
 
-        if (tab == 1L) {
+        if (tab == 1L) {//전체 탭 선택(본인의 게시물도 포함되서 전체를 조회)
+            return Optional.ofNullable(categoryList)//유저가 고른 카테고리 리스트
+                    .filter(list -> !list.isEmpty()) //카테고리 리스트가 빈값이 아닐경우
+                    .map(list -> postIdList(list)) //해당 카테고리를 가진 postId 가져옴 : List<Long>
+                    .orElseGet(() -> postRepo.findPostIdBy());//고른 카테고리 리스트가 없을(list.isEmpty())일 경우 전체 리스트 최신순 조회 : List<Long>
+        } else if (tab == 2L) {//팔로우 탭 선택(해당 유저가 팔로우한 유저의 게시물만 보여줌)
             return Optional.ofNullable(categoryList)
                     .filter(list -> !list.isEmpty())
-                    .map(list -> categoryRepo.findPostIdByAdminCategoryIdIn(categoryList))
-                    .orElseGet(() -> postRepo.findPostIdBy());
-        } else if (tab == 2L) {
-            return Optional.ofNullable(categoryList)
-                    .filter(list -> !list.isEmpty())
-                    .map(list -> postRepo.findPostIdByUserUuidInAndPostIdIn(findFollowingUuids(userUuid),
-                            categoryRepo.findPostIdByAdminCategoryIdIn(categoryList)))
+                    .map(list -> postRepo.findPostIdByUserUuidInAndPostIdIn(findFollowingUuids(userUuid), postIdList(list)))
                     .orElseGet(() -> postRepo.findPostIdByUserUuidIn(findFollowingUuids(userUuid)));
         }
         return List.of();
+    }
 
+    public List<Long> postIdList(List<Long> categoryList){
+        Map<Long, Long> frequencyMap = categoryRepo.findPostIdByAdminCategoryIdIn(categoryList).stream().filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+
+        return frequencyMap.entrySet().stream()
+                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     //todo : user서버가서 user에 대한 following Uuid 가져오기

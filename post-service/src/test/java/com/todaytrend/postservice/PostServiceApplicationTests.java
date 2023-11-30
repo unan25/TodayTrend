@@ -1,13 +1,53 @@
 package com.todaytrend.postservice;
 
+import com.todaytrend.postservice.dto.RequestPostListForMain;
+import com.todaytrend.postservice.entity.Category;
+import com.todaytrend.postservice.repository.CategoryRepository;
+import com.todaytrend.postservice.service.PostService;
+import com.todaytrend.postservice.service.PostServiceImpl;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest
+@Transactional
 class PostServiceApplicationTests {
 
+    @PersistenceContext
+    EntityManager em;
+
+    @Autowired
+    private PostService postService;
+    @Autowired
+    private CategoryRepository categoryRepo;
+
+    @BeforeEach
+    void init(){
+        categoryRepo.save(new Category(1l,1l));
+        categoryRepo.save(new Category(3l,1l));
+        categoryRepo.save(new Category(1l,2l));
+        categoryRepo.save(new Category(2l,2l));
+        categoryRepo.save(new Category(3l,2l));
+        categoryRepo.save(new Category(10l,2l));
+        categoryRepo.save(new Category(2l,3l));
+    }
+
     @Test
-    void contextLoads() {
+    void recommendPostForMain_테스트() {
+        List<Long> result =
+                postService.recommendPostForMain(
+                        new RequestPostListForMain(
+                                "user1",1l, List.of(1l,2l),0l));
+
+        assertThat(result).isEqualTo(List.of(2l,1l,3l));
     }
 
 }
