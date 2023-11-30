@@ -5,6 +5,7 @@ import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.entity.*;
 import com.todaytrend.postservice.post.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class PostServiceImpl implements PostService {
                         .build();
 
         Post resultPost = postRepo.save(post);//save는 저장한 객체를 그대로 반환
-        Long postId = resultPost.getPostId();
+
 
 //        2.해시태그 저장
         makeHashTag(responseMakePostDto.getHashTagList(),postId);

@@ -2,13 +2,14 @@ package com.todaytrend.postservice.comment.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class ResponseCommentDto {
+public class ResponseDeleteCommentDto {
+
+    private boolean deleted;
 
     private Long commentId;
 
@@ -21,6 +22,5 @@ public class ResponseCommentDto {
     private String userUuid;
 
     private Long postId;
-
 
 }
