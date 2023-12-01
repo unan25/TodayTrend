@@ -25,6 +25,8 @@ import UserInfoForm from "../../components/UserInfoForm/UserInfoForm";
 import { UserInfo } from "interface/UserInterface";
 
 function SignUpPage() {
+  const userType = useSelector((state: RootState) => state.user.userType);
+  const uuid = useSelector((state: RootState) => state.user.uuid);
   // dispatch & state
   const dispatch = useDispatch<any>();
 
@@ -59,23 +61,39 @@ function SignUpPage() {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let account = {
-      email: accountFields.email,
-      password: accountFields.password,
-    };
+    if (userType !== "SOCIAL") {
+      let account = {
+        email: accountFields.email,
+        password: accountFields.password,
+      };
 
-    const response = await dispatch(createAccount(account));
+      const response = await dispatch(createAccount(account));
 
-    let userInfo: UserInfo = {
-      ...response.payload.UUID_temp,
-      ...userInfoFields,
-    };
+      let userInfo: UserInfo = {
+        uuid: response.payload.UUID_temp,
+        ...userInfoFields,
+      };
 
-    try {
-      dispatch(updateUserInfo(userInfo));
-      navigate("/");
-    } catch (err: any) {
-      console.error(err);
+      try {
+        dispatch(updateUserInfo(userInfo));
+        navigate("/");
+      } catch (err: any) {
+        console.error(err);
+      }
+    }
+
+    if (userType === "SOCIAL") {
+      let userInfo: UserInfo = {
+        uuid: uuid,
+        ...userInfoFields,
+      };
+
+      try {
+        dispatch(updateUserInfo(userInfo));
+        navigate("/");
+      } catch (err: any) {
+        console.error(err);
+      }
     }
   };
 
@@ -84,7 +102,7 @@ function SignUpPage() {
   return (
     <div className="page-body">
       <form onSubmit={submitHandler} className={formStyle.mainForm}>
-        {signInStep ? (
+        {signInStep && userType !== "SOCIAL" ? (
           <AccountForm
             fields={accountFields}
             message={accountMessage}
