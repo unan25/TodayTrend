@@ -1,6 +1,7 @@
 type Account = {
   email: string;
   password: string;
+  confirmPassword?: string;
 };
 
 type SocialUser = {
@@ -9,7 +10,7 @@ type SocialUser = {
 };
 
 type UserInfo = {
-  email?: string;
+  uuid?: string;
   name?: string;
   nickname?: string;
   phone?: string;

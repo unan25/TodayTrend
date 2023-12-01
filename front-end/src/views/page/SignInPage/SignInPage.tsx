@@ -82,8 +82,10 @@ function SignInPage() {
           로그인
         </button>
       </form>
-      <GoogleLogin />
-      <KakaoLogin />
+      <div className={styles.social_login}>
+        <GoogleLogin />
+        <KakaoLogin />
+      </div>
     </div>
   );
 }

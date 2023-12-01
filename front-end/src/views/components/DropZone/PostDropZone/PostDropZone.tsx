@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./PostDropZone.module.css";
 import { useDropzone } from "react-dropzone";
+import ImageCropModal from "./ImageCropModal";
 
 type Props = {
   setImages: React.Dispatch<React.SetStateAction<File[]>>;
@@ -89,6 +90,7 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
         <div className={styles.button__next} onClick={handleNext}>
           다음
         </div>
+        {ImageURLs && <ImageCropModal image={ImageURLs[0]} />}
       </div>
     </div>
   );

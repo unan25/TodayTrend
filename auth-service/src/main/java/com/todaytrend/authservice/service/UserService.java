@@ -9,11 +9,10 @@ import com.todaytrend.authservice.repository.LocalUserRepository;
 import com.todaytrend.authservice.repository.RefreshTokenRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
-
 import java.time.Duration;
 
 @RequiredArgsConstructor

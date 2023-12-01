@@ -19,7 +19,7 @@ const KakaoAuthorizedCodeUrl: string = `https://kauth.kakao.com/oauth/authorize?
 import KakaoLoginService from "./KakaoLoginService";
 
 // images
-import kakaoLogin from "../../../../images/kakao.png";
+import kakaoLogin from "../../../../images/social/kakao.png";
 import { useDispatch } from "react-redux";
 
 function KakaoLogin() {
@@ -29,14 +29,17 @@ function KakaoLogin() {
     window.location.assign(KakaoAuthorizedCodeUrl);
   };
 
-  // dispatch(signInSocialUser(userInfo));
+  const signIn = async (code: string) => {
+    try {
+      const accessToken = await KakaoLoginService.getAccessToken(code);
 
-  const kakaoSocialLogin = async (code: string) => {
-    const accessToken = await KakaoLoginService.getAccessToken(code);
-    if (accessToken) {
-      const userInfo = await KakaoLoginService.getUserInfo(accessToken);
-      console.log(userInfo);
-      // KakaoLoginService.logOut(accessToken);
+      const userInfo = await KakaoLoginService.getUserInfo(accessToken!);
+
+      if (userInfo) {
+        dispatch(signInSocialUser(userInfo));
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -45,8 +48,7 @@ function KakaoLogin() {
     const code = new URL(window.location.href).searchParams.get("code");
 
     if (code) {
-      kakaoSocialLogin(code);
-      // window.location.assign("http://localhost:3000/");
+      signIn(code);
     }
   }, []);
 

@@ -30,7 +30,7 @@ const NavBar: React.FC = () => {
         </a>
         {!UUID ? (
           <>
-            <a href="/create-account">
+            <a href="/signup">
               <div>회원가입</div>
             </a>
             <a href="/signin">
