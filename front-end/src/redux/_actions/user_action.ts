@@ -51,6 +51,7 @@ export const signInUser = createAsyncThunk(
   async (account: Account, { rejectWithValue }) => {
     try {
       const response = await axios.post("/api/auth/login", account);
+      console.log(document.cookie.length);
       return {
         UUID: response.data.uuid,
         userType: response.data.userType,
@@ -66,7 +67,7 @@ export const signInSocialUser = createAsyncThunk(
   SIGN_IN_SOCIALUSER,
   async (socialUser: SocialUser, { rejectWithValue }) => {
     try {
-      const response = await axios.post("/api/auth/social-user", socialUser);
+      const response = await axios.post("/api/auth/social-login", socialUser);
       return {
         UUID_temp: response.data.uuid,
         userType: response.data.userType,
