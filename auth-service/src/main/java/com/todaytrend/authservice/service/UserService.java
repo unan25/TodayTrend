@@ -20,11 +20,7 @@ import java.time.Duration;
 public class UserService {
 
     private final LocalUserRepository localUserRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final TokenProvider tokenProvider;
-    private final TokenService tokenService;
-    private final RefreshTokenService refreshTokenService;
 
     public ResponseUserDto createUser(RequestUserDto requestUserDto) {
         // 이메일 중복 체크
@@ -41,18 +37,18 @@ public class UserService {
     }
 
     // Login
-    public LoginResponseDto login(RequestUserDto requestUserDto, HttpServletResponse response) {
+    public LoginResponseDto login(RequestUserDto requestUserDto) {
         // 사용자 정보 조회
         LocalUser localUser = localUserRepository.findByEmail(requestUserDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재 하지않는 유저입니다."));
-        
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
         // 비밀번호 검증
         if (!bCryptPasswordEncoder.matches(requestUserDto.getPassword(), localUser.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
-
-        tokenProvider.generateToken(localUser, Duration.ofHours(1), "access_token", response); // 액세스 토큰 생성 및 쿠키에 저장
-        tokenProvider.generateToken(localUser, Duration.ofDays(7), "refresh_token", response); // 리프레시 토큰 생성 및 쿠키에 저장
+        // active 상태 확인
+        if(!localUser.isActive()){
+            throw new IllegalArgumentException("회원 탈퇴한 유저입니다.");
+        }
 
         return LoginResponseDto.builder()
                 .uuid(localUser.getUuid())
@@ -61,21 +57,8 @@ public class UserService {
                 .build();
     }
 
-    public void logout(HttpServletResponse response) {
-        Cookie accessTokenCookie = new Cookie("access_token", null);
-        accessTokenCookie.setMaxAge(0);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setPath("/");
-
-        Cookie refreshTokenCookie = new Cookie("refresh_token", null);
-        refreshTokenCookie.setMaxAge(0);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-
-        response.addCookie(accessTokenCookie);
-        response.addCookie(refreshTokenCookie);
-    }
-
+    // 로컬 유저용 회원 탈퇴 (소프트 딜리트 : active 상태 false)
+    // 소셜 유저 회원 탈퇴는 고민 해야 될 듯. (Social 연동 해제 등의 방법)
     public void deactivateUser(String uuid, String password) {
         LocalUser localUser = localUserRepository.findByUuid(uuid)
                 .orElseThrow(()-> new NotFoundException("존재하지 않는 유저입니다."));
