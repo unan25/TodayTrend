@@ -1,9 +1,10 @@
 package com.todaytrend.authservice.service;
 
+import com.todaytrend.authservice.config.jwt.TokenInfo;
 import com.todaytrend.authservice.config.jwt.TokenProvider;
-import com.todaytrend.authservice.domain.LocalUser;
+import com.todaytrend.authservice.domain.UserInterface;
 import com.todaytrend.authservice.repository.LocalUserRepository;
-import jakarta.servlet.http.HttpServletResponse;
+import com.todaytrend.authservice.repository.SocialUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,39 +16,24 @@ public class TokenService {
 
     private final TokenProvider tokenProvider;
     private final LocalUserRepository localUserRepository;
+    private final SocialUserRepository socialUserRepository;
 
 
-    public void refreshAccessToken(String refreshToken, HttpServletResponse response) {
+    public TokenInfo refreshAccessToken(String refreshToken) {
         // 리프레시 토큰 유효성 검사
         if (!tokenProvider.validToken(refreshToken)) {
             throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
         }
-
         // 토큰에서 사용자 정보 추출
-        String uuid = tokenProvider.getLocalUserUuid(refreshToken);
-        LocalUser localUser = localUserRepository.findByUuid(uuid)
-                .orElseThrow(()-> new IllegalArgumentException("유효하지 않은 사용자입니다."));
-
+        String uuid = tokenProvider.getUserUuid(refreshToken);
+        // Social 에서 찾고 없다면 Local에서 찾기 (Social 을 이용한 회원이 더 많을 것 같음)
+        UserInterface user = socialUserRepository.findByUuid(uuid)
+                // 객체가 존재하면, 이를 UserInterface로 변환
+                .map(localUser -> (UserInterface) localUser)
+                .orElseGet(() -> localUserRepository.findByUuid(uuid)
+                        .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 입니다.")));
         // 새로운 액세스 토큰 생성 및 쿠키에 저장
-        tokenProvider.generateToken(localUser, Duration.ofHours(1), "access_token", response);
+        return tokenProvider.generateToken(user, Duration.ofHours(1), "access_token");
     }
-    
 
-//    public String createNewAccessToken(LocalUser localUser) {
-//        // 새로운 엑세스 토큰 생성
-//        Duration expiredAt = Duration.ofHours(1); // 만료 기간 1시간
-//        return tokenProvider.generateToken(localUser, expiredAt);
-//    }
-//
-//    public RefreshTokenResponseDto createNewRefreshToken(LocalUser localUser) {
-//        // 새로운 리프레시 토큰 생성
-//        Duration expiredAt = Duration.ofDays(1); // 만료 기간 1일
-//        String refreshToken = tokenProvider.generateToken(localUser, expiredAt);
-//
-//        // 리프레시 토큰 DTO에 저장
-//        return RefreshTokenResponseDto.builder()
-//                .refreshToken(refreshToken)
-//                .localUserUuid(localUser.getUuid())
-//                .build();
-//    }
 }
