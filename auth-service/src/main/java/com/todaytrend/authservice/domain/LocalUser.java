@@ -36,9 +36,6 @@ public class LocalUser implements UserDetails, UserInterface { // UserDetails를
     private boolean active;
 
     @Enumerated(EnumType.STRING)
-    private UserType userType;
-
-    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Override // 권한 반환

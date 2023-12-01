@@ -1,19 +1,15 @@
 package com.todaytrend.authservice.service;
 
-import com.todaytrend.authservice.config.jwt.TokenProvider;
 import com.todaytrend.authservice.domain.LocalUser;
+import com.todaytrend.authservice.domain.enum_.UserType;
 import com.todaytrend.authservice.dto.LoginResponseDto;
 import com.todaytrend.authservice.dto.RequestUserDto;
 import com.todaytrend.authservice.dto.ResponseUserDto;
 import com.todaytrend.authservice.repository.LocalUserRepository;
-import com.todaytrend.authservice.repository.RefreshTokenRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.time.Duration;
 
 @RequiredArgsConstructor
 @Service
@@ -31,7 +27,7 @@ public class UserService {
         localUserRepository.save(localUser);
 
         return ResponseUserDto.builder()
-                .userType(localUser.getUserType())
+                .userType(UserType.LOCAL)
                 .uuid(localUser.getUuid())
                 .build();
     }
@@ -53,7 +49,7 @@ public class UserService {
         return LoginResponseDto.builder()
                 .uuid(localUser.getUuid())
                 .role(localUser.getRole())
-                .userType(localUser.getUserType())
+                .userType(UserType.LOCAL)
                 .build();
     }
 

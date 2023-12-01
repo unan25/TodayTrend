@@ -50,7 +50,6 @@ public class RequestUserDto {
                 .password(bCryptPasswordEncoder.encode(this.password))
                 .uuid(UUID.randomUUID().toString())
                 .active(true)
-                .userType(UserType.LOCAL)
                 .role(Role.USER)
                 .build();
     }
