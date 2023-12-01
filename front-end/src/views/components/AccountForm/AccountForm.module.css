@@ -1,0 +1,12 @@
+.password_container {
+  width: 100%;
+  position: relative;
+}
+
+.passwordToggle {
+  position: absolute;
+  scale: 0.6;
+  top: 0.3rem;
+  right: 0.3rem;
+  cursor: pointer;
+}

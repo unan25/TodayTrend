@@ -11,12 +11,3 @@
   background-color: #2c0b0e;
   color: #ea868f;
 }
-
-.alertBox {
-  position: absolute;
-  width: 100%;
-  top: -50px;
-  border: 1px solid black;
-  font-size: 0.9rem;
-  padding: 0.5rem;
-}

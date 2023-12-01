@@ -13,4 +13,6 @@
   border: 1px solid black;
   font-size: 0.9rem;
   padding: 0.5rem;
+  position: absolute;
+  bottom: 1rem;
 }

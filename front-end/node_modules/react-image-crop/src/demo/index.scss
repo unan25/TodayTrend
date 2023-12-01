@@ -1,0 +1,19 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+.App {
+  /* margin: 100px; */
+  height: 4000px;
+}
+
+img {
+  max-width: 100%;
+}

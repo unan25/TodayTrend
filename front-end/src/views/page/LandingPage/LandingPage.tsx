@@ -22,31 +22,31 @@ import { CategoryType } from "interface/Categoryinterface";
 import axios from "axios";
 
 function LandingPage() {
-  // 카테고리리스트 받아오는 요청 get
-  const { data: categoryList } = useQuery<CategoryType[]>(
-    "categories",
-    async () => {
-      const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
-      return response.data;
-    }
-  );
-  // 카테고리 설정
-  const [selectedCategories, setSelectedCategories] = useState<any>([]);
-  const postId = [1, 2, 3, 10, 11];
-  // 포스트리스트 받아오는 요청
-  const { data: postList } = useQuery(
-    ["postList", selectedCategories],
-    async () => {
-      const response = await axios.get("http://localhost:8000/api/image/test", {
-        // selectedCategories,
-        params: { postId: postId.join(",") },
-      });
-      return console.log(response.data);
-      // return response.data;
-    }
-  );
+  // // 카테고리리스트 받아오는 요청 get
+  // const { data: categoryList } = useQuery<CategoryType[]>(
+  //   "categories",
+  //   async () => {
+  //     const response = await axios.get(
+  //       "https://jsonplaceholder.typicode.com/users"
+  //     );
+  //     return response.data;
+  //   }
+  // );
+  // // 카테고리 설정
+  // const [selectedCategories, setSelectedCategories] = useState<any>([]);
+  // const postId = [1, 2, 3, 10, 11];
+  // // 포스트리스트 받아오는 요청
+  // const { data: postList } = useQuery(
+  //   ["postList", selectedCategories],
+  //   async () => {
+  //     const response = await axios.get("http://localhost:8000/api/image/test", {
+  //       // selectedCategories,
+  //       params: { postId: postId.join(",") },
+  //     });
+  //     return console.log(response.data);
+  //     // return response.data;
+  //   }
+  // );
 
   return (
     <>

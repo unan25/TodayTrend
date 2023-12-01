@@ -24,22 +24,10 @@ export const createAccount = createAsyncThunk(
   async (account: Account, { rejectWithValue }) => {
     try {
       const response = await axios.post("/api/auth/signup", account);
-      return { UUID_temp: response.data };
-    } catch (err: any) {
-      return rejectWithValue(err.response.data);
-    }
-  }
-);
-
-export const signInSocialUser = createAsyncThunk(
-  SIGN_IN_SOCIALUSER,
-  async (socialUser: SocialUser, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(
-        "/api/auth/socialuser/signin",
-        socialUser
-      );
-      return { UUID: response.data };
+      return {
+        UUID_temp: response.data.uuid,
+        userType: response.data.userType,
+      };
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
@@ -63,7 +51,27 @@ export const signInUser = createAsyncThunk(
   async (account: Account, { rejectWithValue }) => {
     try {
       const response = await axios.post("/api/auth/login", account);
-      return { UUID: response.data.uuid };
+      return {
+        UUID: response.data.uuid,
+        userType: response.data.userType,
+        role: response.data.role,
+      };
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const signInSocialUser = createAsyncThunk(
+  SIGN_IN_SOCIALUSER,
+  async (socialUser: SocialUser, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/api/auth/social-user", socialUser);
+      return {
+        UUID_temp: response.data.uuid,
+        userType: response.data.userType,
+        role: response.data.role,
+      };
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
