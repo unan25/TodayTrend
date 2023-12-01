@@ -26,6 +26,7 @@ function SignInPage() {
   const dispatch = useDispatch<any>();
 
   const UUID = useSelector((state: RootState) => state.user.UUID);
+  const role = useSelector((state: RootState) => state.user.role);
 
   // navigate
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ function SignInPage() {
     SetPassword(e.target.value);
   };
 
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     let account = {
@@ -49,12 +50,17 @@ function SignInPage() {
       password: Password,
     };
 
-    dispatch(signInUser(account));
+    const response = await dispatch(signInUser(account));
+    console.log(response);
   };
 
   // signIn Success
   useEffect(() => {
-    if (UUID) navigate("/");
+    if (UUID && !role) navigate("/signup");
+
+    if (UUID && role) {
+      navigate("/");
+    }
   }, [UUID]);
 
   return (

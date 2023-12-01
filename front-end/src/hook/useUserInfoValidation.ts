@@ -32,7 +32,6 @@ export function useUserInfoValidation() {
   };
 
   useEffect(() => {
-    console.log(validation);
     for (let i of validation) {
       if (i === false) {
         setIsValidated(false);

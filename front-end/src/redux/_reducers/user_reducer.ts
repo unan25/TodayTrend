@@ -64,7 +64,6 @@ const userSlice = createSlice({
         logOut.fulfilled,
         (state, action: PayloadAction<CurrentUser>) => {
           return {
-            ...state,
             ...action.payload,
           };
         }

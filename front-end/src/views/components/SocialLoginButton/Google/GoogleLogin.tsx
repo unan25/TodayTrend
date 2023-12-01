@@ -31,7 +31,8 @@ function GoogleLogin() {
       const userInfo = await GoogleLoginService.getUserInfo(accessToken);
 
       if (userInfo) {
-        dispatch(signInSocialUser(userInfo));
+        const response = await dispatch(signInSocialUser(userInfo));
+        console.log(response);
       }
     } catch (err) {
       console.error(err);
