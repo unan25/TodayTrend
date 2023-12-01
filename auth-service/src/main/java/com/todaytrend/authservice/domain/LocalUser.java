@@ -16,8 +16,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // ?
-public class LocalUser implements UserDetails { // UserDetails를 상속받아 인증 객체로 사용
+@NoArgsConstructor
+public class LocalUser implements UserDetails, UserInterface { // UserDetails를 상속받아 인증 객체로 사용
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,4 +84,5 @@ public class LocalUser implements UserDetails { // UserDetails를 상속받아 �
     public void deactivate() {
         this.active = false;
     }
+
 }

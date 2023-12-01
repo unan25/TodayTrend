@@ -14,15 +14,21 @@ public class SocialUserService {
     private final SocialUserRepository socialUserRepository;
 
     public LoginResponseDto login(CreateSocialUserDto createSocialUserDto) {
-
         SocialUser user =
                 socialUserRepository.findByEmail(createSocialUserDto.getEmail()).orElse(null);
-
         if (user == null) {
             return LoginResponseDto.builder().uuid(socialUserRepository.save(createSocialUserDto.toEntity()).getUuid()).build();
         }
+//        return null;
+        return LoginResponseDto.builder()
+                .uuid(user.getUuid())
+                .role(user.getRole())
+                .build();
+    }
 
-        return null;
+    public SocialUser findByUuid(String uuid) {
+        return socialUserRepository.findByUuid(uuid)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 입니다."));
     }
 
 }

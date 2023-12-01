@@ -2,12 +2,10 @@ package com.todaytrend.authservice.config;
 
 import com.todaytrend.authservice.config.jwt.TokenProvider;
 import com.todaytrend.authservice.repository.LocalUserRepository;
-import com.todaytrend.authservice.repository.RefreshTokenRepository;
 import com.todaytrend.authservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,10 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final UserService userService;
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final LocalUserRepository localUserRepository;
 
     @Bean
     public WebSecurityCustomizer configure() { // 스프링 시큐리티 기능 비활성화
@@ -55,14 +50,6 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
-    // 로그인 성공 시 실행할 토큰 발급 핸들러
-    // 직접 만든 로그인에는 핸들러 필요 x , oauth에만 적용하면됨.
-    // oauth 회원가입 생성 시 적용 예정
-//    @Bean
-//    public CustomLoginSuccessHandler loginSuccessHandler() {
-//        return new CustomLoginSuccessHandler(tokenProvider, refreshTokenRepository, userService, localUserRepository);
-//    }
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {

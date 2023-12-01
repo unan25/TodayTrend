@@ -1,6 +1,7 @@
 package com.todaytrend.authservice.dto;
 
 import com.todaytrend.authservice.domain.SocialUser;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 public class CreateSocialUserDto {
 
     private String email;
