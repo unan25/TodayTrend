@@ -11,14 +11,13 @@ import java.util.List;
 @Repository
 @Transactional
 public interface CategoryRepository extends JpaRepository<Category,Long>{
-//    todo : distinct붙은거 다 로직 새로 짜야함
     void deleteAllByPostId(Long postId);
     List<Category> findAllByPostId(Long postId);
 
 //    List<Long> findByPostIdAndCategoryName(String categoryName);
 
 //    @Query(value = "SELECT DISTINCT c.postId FROM Category c WHERE c.adminCategoryId IN :categoryId ORDER BY c.postId DESC ")
-    @Query(value = "SELECT c.postId FROM Category c WHERE c.adminCategoryId IN :categoryId ORDER BY c.postId DESC ")
+    @Query(value = "SELECT c.postId FROM Category c WHERE c.adminCategoryId IN :categoryId ORDER BY c.categoryId ASC ")
     List<Long> findPostIdByAdminCategoryIdIn(List<Long> categoryId);
 
     List<Long> findAdminCategoryIdByPostId(Long postId);
