@@ -47,6 +47,16 @@ class PostServiceApplicationTests {
                         new RequestPostListForMain(
                                 "user1",1l, List.of(1l,2l),0l));
 
+        List<Long> result2 =
+                postService.recommendPostForMain(
+                        new RequestPostListForMain(
+                                "user1",1l, List.of(1l),0l));
+
+        System.out.println("============");
+        categoryRepo.findAll().forEach(c-> System.out.println(c.getCategoryId()+"   "+c.getAdminCategoryId()+"    "+c.getPostId()));
+        System.out.println("============");
+
+        System.out.println("-----------"+result2);
         assertThat(result).isEqualTo(List.of(2l,1l,3l));
     }
 
