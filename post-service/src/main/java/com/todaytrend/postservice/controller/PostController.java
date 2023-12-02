@@ -1,5 +1,7 @@
 package com.todaytrend.postservice.controller;
 
+import com.todaytrend.postservice.Excepion.CustomException;
+import com.todaytrend.postservice.Excepion.ErrorEnum;
 import com.todaytrend.postservice.dto.CRUD.requestUpdatePostDto;
 import com.todaytrend.postservice.dto.CRUD.responseMakePostDto;
 import com.todaytrend.postservice.dto.RequestPostListForMain;
