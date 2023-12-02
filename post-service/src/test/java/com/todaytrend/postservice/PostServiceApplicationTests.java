@@ -1,10 +1,9 @@
 package com.todaytrend.postservice;
 
-import com.todaytrend.postservice.dto.RequestPostListForMain;
-import com.todaytrend.postservice.entity.Category;
-import com.todaytrend.postservice.repository.CategoryRepository;
-import com.todaytrend.postservice.service.PostService;
-import com.todaytrend.postservice.service.PostServiceImpl;
+import com.todaytrend.postservice.post.dto.RequestPostListForMain;
+import com.todaytrend.postservice.post.entity.Category;
+import com.todaytrend.postservice.post.repository.CategoryRepository;
+import com.todaytrend.postservice.post.service.PostService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
