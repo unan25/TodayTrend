@@ -21,9 +21,6 @@ public class SocialUser implements UserInterface {
     @Column(unique = true)
     private String uuid;
 
-    @Column(columnDefinition = "boolean default true", nullable = false)
-    private boolean active;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 

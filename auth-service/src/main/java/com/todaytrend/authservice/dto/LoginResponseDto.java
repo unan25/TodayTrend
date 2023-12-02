@@ -1,6 +1,5 @@
 package com.todaytrend.authservice.dto;
 
-import com.todaytrend.authservice.domain.enum_.UserType;
 import com.todaytrend.authservice.domain.enum_.Role;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +9,6 @@ import lombok.Getter;
 public class LoginResponseDto {
 
     private String uuid;
-    private UserType userType;
+    private String userType;
     private Role role;
 }

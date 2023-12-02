@@ -1,6 +1,6 @@
 // react
 import React, { useEffect, useState } from "react";
-import cookie from "react-cookies";
+
 
 // react-query
 import { useQuery } from "react-query";

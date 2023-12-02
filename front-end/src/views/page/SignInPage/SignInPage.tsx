@@ -24,7 +24,6 @@ import KakaoLogin from "../../../views/components/SocialLoginButton/Kakao/KakaoL
 function SignInPage() {
   // state & dispatch
   const dispatch = useDispatch<any>();
-
   const UUID = useSelector((state: RootState) => state.user.UUID);
   const role = useSelector((state: RootState) => state.user.role);
 

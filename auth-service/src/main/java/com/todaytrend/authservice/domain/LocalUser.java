@@ -1,7 +1,6 @@
 package com.todaytrend.authservice.domain;
 
 import com.todaytrend.authservice.domain.enum_.Role;
-import com.todaytrend.authservice.domain.enum_.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

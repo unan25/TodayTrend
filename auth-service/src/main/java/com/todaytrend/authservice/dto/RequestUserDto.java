@@ -2,7 +2,6 @@ package com.todaytrend.authservice.dto;
 
 import com.todaytrend.authservice.domain.LocalUser;
 import com.todaytrend.authservice.domain.enum_.Role;
-import com.todaytrend.authservice.domain.enum_.UserType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -37,10 +36,9 @@ public class RequestUserDto {
     private boolean active;
 
     @Enumerated(EnumType.STRING)
-    private UserType userType;
-
-    @Enumerated(EnumType.STRING)
     private Role role;
+
+    private String userType;
 
     public LocalUser toEntity(){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

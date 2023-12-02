@@ -26,7 +26,7 @@ import { UserInfo } from "interface/UserInterface";
 
 function SignUpPage() {
   const userType = useSelector((state: RootState) => state.user.userType);
-  const uuid = useSelector((state: RootState) => state.user.uuid);
+  const UUID = useSelector((state: RootState) => state.user.UUID);
   // dispatch & state
   const dispatch = useDispatch<any>();
 
@@ -84,7 +84,7 @@ function SignUpPage() {
 
     if (userType === "SOCIAL") {
       let userInfo: UserInfo = {
-        uuid: uuid,
+        uuid: UUID,
         ...userInfoFields,
       };
 
@@ -96,6 +96,12 @@ function SignUpPage() {
       }
     }
   };
+
+  useEffect(() => {
+    if(userType === "SOCIAL") {
+      setSignInStep(false);
+    }
+  }, [])
 
   //------------------------------------------------------------------------------
 
@@ -115,6 +121,7 @@ function SignUpPage() {
             handleChange={userInfoHandleChange}
           />
         )}
+        { userType !== "SOCIAL" &&
         <button
           type="button"
           className={buttonStyle.submitButton}
@@ -123,6 +130,7 @@ function SignUpPage() {
         >
           {signInStep ? "다음 단계" : "이전 단계"}
         </button>
+        }
         {!signInStep && (
           <button
             type="submit"

@@ -56,6 +56,9 @@ public class AuthController {
     @PostMapping("social-login")
     public ResponseEntity<?> socialLogin(@RequestBody CreateSocialUserDto createSocialUserDto, HttpServletResponse response) {
         LoginResponseDto loginResponseDto = socialUserService.login(createSocialUserDto);
+
+        System.out.println("userType" + loginResponseDto.getUserType());
+
         SocialUser user = socialUserService.findByUuid(loginResponseDto.getUuid());
 
         cookieUtils.setTokenCookies(user, response);
