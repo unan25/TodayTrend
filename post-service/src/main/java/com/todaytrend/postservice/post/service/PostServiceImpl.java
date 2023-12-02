@@ -1,10 +1,9 @@
 package com.todaytrend.postservice.post.service;
 
 import com.todaytrend.postservice.post.dto.CRUD.*;
-import com.todaytrend.postservice.post.dto.RequestPostListForMain;
+import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.entity.*;
 import com.todaytrend.postservice.post.repository.*;
-import com.todaytrend.postservice.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +12,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-//@Transactional(readOnly = true)
-// repo통해서만 db변경가능하게 읽기 전용으로 둠,
-// 변경 감지를 위한 스냅샷 인스턴스 보관이 필요 없으므로 메모리 사용량 최적화 가능
 @Transactional
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {

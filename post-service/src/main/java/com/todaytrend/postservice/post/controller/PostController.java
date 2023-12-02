@@ -2,7 +2,7 @@ package com.todaytrend.postservice.post.controller;
 
 import com.todaytrend.postservice.post.dto.CRUD.requestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.responseMakePostDto;
-import com.todaytrend.postservice.post.dto.RequestPostListForMain;
+import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

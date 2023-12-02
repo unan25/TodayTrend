@@ -1,6 +1,6 @@
 package com.todaytrend.postservice;
 
-import com.todaytrend.postservice.post.dto.RequestPostListForMain;
+import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.entity.Category;
 import com.todaytrend.postservice.post.repository.CategoryRepository;
 import com.todaytrend.postservice.post.service.PostService;
