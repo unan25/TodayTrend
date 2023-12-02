@@ -1,4 +1,4 @@
-package com.todaytrend.postservice.post.dto;
+package com.todaytrend.postservice.post.dto.CRUD;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

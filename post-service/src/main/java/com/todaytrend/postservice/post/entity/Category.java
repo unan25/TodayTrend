@@ -22,8 +22,4 @@ public class Category {
         this.adminCategoryId = adminCategoryId;
         this.postId = postId;
     }
-
-    public void changeCategory(Long adminCategoryId){
-        this.adminCategoryId = adminCategoryId;
-    }
 }

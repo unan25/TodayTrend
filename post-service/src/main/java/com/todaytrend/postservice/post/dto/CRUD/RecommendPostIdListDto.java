@@ -1,4 +1,4 @@
-package com.todaytrend.postservice.post.dto.api;
+package com.todaytrend.postservice.post.dto.CRUD;
 
 import org.springframework.data.domain.Page;
 

@@ -1,11 +1,10 @@
 package com.todaytrend.postservice.post.service.api;
 
-import com.todaytrend.postservice.post.dto.api.RecommendPostIdListDto;
-import com.todaytrend.postservice.post.dto.api.RequestRecommendPostIdDto;
+import com.todaytrend.postservice.post.dto.CRUD.requestUpdatePostDto;
+import com.todaytrend.postservice.post.dto.CRUD.RecommendPostIdListDto;
 import org.springframework.data.domain.Pageable;
 
 
 public interface PostApiService {
-
-    RecommendPostIdListDto recommendPosts(RequestRecommendPostIdDto requestRecommendPostId, Pageable pageable);
+    RecommendPostIdListDto recommendPosts(requestUpdatePostDto.RequestRecommendPostIdDto requestRecommendPostId, Pageable pageable);
 }
