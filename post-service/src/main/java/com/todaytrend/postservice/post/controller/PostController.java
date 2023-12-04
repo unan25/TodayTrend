@@ -21,7 +21,7 @@ public class PostController {
     private final PostService postService;
 
     // Fixme : C )  완료 -ing
-    @PostMapping("{UUID}")
+    @PostMapping("{UUID}")//uuid바디에 넣기
     public ResponseEntity<?> makePost(@PathVariable("UUID")String userUuid, @RequestBody responseMakePostDto responseMakePostDto){
         return new ResponseEntity(postService.makePost(userUuid,responseMakePostDto), HttpStatus.OK);
     }
@@ -39,7 +39,7 @@ public class PostController {
     }
 
     // Fixme : u ) 완료 -ing
-    @PatchMapping("{UUID}")
+    @PatchMapping("{UUID}")//post로변경 //uuid바디에 넣기
     public ResponseEntity<?> clickLike(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
         return new ResponseEntity(postService.clickLike(userUuid,postId), HttpStatus.OK);
     }
