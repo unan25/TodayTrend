@@ -11,3 +11,9 @@
   align-items: center;
   justify-content: center;
 }
+
+.post {
+  /* 게시물 카드 내 텍스트를 가운데 정렬하기 위한 스타일 */
+  margin: 10px;
+  text-align: center; /* 게시물 카드 내 텍스트를 가운데 정렬 */
+}

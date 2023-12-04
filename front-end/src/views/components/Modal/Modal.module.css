@@ -1,0 +1,22 @@
+.modal {
+}
+
+.categoryItem {
+  margin-bottom: 0.7rem;
+  font-size: large;
+}
+
+.categoryItem label {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.categoryItem input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.modal-body-scroll {
+  max-height: 20rem;
+  overflow-y: auto;
+}
