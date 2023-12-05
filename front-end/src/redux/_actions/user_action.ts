@@ -73,6 +73,7 @@ export const signInSocialUser = createAsyncThunk(
         UUID: response.data.uuid,
         userType: response.data.userType,
         role: response.data.role,
+        email: socialUser.email,
       };
     } catch (err: any) {
       return rejectWithValue(err.response.data);

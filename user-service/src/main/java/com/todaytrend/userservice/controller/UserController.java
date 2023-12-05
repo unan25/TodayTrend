@@ -25,4 +25,15 @@ public class UserController {
         userService.createUser(requestCreateUserDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
+
+    // 닉네임 중복 체크
+    @GetMapping("/checkNickname")
+    public ResponseEntity<?> checkEmail(@RequestParam String nickname) {
+        boolean isDuplicated = userService.isNicknameDuplicated(nickname);
+        if (isDuplicated) { // 중복 시 409 반응
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용 중인 닉네임 입니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body("사용 가능한 닉네임 입니다.");
+        }
+    }
 }

@@ -2,13 +2,13 @@ package com.todaytrend.authservice.domain;
 
 import com.todaytrend.authservice.domain.enum_.Role;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Entity(name = "socialUser")
 @Getter
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SocialUser implements UserInterface {
 
     @Id
@@ -24,10 +24,8 @@ public class SocialUser implements UserInterface {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Builder(toBuilder = true)
-    public SocialUser(String email, String uuid) {
-        this.email = email;
-        this.uuid = uuid;
+    public void changeRole(Role role) {
+        this.role = role;
     }
 
 }

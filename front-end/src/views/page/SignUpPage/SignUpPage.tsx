@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserInfo } from "../../../redux/_actions/user_action";
+import { signInSocialUser, updateUserInfo } from "../../../redux/_actions/user_action";
 import { createAccount } from "../../../redux/_actions/user_action";
 
 // custom hook
@@ -22,11 +22,12 @@ import formStyle from "../../../module/styles/form.module.css";
 import { RootState } from "redux/store";
 import AccountForm from "../../components/AccountForm/AccountForm";
 import UserInfoForm from "../../components/UserInfoForm/UserInfoForm";
-import { UserInfo } from "interface/UserInterface";
+import { SocialUser, UserInfo } from "interface/UserInterface";
 
 function SignUpPage() {
   const userType = useSelector((state: RootState) => state.user.userType);
   const UUID = useSelector((state: RootState) => state.user.UUID);
+  const email = useSelector((state: RootState) => state.user.email)
   // dispatch & state
   const dispatch = useDispatch<any>();
 
@@ -83,6 +84,14 @@ function SignUpPage() {
     }
 
     if (userType === "SOCIAL") {
+
+      let account:SocialUser = {
+        uuid: UUID,
+        email: email
+      }
+
+      dispatch(signInSocialUser(account))
+
       let userInfo: UserInfo = {
         uuid: UUID,
         ...userInfoFields,

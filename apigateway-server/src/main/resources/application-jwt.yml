@@ -1,0 +1,3 @@
+jwt:
+  issuer: kunan25@gmail.com
+  secret_key: qwer1234

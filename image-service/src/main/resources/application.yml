@@ -31,4 +31,14 @@ spring:
       hibernate:
         show_sql: true
 server:
-  port: 8000
+  port: 0
+
+# Eureka
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
