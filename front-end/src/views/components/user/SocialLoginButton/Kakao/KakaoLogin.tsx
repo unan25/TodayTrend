@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import {
   logOut,
   signInSocialUser,
-} from "../../../../redux/_actions/user_action";
+} from "../../../../../redux/_actions/user_action";
 
 // client_id
 const Kakao_ID = process.env.KAKAO_ID!;
@@ -19,7 +19,7 @@ const KakaoAuthorizedCodeUrl: string = `https://kauth.kakao.com/oauth/authorize?
 import KakaoLoginService from "./KakaoLoginService";
 
 // images
-import kakaoLogin from "../../../../images/social/kakao.png";
+import kakaoLogin from "../../../../../images/social/kakao.png";
 import { useDispatch } from "react-redux";
 
 function KakaoLogin() {

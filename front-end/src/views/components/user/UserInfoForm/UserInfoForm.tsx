@@ -2,16 +2,16 @@
 import React, { useState } from "react";
 
 // components
-import OnChangeInput from "../../components/OnChangeInput/OnChangeInput";
-import DropZone from "../../components/DropZone/ProfileDropZone/ProfileDropZone";
-import SelectBox from "../../components/SelectBox/SelectBox";
-import AlertBox from "../../components/AlertBox/AlertBox";
+import OnChangeInput from "../../../components/common/OnChangeInput/OnChangeInput";
+import DropZone from "../../../components/dropzone/ProfileDropZone/ProfileDropZone";
+import SelectBox from "../../../components/common/SelectBox/SelectBox";
+import AlertBox from "../../../components/common/AlertBox/AlertBox";
 
 // type
 import { UserInfo } from "interface/UserInterface";
 
 // styles
-import formStyle from "../../../module/styles/form.module.css";
+import formStyle from "../../../../module/styles/form.module.css";
 
 type Props = {
   fields: UserInfo;

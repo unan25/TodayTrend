@@ -16,12 +16,12 @@
 
 .dropzone__img {
   position: absolute;
-  z-index: 9;
+  z-index: 1;
   -webkit-tap-highlight-color: white;
 }
 
 .dropzone__drop {
-  z-index: 10;
+  z-index: 2;
   border: 3px solid rgb(100, 100, 100, 0.5);
   box-shadow: 0px 5px 5px;
 }

@@ -1,10 +1,12 @@
 .section1 {
   display: flex;
   justify-content: space-evenly;
+  width: 100%;
 }
 
 .uploadForm {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 80%;
 }

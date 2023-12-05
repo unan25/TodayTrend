@@ -1,0 +1,29 @@
+.modal_body {
+  width: 60%;
+  height: 80%;
+  border: 1px solid black;
+  border-radius: 0.3rem;
+  position: fixed; /* 변경된 속성: absolute -> fixed */
+  top: 50%; /* 화면 상단에서 50% 위치 */
+  left: 50%; /* 화면 왼쪽에서 50% 위치 */
+  transform: translate(-50%, -50%); /* 중앙 정렬을 위한 변형(transform) */
+  background-color: white;
+  z-index: 3;
+}
+
+.modal_header {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+}
+
+.modal_btn_close {
+  width: 1rem;
+  height: 1rem;
+  padding: 0.2rem;
+  border: 1px solid black;
+  border-radius: 0.2rem;
+  text-align: center;
+  margin: 0.2rem;
+  line-height: 0;
+}

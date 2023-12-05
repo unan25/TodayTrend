@@ -2,19 +2,19 @@
 import React, { useState } from "react";
 
 // component
-import OnChangeInput from "../OnChangeInput/OnChangeInput";
-import AlertBox from "../AlertBox/AlertBox";
+import OnChangeInput from "../../common/OnChangeInput/OnChangeInput";
+import AlertBox from "../../common/AlertBox/AlertBox";
 
 // style
-import formStyle from "../../../module/styles/form.module.css";
+import formStyle from "../../../../module/styles/form.module.css";
 import styles from "./AccountForm.module.css";
 
 // type
 import { Account } from "interface/UserInterface";
 
 // img
-import show from "../../../images/input/show.png";
-import hide from "../../../images/input/hide.png";
+import show from "../../../../images/input/show.png";
+import hide from "../../../../images/input/hide.png";
 
 type Props = {
   fields: Account;
