@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,6 +18,8 @@ public class RequestCommentDto {
     private Long parentId;
 
     private String content;
+
+    private List<String> userTagList;
 
     public Comment toEntity() {
         return Comment.builder()

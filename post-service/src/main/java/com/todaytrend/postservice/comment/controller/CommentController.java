@@ -46,4 +46,8 @@ public class CommentController {
     public ResponseEntity<?> commentLike(@RequestBody RequestCommentLikeDto requestCommentLikeDto) {
         return new ResponseEntity<>(commentService.commentLike(requestCommentLikeDto) ,HttpStatus.OK);
     }
+    @GetMapping("{commentId}/like")
+    public ResponseEntity<?> getCommentLike(@PathVariable Long commentId) {
+        return new ResponseEntity<>(commentService.getCommentLikeUserList(commentId) , HttpStatus.OK);
+    }
 }
