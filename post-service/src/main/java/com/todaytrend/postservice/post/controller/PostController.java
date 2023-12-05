@@ -21,17 +21,19 @@ public class PostController {
 
     private final PostService postService;
 
-
+    //게시물 생성
     @PostMapping("")
     public ResponseEntity<?> makePost(@RequestBody responseMakePostDto responseMakePostDto){
         return new ResponseEntity(postService.makePost(responseMakePostDto), HttpStatus.OK);
     }
 
+    //게시물 삭제
     @DeleteMapping("")
     public ResponseEntity<?> deletePost(@RequestParam("postId")Long postId){
         return new ResponseEntity(postService.removePost(postId),HttpStatus.OK);
     }
 
+    //게시물 상세보기
     @GetMapping("")
     public ResponseEntity<?> findPost(@RequestParam("postId")Long postId){
         return new ResponseEntity(postService.findPost(postId),HttpStatus.OK);
@@ -63,13 +65,13 @@ public class PostController {
 
     //좋아요 누른 유저 리스트
     @GetMapping("/likeList")
-    public ResponseEntity<?> postLikeList(@RequestBody Long postId){
-        return new ResponseEntity<>(postService.postLikeList(postId),HttpStatus.OK);
+    public ResponseEntity<?> postLikeList(@RequestHeader String postId){
+        return new ResponseEntity<>(postService.postLikeList(Long.getLong(postId)),HttpStatus.OK);
     }
 
     //해당 유저가 좋아요 누른 리스트
     @GetMapping("/likePosts")
-    public ResponseEntity<?> userLikePost(@RequestBody String UUID){
+    public ResponseEntity<?> userLikePost(@RequestHeader String UUID){
         return new ResponseEntity<>(postService.userLikePost(UUID), HttpStatus.OK);
     }
 
