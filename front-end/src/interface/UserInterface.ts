@@ -7,6 +7,7 @@ type Account = {
 type SocialUser = {
   email: string;
   UUID?: string;
+  uuid?: string;
 };
 
 type UserInfo = {

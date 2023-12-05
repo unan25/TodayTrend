@@ -55,12 +55,15 @@ function SignInPage() {
 
   // signIn Success
   useEffect(() => {
-    if (UUID && !role) navigate("/signup");
+    if (UUID && role === "GUEST") {
+      navigate("/signup")
+      return;
+    };
 
     if (UUID && role) {
       navigate("/");
     }
-  }, [UUID]);
+  }, [UUID, role]);
 
   return (
     <div className="page-body">
