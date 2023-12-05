@@ -3,9 +3,10 @@ package com.todaytrend.postservice.comment.dto.response;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
-public class ResponseCommentLikeDto {
-    private Long commentId;
-    private boolean isLiked;
+public class ResponseCommentLikeUserDto {
+    private List<String> uuidList;
 }

@@ -47,6 +47,7 @@ dependencies {
     implementation 'org.aspectj:aspectjweaver:1.9.7'
 
 //   implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3'
 
 }
 

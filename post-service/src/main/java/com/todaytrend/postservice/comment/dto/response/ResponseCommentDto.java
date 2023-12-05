@@ -11,16 +11,16 @@ import java.time.LocalDateTime;
 public class ResponseCommentDto {
 
     private Long commentId;
-
     private String content;
-
-    private Long parentId;
-
     private LocalDateTime createAt;
 
-    private String userUuid;
+    private String uuid;
+    private String nickname;
+    private String profileImage;
 
-    private Long postId;
+    private int replyCommentCount;
+    private int commentLikeCount;
+    private boolean isLiked;
 
 
 }
