@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("test")
 public class PostApiContoller {
 
-    private final PostApiService postApiService;
-    private final PostApiServiceImpl se;
+  /*  private final PostApiService postApiService;
+    private final PostApiServiceImpl se;*/
 
-    @GetMapping("")
+ /*   @GetMapping("")
     public ResponseEntity<?> testException() throws RuntimeException{
 //        throw new CustomException(ErrorEnum.NO_RIGHT);
 //        return new ResponseEntity<>(new ResponseDto(SuccessEnum.OK,new RequestDeleteReadPostDto(1l,"test")),HttpStatus.OK);
         return new ResponseEntity<>(se.testFeign(), HttpStatus.OK);
-    }
+    }*/
 }
