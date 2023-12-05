@@ -1,7 +1,9 @@
 package com.todaytrend.postservice.comment.controller;
 
 import com.todaytrend.postservice.comment.dto.request.RequestCommentDto;
+import com.todaytrend.postservice.comment.dto.request.RequestCommentLikeDto;
 import com.todaytrend.postservice.comment.dto.request.RequestDeleteCommentDto;
+import com.todaytrend.postservice.comment.dto.response.ResponseCommentLikeDto;
 import com.todaytrend.postservice.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,5 +41,9 @@ public class CommentController {
     @DeleteMapping("{postId}") // Post 서버에 서비스 만 넣으면 끝
     public ResponseEntity<?> deleteCommentAll(@PathVariable Long postId) {
         return new ResponseEntity<>(commentService.deleteCommentByPostId(postId),HttpStatus.OK);
+    }
+    @PostMapping("like")
+    public ResponseEntity<?> commentLike(@RequestBody RequestCommentLikeDto requestCommentLikeDto) {
+        return new ResponseEntity<>(commentService.commentLike(requestCommentLikeDto) ,HttpStatus.OK);
     }
 }

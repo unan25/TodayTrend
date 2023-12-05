@@ -37,7 +37,6 @@ public class PostServiceImpl implements PostService {
 
         Post resultPost = postRepo.save(post);//save는 저장한 객체를 그대로 반환
 
-
 //        2.해시태그 저장
         makeHashTag(responseMakePostDto.getHashTagList(),postId);
 

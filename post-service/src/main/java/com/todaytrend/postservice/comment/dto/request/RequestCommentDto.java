@@ -12,7 +12,7 @@ public class RequestCommentDto {
 
     private Long postId;
 
-    private String userUuid;
+    private String uuid;
 
     private Long parentId;
 
@@ -21,7 +21,7 @@ public class RequestCommentDto {
     public Comment toEntity() {
         return Comment.builder()
                 .postId(postId)
-                .userUuid(userUuid)
+                .uuid(uuid)
                 .parentId(parentId)
                 .content(content)
                 .createAt(LocalDateTime.now())

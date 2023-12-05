@@ -31,12 +31,12 @@ public class Comment {
     @CreatedDate
     private LocalDateTime createAt;
 
-    private String userUuid;
+    private String uuid;
     private Long postId;
 
     public void updateContent(String content){
         this.content = content;
-        this.userUuid = null;
+        this.uuid = null;
     }
 
     public ResponseCommentDto toDto() {
@@ -45,7 +45,7 @@ public class Comment {
                 .content(content)
                 .createAt(createAt)
                 .parentId(parentId)
-                .userUuid(userUuid)
+                .userUuid(uuid)
                 .postId(postId)
                 .build();
     }
