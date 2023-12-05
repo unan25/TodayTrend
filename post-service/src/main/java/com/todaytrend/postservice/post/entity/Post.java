@@ -24,7 +24,7 @@ public class Post {
     private String content;
 
     @CreatedDate
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
     private String userUuid;
