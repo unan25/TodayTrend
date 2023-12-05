@@ -4,9 +4,27 @@ server:
 spring:
   application:
     name: apigateway-server
+  profiles:
+    active: jwt
 
   cloud:
     gateway:
+      default-filters:
+        - name: LogFilter
+      global-cors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 'http://localhost:3000'
+            allow-credentials: true
+            allowedHeaders: '*'
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - OPTIONS
+              - PUT
+              - PATCH
       routes:
       - id: user-service
         uri: lb://USER-SERVICE
@@ -37,3 +55,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka # discovery-server
+
+# JWT
+jwt:
+  issuer: ${issuer}
+  secret_key: ${secret_key}

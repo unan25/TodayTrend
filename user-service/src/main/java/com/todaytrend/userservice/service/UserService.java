@@ -16,4 +16,9 @@ public class UserService {
         User user = requestCreateUserDto.toEntity();
         userRepository.save(user);
     }
+
+    // 이메일 중복 체크
+    public boolean isNicknameDuplicated(String nickname){
+        return userRepository.findByNickname(nickname).isPresent();
+    }
 }

@@ -1,10 +1,12 @@
 package com.todaytrend.authservice.service;
 
 import com.todaytrend.authservice.domain.LocalUser;
+import com.todaytrend.authservice.domain.UserInterface;
 import com.todaytrend.authservice.dto.LoginResponseDto;
 import com.todaytrend.authservice.dto.RequestUserDto;
 import com.todaytrend.authservice.dto.ResponseUserDto;
 import com.todaytrend.authservice.repository.LocalUserRepository;
+import com.todaytrend.authservice.repository.SocialUserRepository;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final LocalUserRepository localUserRepository;
+    private final SocialUserRepository socialUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public ResponseUserDto createUser(RequestUserDto requestUserDto) {
@@ -65,18 +68,20 @@ public class UserService {
         localUserRepository.save(localUser);
     }
 
-    public LocalUser findByLocalUserId(Long localUserId) {
-        return localUserRepository.findByLocalUserId(localUserId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-    }
-
-    public LocalUser findByEmail(String email){
-        return localUserRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일 입니다."));
+    // 이메일 중복 체크
+    public boolean isEmailDuplicated(String email){
+        return socialUserRepository.findByEmail(email).isPresent()
+                || localUserRepository.findByEmail(email).isPresent();
     }
 
     public LocalUser findByUuid(String uuid) {
         return localUserRepository.findByUuid(uuid)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 입니다."));
+    }
+
+
+    public LocalUser findByLocalUserId(Long localUserId) {
+        return localUserRepository.findByLocalUserId(localUserId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
     }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import styles from "./NabBar.module.css";
 import { useSelector } from "react-redux";
@@ -6,16 +6,19 @@ import { RootState } from "redux/store";
 
 import { logOut } from "../../../redux/_actions/user_action";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const NavBar: React.FC = () => {
   const dispatch = useDispatch<any>();
   const UUID = useSelector((state: RootState) => state.user.UUID);
+  
 
   const onClickhandler = () => {
     const data = {
       uuid: UUID,
     };
     dispatch(logOut(data));
+    
   };
 
   return (
