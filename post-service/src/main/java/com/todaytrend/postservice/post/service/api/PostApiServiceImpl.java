@@ -11,9 +11,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
-public class PostApiServiceImpl implements PostApiService {
+public class PostApiServiceImpl/* implements PostApiService */{
 
-    private final PostRepository postRepo;
+    /*private final PostRepository postRepo;
     private final CategoryRepository categoryRepo;
     private final PostLikeRepository postLikeRepo;
     private final PostUserTagRepository postUserTagRepo;
@@ -34,6 +34,6 @@ public class PostApiServiceImpl implements PostApiService {
     public String testFeign(){
         String url = server1Url + "/server1/test";
         return restTemplate.getForEntity(url, String.class).getBody();
-    }
+    }*/
 
 }

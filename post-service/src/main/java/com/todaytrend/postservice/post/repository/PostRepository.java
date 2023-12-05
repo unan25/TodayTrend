@@ -14,7 +14,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post,Long>{
     void deleteAllByPostId(Long postId);
 
-    @Query(value = "SELECT Post FROM Post p WHERE p.userUuid = :userUuid AND p.userUuid != :followUuid ORDER BY p.createAt")
+    @Query(value = "SELECT Post FROM Post p WHERE p.userUuid = :userUuid AND p.userUuid != :followUuid ORDER BY p.createdAt")
     List<Post> findAllByWhereUserUuidOrderByCreateAt(@Param("userUuid") String userUuid ,@Param("followUuid") String followUuid);
 
     @Query(value = "SELECT DISTINCT p.postId FROM Post p ORDER BY p.postId DESC")
