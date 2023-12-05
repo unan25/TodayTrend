@@ -35,4 +35,8 @@ public interface PostService {
     //좋아요 개수
     Integer checkLikeCnt(RequestCheckLikedDto requestCheckLikedDto);
 
+    List<String> postLikeList(Long postId);
+
+    List<Long> userLikePost(String UUID);
+
 }

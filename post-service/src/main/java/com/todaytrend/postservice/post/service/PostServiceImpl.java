@@ -182,6 +182,16 @@ public class PostServiceImpl implements PostService {
         return postLikeRepo.countByPostId(requestCheckLikedDto.getPostId()).intValue();
     }
 
+    @Override
+    public List<String> postLikeList(Long postId) {
+        return postLikeRepo.findUuidByPostId(postId);
+    }
+
+    @Override
+    public List<Long> userLikePost(String UUID) {
+        return postLikeRepo.findPostIdByUserUuid(UUID);
+    }
+
     //----------------------------포스트 업데이트------------------------------------
     @Override
     @Transactional

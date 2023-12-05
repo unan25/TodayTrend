@@ -61,6 +61,18 @@ public class PostController {
         return new ResponseEntity<>(postService.checkLikeCnt(requestCheckLikedDto),HttpStatus.OK);
     }
 
+    //좋아요 누른 유저 리스트
+    @GetMapping("/likeList")
+    public ResponseEntity<?> postLikeList(@RequestBody Long postId){
+        return new ResponseEntity<>(postService.postLikeList(postId),HttpStatus.OK);
+    }
+
+    //해당 유저가 좋아요 누른 리스트
+    @GetMapping("/likePosts")
+    public ResponseEntity<?> userLikePost(@RequestBody String UUID){
+        return new ResponseEntity<>(postService.userLikePost(UUID), HttpStatus.OK);
+    }
+
     @PutMapping("")
     public ResponseEntity<?> updatePost(@RequestParam("postId")Long postId, @RequestBody requestUpdatePostDto requestPostDto){
         return new ResponseEntity(postService.updatePost(postId, requestPostDto), HttpStatus.OK);
