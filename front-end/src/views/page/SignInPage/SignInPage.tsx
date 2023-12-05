@@ -18,8 +18,8 @@ import buttonStyle from "../../../module/styles/button.module.css";
 
 // State
 import { RootState } from "../../../redux/store";
-import GoogleLogin from "../../../views/components/SocialLoginButton/Google/GoogleLogin";
-import KakaoLogin from "../../../views/components/SocialLoginButton/Kakao/KakaoLogin";
+import GoogleLogin from "../../../views/components/user/SocialLoginButton/Google/GoogleLogin";
+import KakaoLogin from "../../../views/components/user/SocialLoginButton/Kakao/KakaoLogin";
 
 function SignInPage() {
   // state & dispatch

@@ -1,7 +1,6 @@
 // react
 import React, { useEffect, useState } from "react";
 
-
 // react-query
 import { useQuery } from "react-query";
 
@@ -12,7 +11,6 @@ import { Container, Row, Col } from "react-bootstrap";
 import styles from "./LandingPage.module.css";
 
 // components
-import SideBar from "../../components/Sidebar/SideBar";
 import PostList from "../../components/PostList/PostList";
 import Category from "../../../views/components/Category/Category";
 

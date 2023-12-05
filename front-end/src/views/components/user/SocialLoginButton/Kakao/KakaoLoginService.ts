@@ -2,7 +2,7 @@
 import axios from "axios";
 
 // module
-import { makeFormData } from "../../../../module/functions/makeformData";
+import { makeFormData } from "../../../../../module/functions/makeformData";
 
 // Client_Id
 const Kakao_ID = process.env.KAKAO_ID!;

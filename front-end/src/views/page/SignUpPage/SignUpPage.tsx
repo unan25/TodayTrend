@@ -6,7 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { signInSocialUser, updateUserInfo } from "../../../redux/_actions/user_action";
+import {
+  signInSocialUser,
+  updateUserInfo,
+} from "../../../redux/_actions/user_action";
 import { createAccount } from "../../../redux/_actions/user_action";
 
 // custom hook
@@ -20,14 +23,14 @@ import formStyle from "../../../module/styles/form.module.css";
 
 // State
 import { RootState } from "redux/store";
-import AccountForm from "../../components/AccountForm/AccountForm";
-import UserInfoForm from "../../components/UserInfoForm/UserInfoForm";
-import { SocialUser, UserInfo } from "interface/UserInterface";
+import AccountForm from "../../components/user/AccountForm/AccountForm";
+import UserInfoForm from "../../components/user/UserInfoForm/UserInfoForm";
+import { UserInfo, SocialUser } from "interface/UserInterface";
 
 function SignUpPage() {
   const userType = useSelector((state: RootState) => state.user.userType);
   const UUID = useSelector((state: RootState) => state.user.UUID);
-  const email = useSelector((state: RootState) => state.user.email)
+  const email = useSelector((state: RootState) => state.user.email);
   // dispatch & state
   const dispatch = useDispatch<any>();
 
@@ -84,13 +87,12 @@ function SignUpPage() {
     }
 
     if (userType === "SOCIAL") {
-
-      let account:SocialUser = {
+      let account: SocialUser = {
         uuid: UUID,
-        email: email
-      }
+        email: email,
+      };
 
-      dispatch(signInSocialUser(account))
+      dispatch(signInSocialUser(account));
 
       let userInfo: UserInfo = {
         uuid: UUID,
@@ -107,10 +109,10 @@ function SignUpPage() {
   };
 
   useEffect(() => {
-    if(userType === "SOCIAL") {
+    if (userType === "SOCIAL") {
       setSignInStep(false);
     }
-  }, [])
+  }, []);
 
   //------------------------------------------------------------------------------
 
@@ -130,16 +132,16 @@ function SignUpPage() {
             handleChange={userInfoHandleChange}
           />
         )}
-        { userType !== "SOCIAL" &&
-        <button
-          type="button"
-          className={buttonStyle.submitButton}
-          onClick={onClickHandler}
-          disabled={!accountIsValidated}
-        >
-          {signInStep ? "다음 단계" : "이전 단계"}
-        </button>
-        }
+        {userType !== "SOCIAL" && (
+          <button
+            type="button"
+            className={buttonStyle.submitButton}
+            onClick={onClickHandler}
+            disabled={!accountIsValidated}
+          >
+            {signInStep ? "다음 단계" : "이전 단계"}
+          </button>
+        )}
         {!signInStep && (
           <button
             type="submit"

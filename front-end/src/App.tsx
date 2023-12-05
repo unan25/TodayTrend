@@ -13,8 +13,8 @@ import SearchPage from "./views/page/SearchPage/SearchPage";
 import ProfilePage from "./views/page/ProfilePage/ProfilePage";
 
 // components
-import SideBar from "./views/components/Sidebar/SideBar";
-import NavBar from "./views/components/NavBar/NabBar";
+import SideBar from "./views/components/common/Sidebar/SideBar";
+import NavBar from "./views/components/common/NavBar/NabBar";
 import PostDetailPage from "./views/page/PostDetailPage/PostDetailPage";
 
 function App(): JSX.Element {

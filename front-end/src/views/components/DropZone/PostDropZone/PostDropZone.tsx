@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./PostDropZone.module.css";
 import { useDropzone } from "react-dropzone";
-import ImageCropModal from "./ImageCropModal";
+import ImageCropModal from "./ImageCropModal/ImageCropModal";
 
 type Props = {
   setImages: React.Dispatch<React.SetStateAction<File[]>>;
@@ -41,8 +41,6 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
     });
   };
 
-  [];
-
   const handDelete = () => {
     setSelectedFiles((prevFiles) => {
       const newImages = [...prevFiles];
@@ -60,6 +58,7 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
   useEffect(() => {
     const urls = SelectedFiles.map((file) => URL.createObjectURL(file));
     setImageURLs(urls);
+    console.log(ImageURLs);
     return () => {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
@@ -90,7 +89,7 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
         <div className={styles.button__next} onClick={handleNext}>
           다음
         </div>
-        {ImageURLs && <ImageCropModal image={ImageURLs[0]} />}
+        {ImageURLs !== undefined && <ImageCropModal image={ImageURLs[0]} />}
       </div>
     </div>
   );
