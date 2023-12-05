@@ -12,14 +12,14 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class responsePostDetailDto {
+public class ResponsePostDetailDto {
+    private Integer statusCode;
+    private String message;
     private Long postId;
+    private String postUserUUID;
     private String profileImage;
     private String nickName;
     private String content;
-    private LocalDateTime updateAt;
-    private List<selectedCategoryListDto> categoryList;
-    private Long likeCnt;
-    private boolean liked;
-    private boolean postOwner;
+    private LocalDateTime createdAt;
+    private List<String> postImgs;
 }

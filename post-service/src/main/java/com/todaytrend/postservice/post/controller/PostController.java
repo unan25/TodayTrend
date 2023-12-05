@@ -3,6 +3,7 @@ package com.todaytrend.postservice.post.controller;
 import com.todaytrend.postservice.post.dto.CRUD.requestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.responseMakePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
+import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
 import com.todaytrend.postservice.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,37 +21,51 @@ public class PostController {
 
     private final PostService postService;
 
-    // Fixme : C )  완료 -ing
-    @PostMapping("{UUID}")//uuid바디에 넣기
-    public ResponseEntity<?> makePost(@PathVariable("UUID")String userUuid, @RequestBody responseMakePostDto responseMakePostDto){
-        return new ResponseEntity(postService.makePost(userUuid,responseMakePostDto), HttpStatus.OK);
+
+    @PostMapping("")
+    public ResponseEntity<?> makePost(@RequestBody responseMakePostDto responseMakePostDto){
+        return new ResponseEntity(postService.makePost(responseMakePostDto), HttpStatus.OK);
     }
 
-    // Fixme : D ) 완료 -ing
-    @DeleteMapping("{UUID}")
-    public ResponseEntity<?> deletePost(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
-        return new ResponseEntity(postService.removePost(userUuid, postId),HttpStatus.OK);
+    @DeleteMapping("")
+    public ResponseEntity<?> deletePost(@RequestParam("postId")Long postId){
+        return new ResponseEntity(postService.removePost(postId),HttpStatus.OK);
     }
 
-    // Fixme : R ) 완료 -ing
-    @GetMapping("{UUID}")
-    public ResponseEntity<?> findPost(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
-        return new ResponseEntity(postService.findPost(userUuid,postId),HttpStatus.OK);
+    @GetMapping("")
+    public ResponseEntity<?> findPost(@RequestParam("postId")Long postId){
+        return new ResponseEntity(postService.findPost(postId),HttpStatus.OK);
     }
 
-    // Fixme : u ) 완료 -ing
-    @PatchMapping("{UUID}")//post로변경 //uuid바디에 넣기
-    public ResponseEntity<?> clickLike(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
-        return new ResponseEntity(postService.clickLike(userUuid,postId), HttpStatus.OK);
+    //해당 포스트에서 선택한 카테고리 목록
+    @GetMapping("category")
+    public ResponseEntity<?> findPostCategory(@RequestParam("postId")Long postId){
+        return new ResponseEntity(postService.findPostCategoryList(postId),HttpStatus.OK);
     }
 
-    // Fixme : U ) 완료 -ing
-    @PutMapping("{UUID}")
-    public ResponseEntity<?> updatePost(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId, @RequestBody requestUpdatePostDto requestPostDto){
-        return new ResponseEntity(postService.updatePost(userUuid, postId, requestPostDto), HttpStatus.OK);
+    //좋아요 클릭(insert/delete)
+    @PutMapping("/like")
+    public ResponseEntity<?> clickLike(@RequestBody RequestCheckLikedDto requestCheckLikedDto){
+        return new ResponseEntity(postService.clickLike(requestCheckLikedDto), HttpStatus.OK);
     }
 
-    // Fixme : r ) 완료 -ing
+    //좋아요 클릭 여부 (true false)
+    @GetMapping("/liked")
+    public ResponseEntity<?> checkLiked(@RequestBody RequestCheckLikedDto requestCheckLikedDto){
+        return new ResponseEntity<>(postService.checkLiked(requestCheckLikedDto),HttpStatus.OK);
+    }
+    
+    //좋아요 개수
+    @GetMapping("/likeCnt")
+    public ResponseEntity<?> checkLikedCnt(@RequestBody RequestCheckLikedDto requestCheckLikedDto){
+        return new ResponseEntity<>(postService.checkLikeCnt(requestCheckLikedDto),HttpStatus.OK);
+    }
+
+    @PutMapping("")
+    public ResponseEntity<?> updatePost(@RequestParam("postId")Long postId, @RequestBody requestUpdatePostDto requestPostDto){
+        return new ResponseEntity(postService.updatePost(postId, requestPostDto), HttpStatus.OK);
+    }
+
     // 게시물 상세 보기 하단 게시글 리스트
     @GetMapping("posts/detailList/{UUID}")
     public ResponseEntity<?> recommendPostWithDetail(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
@@ -66,6 +81,13 @@ public class PostController {
                                            @RequestHeader("arrayTab")Long arrayTab ){
         RequestPostListForMain requestPostListForMain = new RequestPostListForMain(userUuid, tab, categoryList, arrayTab);
         return new ResponseEntity<>(postService.recommendPostForMain(requestPostListForMain),HttpStatus.OK);
+    }
+
+
+//    AdminCategory 리스트 제공
+    @GetMapping("adminCategoryList")
+    public ResponseEntity<?> adminCategoryListForMain(){
+        return new ResponseEntity<>(postService.findAdminCategoryList(),HttpStatus.OK);
     }
 
 }
