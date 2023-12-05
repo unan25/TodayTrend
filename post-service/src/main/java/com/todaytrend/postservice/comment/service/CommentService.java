@@ -1,17 +1,17 @@
 package com.todaytrend.postservice.comment.service;
 
 import com.todaytrend.postservice.comment.dto.request.RequestCommentDto;
+import com.todaytrend.postservice.comment.dto.request.RequestCommentLikeDto;
 import com.todaytrend.postservice.comment.dto.request.RequestDeleteCommentDto;
 import com.todaytrend.postservice.comment.dto.response.ResponseCommentDto;
+import com.todaytrend.postservice.comment.dto.response.ResponseCommentLikeDto;
 import com.todaytrend.postservice.comment.dto.response.ResponseCommentListDto;
-import com.todaytrend.postservice.comment.dto.response.ResponseDeleteCommentDto;
 import com.todaytrend.postservice.comment.entity.Comment;
-import com.todaytrend.postservice.comment.feignClient.UserFeignClient;
+import com.todaytrend.postservice.comment.entity.CommentLike;
+import com.todaytrend.postservice.comment.repository.CommentLikeRepository;
 import com.todaytrend.postservice.comment.repository.CommentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,13 +21,14 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
     // private final UserFeignClient userFeignClient;
 
     //---------------------------댓글 검증--------------------------
 
     //나의 댓글인지 확인하기 - 내꺼면 true , 아니면 false
     public boolean isMyComment(Comment comment, String userUuid){
-        return comment.getUserUuid().equals(userUuid);
+        return comment.getUuid().equals(userUuid);
     }
 
     //대댓글인지 확인하기 - 대댓글이면 true , 아니면 false
@@ -78,6 +79,7 @@ public class CommentService {
     //---------------------------댓글 삭제--------------------------
 
     // commentId로 선택한 댓글 삭제
+    @Transactional
     public String deleteCommentByCommentId(RequestDeleteCommentDto requestDeleteCommentDto) {
         String userUuid = requestDeleteCommentDto.getUserUuid();
         Long commentId = requestDeleteCommentDto.getCommentId();
@@ -91,7 +93,7 @@ public class CommentService {
         // 2. 내가 쓴 댓글이고, 대댓글이 아니고, 대댓글이 있으면 댓글 수정
         if (isMyComment(comment, userUuid) && !isReplyComment(comment) && hasReplyComments(comment)) {
             comment.updateContent("삭제된 댓글입니다.");
-            commentRepository.save(comment);
+
             return "commentId =" +commentId + "내용 수정 완료";
         }
         // 3. 내가 쓴 댓글이고, 대댓글이면 찐 삭제
@@ -108,4 +110,40 @@ public class CommentService {
         commentRepository.deleteAllByPostId(postId);
         return postId +"인 댓글 삭제 완료.";
     }
+    //---------------------------댓글 좋아요--------------------------
+    // 댓글 좋아요 등록/삭제
+    @Transactional
+    public ResponseCommentLikeDto commentLike(RequestCommentLikeDto requestCommentLikeDto) {
+        Long commentId = requestCommentLikeDto.getCommentId();
+        String uuid = requestCommentLikeDto.getUuid();
+
+
+        CommentLike commentLike = commentLikeRepository.findByCommentIdAndUuid(commentId, uuid);
+
+        boolean isLiked = commentLike != null;
+        // 좋아요 삭제
+        if (isLiked) {
+            commentLikeRepository.delete(commentLike);
+
+            return ResponseCommentLikeDto.builder()
+                    .commentId(commentId)
+                    .commentLikeCount(commentLikeRepository.countByCommentId(commentId))
+                    .isLiked(false)
+                    .build();
+        }
+        // 좋아요 등록
+        if (!isLiked) {
+            commentLikeRepository.save(CommentLike.builder().uuid(uuid).commentId(commentId).build());
+
+            return ResponseCommentLikeDto.builder()
+                    .commentId(commentId)
+                    .commentLikeCount(commentLikeRepository.countByCommentId(commentId))
+                    .isLiked(true)
+                    .build();
+        }
+        // if 실행 안되면 예외 처리
+        throw new IllegalStateException("좋아요 등록/삭제 에러 발생");
+    }
+
+
 }
