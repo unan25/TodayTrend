@@ -11,9 +11,7 @@ import { Button, Nav } from 'react-bootstrap';
 import styles from './LandingPage.module.css';
 
 // components
-
 import Modal from '../../components/Modal/CustomModal';
-
 
 // type
 import { CategoryList } from 'interface/CategoryList';
