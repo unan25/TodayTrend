@@ -1,19 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "./CategoryBox.module.css";
 
 import CategoryModal from "./CategoryModal/CategoryModal";
 
-const CategoryBox = () => {
+type Category = {
+  id: number;
+  name: string;
+};
+
+type Props = {
+  setCategory: React.Dispatch<React.SetStateAction<number[]>>;
+};
+
+const CategoryBox: React.FC<Props> = ({ setCategory }) => {
   const [modal, setModal] = useState(false);
+  const [checkedCategory, setCheckedCategory] = useState<Category[]>([]);
 
   const onClickHandler = () => {
     setModal((prev) => !prev);
   };
 
+  const renderCheckedCategory = () => {
+    return checkedCategory.map((e, i) => {
+      return (
+        <div className={styles.categorybox_category} key={i}>
+          {e.name}
+        </div>
+      );
+    });
+  };
+
+  useEffect(() => {
+    setCategory([...checkedCategory.map((e) => e.id)]);
+  }, [checkedCategory]);
+
   return (
     <div className={styles.componenet_body}>
-      <div className={styles.categorybox}>카테고리 박스</div>
+      <div className={styles.categorybox}>{renderCheckedCategory()}</div>
       <button
         type="button"
         className={styles.btn_modal}
@@ -21,7 +45,13 @@ const CategoryBox = () => {
       >
         +
       </button>
-      {modal && <CategoryModal setModal={setModal} />}
+      {modal && (
+        <CategoryModal
+          setModal={setModal}
+          checked={checkedCategory}
+          setCategory={setCheckedCategory}
+        />
+      )}
     </div>
   );
 };

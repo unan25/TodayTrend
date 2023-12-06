@@ -1,4 +1,4 @@
-.modal_body {
+.modal {
   width: 60%;
   height: 80%;
   border: 1px solid black;
@@ -26,4 +26,24 @@
   text-align: center;
   margin: 0.2rem;
   line-height: 0;
+}
+
+.modal_body {
+  padding: 2rem;
+}
+
+.modal_body__category_label {
+  margin: 1.5rem 2rem;
+  width: 20%;
+  height: auto;
+
+  border: 3px solid gainsboro;
+  padding: 0.5rem;
+  border-radius: 2rem;
+  font-size: large;
+  font-weight: 600;
+}
+
+.modal_body__category_checkbox {
+  margin-right: 1rem;
 }

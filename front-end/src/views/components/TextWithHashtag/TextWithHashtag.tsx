@@ -65,13 +65,15 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
     }
 
     while (true) {
-      if (content[focus] === " " || focus === content.length) {
+      if (
+        content[focus] === " " ||
+        focus === content.length ||
+        content[anchor] === "\n"
+      ) {
         break;
       }
       focus++;
     }
-
-    console.log("cursor" + cursor);
 
     const word = content.substring(anchor, focus);
 
@@ -108,9 +110,11 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
 
       if (charBeforeCursor === "#" || charBeforeCursor === "@") {
         const tagType = charBeforeCursor === "#" ? "패션" : "유저";
+
         setTagSwitch({
           startPoint: cursorPosition,
           tagType: tagType,
+
           tagOn: true,
         });
       }

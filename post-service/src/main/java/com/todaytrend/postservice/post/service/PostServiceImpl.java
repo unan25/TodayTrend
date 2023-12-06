@@ -3,7 +3,6 @@ package com.todaytrend.postservice.post.service;
 import com.todaytrend.postservice.post.dto.CRUD.*;
 import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
-import com.todaytrend.postservice.post.dto.ResponseCheckLikedDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
 import com.todaytrend.postservice.post.dto.ResponseDto;
 import com.todaytrend.postservice.post.entity.*;
@@ -32,7 +31,7 @@ public class PostServiceImpl implements PostService {
 //--------------------------- 포스트 생성 --------------------------------
     @Override
     public ResponseCreatedPostDto makePost(responseMakePostDto responseMakePostDto) {
-        String userUuid = responseMakePostDto.getUUID();
+        String userUuid = responseMakePostDto.getUuid();
 
 //        1. post생성
         Post post = Post.builder()
@@ -55,6 +54,7 @@ public class PostServiceImpl implements PostService {
         return ResponseCreatedPostDto.builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .message("Post Insert Success")
+                .postId(post.getPostId())
                 .build();
     }
 

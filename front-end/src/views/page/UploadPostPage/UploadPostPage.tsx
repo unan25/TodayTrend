@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 // componenet
 import TextWithHashtag from "../../components/TextWithHashtag/TextWithHashtag";
-import PostDropZone from "../../components/dropzone/PostDropZone/PostDropZone";
+import PostDropZone from "../../components/DropZone/PostDropZone/PostDropZone";
 import CategoryBox from "../../components/CateogoryBox/CategoryBox";
 
 // axios
@@ -24,9 +24,8 @@ const CreatePostPage: React.FC = () => {
     fashion: [""],
   });
   const [Images, setImages] = useState<File[]>([]);
+  const [category, setCategory] = useState<number[]>([]);
   const formData = new FormData();
-
-  // Send files to the server using Axios
 
   function tagSplit(content: string) {
     const fashionTag: string[] = [];
@@ -60,9 +59,8 @@ const CreatePostPage: React.FC = () => {
         content: Content,
         hashTagList: fahsion,
         userTagList: user,
+        categoryIdList: category,
       };
-
-      console.log(postData);
 
       const postResponse = await axios.post("/api/post", postData, {
         cancelToken: source.token,
@@ -103,7 +101,7 @@ const CreatePostPage: React.FC = () => {
               hashtag={hashTag}
               setHashtag={setHashTag}
             />
-            <CategoryBox />
+            <CategoryBox setCategory={setCategory} />
           </div>
         </div>
         <button disabled={Images.length === 0}>업로드</button>

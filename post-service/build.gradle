@@ -28,7 +28,6 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
@@ -47,11 +46,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
 
-    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-netflix-eureka-client
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.0.3'
 
 }
 
