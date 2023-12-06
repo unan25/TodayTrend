@@ -40,3 +40,4 @@ out/
 ### DB ###
 application-db.yml
 application-jwt.yml
+application-smtp.yml

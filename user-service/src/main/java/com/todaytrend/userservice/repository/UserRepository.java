@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.uuid FROM User u WHERE u.nickname = :nickname")
     String findUuidByNickname(@Param("nickname") String nickname);
 
-    @Query("SELECT new com.todaytrend.userservice.dto.ResponseImgAndNicknameDto(u.profile_image, u.nickname) FROM User u WHERE u.uuid = :UUID")
+    @Query("SELECT new com.todaytrend.userservice.dto.ResponseImgAndNicknameDto(u.profileImage, u.nickname) FROM User u WHERE u.uuid = :UUID")
     List<ResponseImgAndNicknameDto> findImgAndNicknameByUuid(@Param("UUID") String UUID);
 
     Optional<User> findByNickname(String nickname);

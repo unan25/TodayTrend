@@ -33,7 +33,7 @@ public class ServerServiceTest {
                 .nickname("nickname1")
                 .introduction("  dd  ")
                 .birth("2023")
-                .profile_image("img1")
+                .profileImage("img1")
                 .gender(Gender.FEMALE)
                 .website("dd")
                 .uuid("uuid1")

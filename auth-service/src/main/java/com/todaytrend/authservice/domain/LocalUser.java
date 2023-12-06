@@ -37,6 +37,11 @@ public class LocalUser implements UserDetails, UserInterface { // UserDetails를
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    // 비밀번호 변경 메서드
+    public void updatePassword(String password){
+        this.password = password;
+    }
+    
     @Override // 권한 반환
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("USER"));

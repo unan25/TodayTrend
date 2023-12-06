@@ -35,7 +35,7 @@ public class RequestCreateUserDto {
 
     private String introduction;
 
-    private String profile_image;
+    private String profileImage;
 
     private String uuid;
 
@@ -47,7 +47,7 @@ public class RequestCreateUserDto {
                 .nickname(this.nickname)
                 .website(this.website)
                 .introduction(this.introduction)
-//                .profile_image(this.profile_image)
+//                .profileImage(this.profileImage)
                 .uuid(this.uuid) // 추후에 auth에서 받아올 예정 auth -> react -> user
                 .createAt(LocalDateTime.now())
                 .birth(this.birth)

@@ -3,18 +3,14 @@ package com.todaytrend.authservice.controller;
 import com.todaytrend.authservice.config.jwt.TokenInfo;
 import com.todaytrend.authservice.domain.LocalUser;
 import com.todaytrend.authservice.domain.SocialUser;
-import com.todaytrend.authservice.dto.CreateSocialUserDto;
-import com.todaytrend.authservice.dto.LoginResponseDto;
-import com.todaytrend.authservice.dto.RequestUserDto;
-import com.todaytrend.authservice.dto.ResponseUserDto;
-import com.todaytrend.authservice.service.SocialUserService;
-import com.todaytrend.authservice.service.TokenService;
-import com.todaytrend.authservice.service.UserService;
+import com.todaytrend.authservice.dto.*;
+import com.todaytrend.authservice.service.*;
 import com.todaytrend.authservice.util.CookieUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +18,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final UserService userService;
     private final TokenService tokenService;
     private final SocialUserService socialUserService;
     private final CookieUtils cookieUtils;
+    private final EmailService emailService;
+    private final UserEmailService userEmailService;
 
     @GetMapping("health-check")
     public String healthCheck(){
@@ -97,7 +96,7 @@ public class AuthController {
     }
 
     // 이메일 중복 체크
-    @GetMapping("/checkEmail")
+    @GetMapping("checkEmail")
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
         boolean isDuplicated = userService.isEmailDuplicated(email);
         if (isDuplicated) { // 중복 시 409 반응
@@ -105,6 +104,22 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.OK).body("사용 가능한 이메일 입니다.");
         }
+    }
+
+    @PostMapping("findPassword")
+    public ResponseEntity<?> findPwEmail(@RequestParam("userEmail") String userEmail) {
+        // 임시 비밀번호 생성
+        String tmpPassword = userEmailService.getTmpPassword();
+        
+        // 임시 비밀번호 저장
+        userEmailService.updatePassword(tmpPassword, userEmail);
+        
+        // 메일 생성 및 전송
+        MailDto mailDto = emailService.createMail(tmpPassword, userEmail);
+        emailService.sendEmail(mailDto);
+
+        log.info("임시 비밀번호 전송 완료");
+        return ResponseEntity.status(HttpStatus.OK).body("임시 비밀번호 발송 완료");
     }
 
 }

@@ -1,6 +1,7 @@
 package com.todaytrend.userservice.controller;
 
 import com.todaytrend.userservice.dto.RequestCreateUserDto;
+import com.todaytrend.userservice.dto.ResponseImgAndNicknameDto;
 import com.todaytrend.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class UserController {
     }
 
     // 닉네임 중복 체크
-    @GetMapping("/checkNickname")
+    @GetMapping("checkNickname")
     public ResponseEntity<?> checkEmail(@RequestParam String nickname) {
         boolean isDuplicated = userService.isNicknameDuplicated(nickname);
         if (isDuplicated) { // 중복 시 409 반응
@@ -36,4 +37,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK).body("사용 가능한 닉네임 입니다.");
         }
     }
+
+    // 닉네임 조회
+    @GetMapping("/{nickname}")
+    public ResponseEntity<ResponseImgAndNicknameDto> getUser(@PathVariable String nickname) {
+        ResponseImgAndNicknameDto user = userService.findByNickname(nickname); // 서비스 메소드 호출
+        return ResponseEntity.ok(user); // 결과를 ResponseEntity에 담아 반환합니다.
+    }
+
+
 }
