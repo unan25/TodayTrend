@@ -18,9 +18,9 @@ public class ServerController {
         return new ResponseEntity<>(serverService.findUuid(nickName), HttpStatus.OK);
     }
 
-    @GetMapping("uuid/{UUID}")
-    public ResponseEntity<?> findImgAndNickname(@PathVariable("UUID")String UUID){
-        return new ResponseEntity<>(serverService.findImgAndNickname(UUID), HttpStatus.OK);
+    @GetMapping("uuid/{uuid}")
+    public ResponseEntity<?> findImgAndNickname(@PathVariable("uuid")String uuid){
+        return new ResponseEntity<>(serverService.findImgAndNickname(uuid), HttpStatus.OK);
     }
 
 }

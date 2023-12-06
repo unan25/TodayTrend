@@ -5,20 +5,24 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
 public class ResponseCommentDto {
 
     private Long commentId;
-
     private String content;
-
-    private Long parentId;
-
     private LocalDateTime createAt;
+    private List<String> userTagList;
 
-    private String userUuid;
+    private String uuid;
+    private String nickname;
+    private String profileImage;
 
-    private Long postId;
+    private int replyCommentCount;
+    private int commentLikeCount;
+    private boolean isLiked;
+
+
 }
