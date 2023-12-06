@@ -1,0 +1,6 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username_: T.TodayTrend@gmail.com
+    password: yjru rems zvgr ieqa
