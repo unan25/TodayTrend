@@ -12,9 +12,9 @@ public class ExceptionController {
         return new ResponseEntity<>(new ResponseDto(e.getErrorEnum()), e.getErrorEnum().getStatus());
     }
 
-    @ExceptionHandler(RuntimeException.class)
+ /*   @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> testAllTypeException(final RuntimeException e){
         return new ResponseEntity<>(new ResponseDto(ErrorEnum.UNKNOWN_POST_ISSUE),ErrorEnum.UNKNOWN_POST_ISSUE.getStatus());
-    }
+    }*/
 
 }

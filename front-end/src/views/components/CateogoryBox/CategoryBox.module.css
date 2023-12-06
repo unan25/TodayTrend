@@ -9,10 +9,13 @@
   margin: 2rem 0rem;
   justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .categorybox {
+  display: flex;
   width: 90%;
+  overflow-x: auto;
 }
 
 .btn_modal {
@@ -23,4 +26,11 @@
   text-align: center;
   line-height: 0;
   border-radius: 0.5em;
+}
+
+.categorybox_category {
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+  border: 2px solid black;
+  border-radius: 2rem;
 }

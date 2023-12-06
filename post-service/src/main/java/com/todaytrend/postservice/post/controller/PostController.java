@@ -99,7 +99,7 @@ public class PostController {
 
 
 //    AdminCategory 리스트 제공
-    @GetMapping("adminCategoryList")
+    @GetMapping("admin-categorylist")
     public ResponseEntity<?> adminCategoryListForMain(){
         return new ResponseEntity<>(postService.findAdminCategoryList(),HttpStatus.OK);
     }

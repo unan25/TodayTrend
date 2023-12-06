@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class responseMakePostDto {
-    private String UUID;
+    private String uuid;
     private String content;
     private List<String> hashTagList;
     private List<String> userTagList;
