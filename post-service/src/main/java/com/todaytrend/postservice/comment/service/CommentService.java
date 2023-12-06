@@ -58,6 +58,9 @@ public class CommentService {
         Comment comment = requestCommentDto.toEntity();
         commentRepository.save(comment);
 
+        //댓글 태그 등록
+        makeCommentTag(requestCommentDto.getUserTagList() , comment.getCommentId());
+
         return ResponseCommentDto.builder()
                 .createAt(comment.getCreateAt())
                 .content(comment.getContent())
@@ -207,8 +210,16 @@ public class CommentService {
         }
     }
     // 댓글 태그 조회
-    public void getCommentTag(Long commentId) {
+    public List<String> getCommentTag(Long commentId) {
+        List<String> uuidList = commentTagRepository.findByUuidCommentId(commentId);
+        List<String> userTagList = new ArrayList<>();
 
+        for (String uuid : uuidList) {
+            // uuid를 nickname으로 변환하는 feign
+            String nickname = uuid;
+            userTagList.add(nickname);
+        }
+        return userTagList;
     }
 
 

@@ -12,6 +12,48 @@
   justify-content: center;
 }
 
+.mainCategoryContainer {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.mainCategoryButton {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  width: max-content;
+  height: 32px;
+  border: 1px solid rgb(238, 238, 238);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 0px 10px;
+  word-break: keep-all;
+  white-space: nowrap;
+  color: rgb(153, 153, 153);
+  cursor: pointer;
+}
+
+.mainCategoryButton:active,
+.mainCategoryButton.active {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  width: max-content;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 0px 10px;
+  word-break: keep-all;
+  white-space: nowrap;
+  cursor: pointer;
+  color: rgb(34, 149, 255);
+  background-color: rgb(238, 247, 255);
+  border: 1px solid rgb(238, 247, 255);
+  font-weight: bold;
+}
+
 .post {
   /* 게시물 카드 내 텍스트를 가운데 정렬하기 위한 스타일 */
   margin: 10px;

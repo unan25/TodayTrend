@@ -3,6 +3,7 @@ package com.todaytrend.imageservice.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.todaytrend.imageservice.dto.response.ResponseImageDto;
+import com.todaytrend.imageservice.dto.response.ResponseProfileImageDto;
 import com.todaytrend.imageservice.entity.Image;
 import com.todaytrend.imageservice.repository.ImageRepository;
 import jakarta.transaction.Transactional;
@@ -72,6 +73,7 @@ public class ImageService {
         }
     return "게시물 이미지 삭제 완료";
     }
+
     // 게시물 이미지 조회
     public ResponseImageDto findImageByPostId(Long postId) {
         List<Image> images = imageRepository.findImageByPostId(postId);
@@ -84,10 +86,54 @@ public class ImageService {
                 .postId(postId)
                 .build();
     }
+    // 게시물 썸네일 이미지 조회
+//    public ResponseImageDto
+
     // 게시물 이미지 수정
     @Transactional
     public ResponseImageDto updateImages(Long postId, MultipartFile[] images) throws IOException {
         deleteImages(postId);
         return uploadImages(postId, images);
     }
+
+    //프로필 이미지 등록
+    public ResponseProfileImageDto createProfileImage(MultipartFile image) throws IOException {
+            String originalFilename = image.getOriginalFilename();
+            String imageName = changedImageName(originalFilename);
+            // 2. S3 객체의 메타데이터 설정
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(image.getSize());
+            metadata.setContentType(image.getContentType());
+            //저장할 profile 폴더가 붙은 이름 = key
+            String key =   "profile" + "/" + imageName;
+            // 3. S3에 파일 업로드
+            amazonS3.putObject(bucket, key, image.getInputStream(), metadata);
+            // 4. S3에 업로드된 파일 Url을 String으로 변환
+            String imageUrl = amazonS3.getUrl(bucket, key).toString();
+            // 6. imageUrl dto에 넣어주기
+           return ResponseProfileImageDto.builder().profileImage(imageUrl).build();
+    }
+    //프로필 이미지 수정
+    public ResponseProfileImageDto updateProfileImage(MultipartFile image, String imageUrl) throws IOException {
+        // 원래 이미지 삭제
+        String key = imageUrl.split(".com/")[1]; //.com/ 이후의 파일명 반환
+        amazonS3.deleteObject(bucket,key);
+
+        // 다시 프로필 이미지 등록
+        return createProfileImage(image);
+    }
+    //프로필 이미지 삭제
+    public ResponseProfileImageDto deleteProfileImage(String imageUrl) throws IOException {
+        // 원래 이미지 삭제
+        String key = imageUrl.split(".com/")[1]; //.com/ 이후의 파일명 반환
+        amazonS3.deleteObject(bucket,key);
+        return ResponseProfileImageDto.builder()
+                .profileImage("기본 이미지 반환")
+                .build();
+    }
+
+    // 무한 스크롤 포스트 이미지 리스트 반환
+//    public Object findImagesByPostIdList(List<Long> postIdList) {
+//
+//    }
 }

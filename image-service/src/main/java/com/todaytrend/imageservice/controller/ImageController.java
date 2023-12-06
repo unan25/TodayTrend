@@ -48,6 +48,12 @@ public class ImageController {
                                           @RequestPart MultipartFile[] images ) throws IOException {
         return new ResponseEntity<>(imageService.updateImages(postId, images), HttpStatus.OK);
     }
+    // 게시물 이미지 조회 무한 스크롤 !
+//    @GetMapping{"postList"}
+//    public ResponseEntity<?> getImagesByPostIdList(@RequestParam List<Long> postIdList) {
+//        return new ResponseEntity<>(imageService.findImagesByPostIdList(postIdList) , HttpStatus.OK);
+//    }
+
     // 테스트용
     @GetMapping("test")
     public ResponseEntity<?> test1(@RequestParam("postId") Long[] postIdList) {
@@ -58,4 +64,16 @@ public class ImageController {
         }
         return new ResponseEntity<>(responseImageDtoList, HttpStatus.OK);
     }
+    //프로필 이미지 등록
+    @PostMapping("profile")
+    public ResponseEntity<?> createProfileImage(@RequestPart MultipartFile image) throws IOException{
+        return new ResponseEntity<>(imageService.createProfileImage(image), HttpStatus.OK);
+    }
+    //프로필 이미지 수정
+    @PutMapping("profile")
+    public ResponseEntity<?> updateProfileImage(@RequestPart("image") MultipartFile image,
+                                              @RequestPart("imageUrl") String imageUrl) throws IOException {
+        return new ResponseEntity<>(imageService.updateProfileImage(image, imageUrl) , HttpStatus.OK);
+    }
+    //프로필 이미지 삭제
 }
