@@ -64,6 +64,9 @@ dependencies {
 //    // https://mvnrepository.com/artifact/org.springframework.data/spring-data-redis
 //    implementation 'org.springframework.data:spring-data-redis:3.2.0'
 
+    // SMTP
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 }
 
 dependencyManagement {

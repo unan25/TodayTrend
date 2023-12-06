@@ -69,6 +69,7 @@ public class UserService {
     }
 
     // 이메일 중복 체크
+    // 존재하면 ture
     public boolean isEmailDuplicated(String email){
         return socialUserRepository.findByEmail(email).isPresent()
                 || localUserRepository.findByEmail(email).isPresent();

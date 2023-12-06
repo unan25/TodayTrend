@@ -35,7 +35,7 @@ public class User {
 
     private String introduction;
 
-    private String profile_image;
+    private String profileImage;
 
     @CreatedDate
     @Column(updatable = false, name = "create_at")

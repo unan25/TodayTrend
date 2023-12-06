@@ -63,6 +63,7 @@ auth-service/.nb-gradle/
 auth-service/.vscode/
 auth-service/src/main/resources/application-db.yml
 auth-service/src/main/resources/application-jwt.yml
+auth-service/src/main/resources/application-smtp.yml
 
 #comment-service
 comment-service-server/HELP.md

@@ -7,12 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@Builder
 public class ResponseImgAndNicknameDto {
-    private String profile_image;
+    private String profileImage;
     private String nickname;
 
-    public ResponseImgAndNicknameDto(String profile_image, String nickname){
-        this.profile_image = profile_image;
+    public ResponseImgAndNicknameDto(String profileImage, String nickname){
+        this.profileImage = profileImage;
         this.nickname = nickname;
     }
 

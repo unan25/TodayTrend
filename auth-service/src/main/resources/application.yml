@@ -5,7 +5,7 @@ spring:
   application:
     name: auth-service
   profiles:
-    active: db, jwt
+    active: db, jwt, smtp
 
   # MySQL
   datasource:
@@ -23,6 +23,22 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+
+  # SMTP
+  mail:
+    host: ${host}
+    port: ${port}
+    username: ${username_}
+    password: ${password}
+    properties:
+      mail.smtp:
+        debug: true # 메일 전송시 상황, 로그 확인
+        auth: true
+        enable: true
+        required: ture
+        starttls.enable: true # starttls 설정 SSL/TLS 기반의 SMTPS 기능 (보안기능 활성화)
+#        connectiontimeout: 5000 # Timeout 제한
+
 
   # RabbitMQ
   rabbitmq:
