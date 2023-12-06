@@ -3,11 +3,15 @@ import React from 'react';
 import styles from './Modal.module.css';
 
 import { Modal, Button } from 'react-bootstrap';
+import { CategoryList } from 'interface/CategoryList';
+
+import axios from 'axios';
+import { useQueryClient } from 'react-query';
 
 interface ModalProps {
-  categories: string[];
-  selectedCategories: string[];
-  toggleCategory: (category: string) => void;
+  categories: CategoryList[];
+  selectedCategories: number[];
+  toggleCategory: (categoryId: number) => void;
   closeModal: () => void;
 }
 
@@ -17,6 +21,23 @@ const CustomModal: React.FC<ModalProps> = ({
   toggleCategory,
   closeModal,
 }) => {
+  const queryClient = useQueryClient();
+
+  const handleViewClick: any = () => {
+    console.log(selectedCategories);
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('api/post/카테고리필터보내기', {
+          selectedCategories,
+        });
+        queryClient.setQueryData('postList', response.data);
+      } catch (error) {
+        console.log('오류', error);
+      }
+    };
+  };
+
   return (
     <Modal show onHide={closeModal} centered className={styles.modal}>
       <Modal.Header closeButton>
@@ -25,20 +46,20 @@ const CustomModal: React.FC<ModalProps> = ({
       <Modal.Body className={styles['modal-body-scroll']}>
         <div>
           {categories.map((category) => (
-            <div key={category} className={styles.categoryItem}>
-              <label htmlFor={category}>{category}</label>
+            <div key={category.id} className={styles.categoryItem}>
+              <label htmlFor={category.name}>{category.name}</label>
               <input
                 type="checkbox"
-                id={category}
-                checked={selectedCategories.includes(category)}
-                onChange={() => toggleCategory(category)}
+                id={category.name}
+                checked={selectedCategories.includes(category.id)}
+                onChange={() => toggleCategory(category.id)}
               />
             </div>
           ))}
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <Button>스타일 보기</Button>
+        <Button onClick={handleViewClick}>스타일 보기</Button>
       </Modal.Footer>
     </Modal>
   );

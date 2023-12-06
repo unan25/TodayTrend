@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,6 +14,7 @@ public class ResponseCommentDto {
     private Long commentId;
     private String content;
     private LocalDateTime createAt;
+    private List<String> userTagList;
 
     private String uuid;
     private String nickname;
