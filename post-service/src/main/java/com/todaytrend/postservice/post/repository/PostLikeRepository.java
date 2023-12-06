@@ -26,4 +26,6 @@ public interface PostLikeRepository extends JpaRepository<PostLike,Long>{
     @Query("SELECT p.postId FROM PostLike p where p.userUuid = :UUID")
     List<Long> findPostIdByUserUuid(@Param("UUID") String UUID);
 
+    @Query("SELECT p.postId FROM PostLike p")
+    List<Long> findPostIdBy();
 }
