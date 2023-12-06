@@ -4,6 +4,7 @@ import com.todaytrend.postservice.post.dto.CRUD.requestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.responseMakePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
+import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/post")
-//@RequestMapping("post")
 //@CrossOrigin("http://127.0.0.1:5500")
 public class PostController {
 
@@ -53,13 +53,13 @@ public class PostController {
 
     //좋아요 클릭 여부 (true false)
     @GetMapping("/liked")
-    public ResponseEntity<?> checkLiked(@RequestBody RequestCheckLikedDto requestCheckLikedDto){
+    public ResponseEntity<?> checkLiked(@RequestHeader RequestCheckLikedDto requestCheckLikedDto){
         return new ResponseEntity<>(postService.checkLiked(requestCheckLikedDto),HttpStatus.OK);
     }
     
     //좋아요 개수
-    @GetMapping("/likeCnt")
-    public ResponseEntity<?> checkLikedCnt(@RequestBody RequestCheckLikedDto requestCheckLikedDto){
+    @GetMapping("/likecnt")
+    public ResponseEntity<?> checkLikedCnt(@RequestHeader RequestCheckLikedDto requestCheckLikedDto){
         return new ResponseEntity<>(postService.checkLikeCnt(requestCheckLikedDto),HttpStatus.OK);
     }
 
@@ -81,20 +81,9 @@ public class PostController {
     }
 
     // 게시물 상세 보기 하단 게시글 리스트
-    @GetMapping("posts/detailList/{UUID}")
-    public ResponseEntity<?> recommendPostWithDetail(@PathVariable("UUID")String userUuid, @RequestParam("postId")Long postId){
-        return new ResponseEntity(postService.detailPostsList(userUuid,postId), HttpStatus.OK);
-    }
-
-//    --- sns Main에서 postid추천
-//    Fixme : arrayTab , filter 해야함.
-    @GetMapping("/main")
-    public ResponseEntity<?> recommendPost(@RequestHeader("userUuid")String userUuid,
-                                           @RequestHeader("tab")Long tab,
-                                           @RequestHeader("categoryList") List<Long> categoryList,
-                                           @RequestHeader("arrayTab")Long arrayTab ){
-        RequestPostListForMain requestPostListForMain = new RequestPostListForMain(userUuid, tab, categoryList, arrayTab);
-        return new ResponseEntity<>(postService.recommendPostForMain(requestPostListForMain),HttpStatus.OK);
+    @GetMapping("posts/detailList")
+    public ResponseEntity<?> recommendPostWithDetail(@RequestHeader RequestCheckLikedDto requestDto){
+        return new ResponseEntity(postService.detailPostsList(requestDto), HttpStatus.OK);
     }
 
 
@@ -103,5 +92,19 @@ public class PostController {
     public ResponseEntity<?> adminCategoryListForMain(){
         return new ResponseEntity<>(postService.findAdminCategoryList(),HttpStatus.OK);
     }
+
+//     최신, 좋아요, 팔로잉 순
+    @GetMapping("main")
+    public ResponseEntity<?> chooseTab(@RequestHeader RequestTabDto requestTabDto){
+        return new ResponseEntity<>(postService.postListTab(requestTabDto),HttpStatus.OK);
+    }
+
+//    main 최신 + 카테고리
+    @GetMapping("main/category")
+    public ResponseEntity<?> chooseCategory(@RequestHeader List<Long> categoryIds){
+        return new ResponseEntity<>(postService.postListCategory(categoryIds),HttpStatus.OK);
+    }
+
+
 
 }

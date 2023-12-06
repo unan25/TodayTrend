@@ -5,6 +5,8 @@ import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
 import com.todaytrend.postservice.post.dto.ResponseCheckLikedDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
 import com.todaytrend.postservice.post.dto.ResponseDto;
+import com.todaytrend.postservice.post.dto.main.RequestTabDto;
+import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 
 import java.util.List;
 
@@ -21,7 +23,7 @@ public interface PostService {
 
     List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain);
 
-    responseDetailPostsDto detailPostsList(String userUuid, Long postId);
+    responseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto);
 
     //AdminCategoryList제공
     List<selectedCategoryListDto> findAdminCategoryList();
@@ -38,5 +40,11 @@ public interface PostService {
     List<String> postLikeList(Long postId);
 
     List<Long> userLikePost(String UUID);
+
+    // /main chooseTab 최신, 좋아요, 팔로잉 순
+    ResponseTabDto postListTab(RequestTabDto requestTabDto);
+
+//    main 최신 + 카테고리
+    ResponseTabDto postListCategory(List<Long> categoryIds);
 
 }

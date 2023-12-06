@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RequestCheckLikedDto {
-    private String UUID;
+    private String uuid;
     private Long postId;
 }
