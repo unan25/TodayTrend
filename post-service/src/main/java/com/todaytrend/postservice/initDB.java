@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class initDB {
 
@@ -59,20 +59,6 @@ public class initDB {
             Post post7 = new Post("content7","uuid7");
             Post post8 = new Post("content8 @nickName1","uuid8");
 
-            Category category1 = Category.builder().adminCategoryId(1L).postId(1L).build();
-            Category category2 = Category.builder().adminCategoryId(2L).postId(1L).build();
-
-            HashTag hashTag1 = HashTag.builder().hashtag("hashtag1").postId(2L).build();
-            HashTag hashTag2 = HashTag.builder().hashtag("hashtag1").postId(3L).build();
-
-            PostLike postLike1 = PostLike.builder().postId(1L).userUuid("uuid1").build();
-            PostLike postLike2 = PostLike.builder().postId(2L).userUuid("uuid1").build();
-
-            PostUserTag postUserTag1 = PostUserTag.builder().postId(2L).nickname("nickName1").build();
-            PostUserTag postUserTag2 = PostUserTag.builder().postId(4L).nickname("nickName1").build();
-            PostUserTag postUserTag3 = PostUserTag.builder().postId(6L).nickname("nickName1").build();
-            PostUserTag postUserTag4 = PostUserTag.builder().postId(8L).nickname("nickName1").build();
-
             em.persist(post1);
             em.persist(post2);
             em.persist(post3);
@@ -81,6 +67,20 @@ public class initDB {
             em.persist(post6);
             em.persist(post7);
             em.persist(post8);
+
+            Category category1 = Category.builder().adminCategoryId(1L).postId(post1.getPostId()).build();
+            Category category2 = Category.builder().adminCategoryId(2L).postId(post1.getPostId()).build();
+
+            HashTag hashTag1 = HashTag.builder().hashtag("hashtag1").postId(post2.getPostId()).build();
+            HashTag hashTag2 = HashTag.builder().hashtag("hashtag1").postId(post3.getPostId()).build();
+
+            PostLike postLike1 = PostLike.builder().postId(post1.getPostId()).userUuid("uuid1").build();
+            PostLike postLike2 = PostLike.builder().postId(post2.getPostId()).userUuid("uuid1").build();
+
+            PostUserTag postUserTag1 = PostUserTag.builder().postId(post2.getPostId()).nickname("nickName1").build();
+            PostUserTag postUserTag2 = PostUserTag.builder().postId(post4.getPostId()).nickname("nickName1").build();
+            PostUserTag postUserTag3 = PostUserTag.builder().postId(post6.getPostId()).nickname("nickName1").build();
+            PostUserTag postUserTag4 = PostUserTag.builder().postId(post8.getPostId()).nickname("nickName1").build();
 
             em.persist(category1);
             em.persist(category2);
