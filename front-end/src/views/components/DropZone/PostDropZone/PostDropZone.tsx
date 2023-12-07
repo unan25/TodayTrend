@@ -58,7 +58,6 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
   useEffect(() => {
     const urls = SelectedFiles.map((file) => URL.createObjectURL(file));
     setImageURLs(urls);
-    console.log(ImageURLs);
     return () => {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };

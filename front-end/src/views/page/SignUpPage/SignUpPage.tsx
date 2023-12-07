@@ -26,6 +26,7 @@ import { RootState } from "redux/store";
 import AccountForm from "../../components/user/AccountForm/AccountForm";
 import UserInfoForm from "../../components/user/UserInfoForm/UserInfoForm";
 import { UserInfo, SocialUser } from "interface/UserInterface";
+import axios from "axios";
 
 function SignUpPage() {
   const userType = useSelector((state: RootState) => state.user.userType);
@@ -40,6 +41,7 @@ function SignUpPage() {
   //------------------------------------------------------------------------------
 
   const [signInStep, setSignInStep] = useState(true);
+  const [image, setImage] = useState<File[]>([]);
 
   const onClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     setSignInStep((prev) => !prev);
@@ -61,24 +63,45 @@ function SignUpPage() {
     IsValidated: accountIsValidated,
   } = useAccountValidation();
 
+  const getImageUrl = async (image: File[]) => {
+    const formData = new FormData();
+
+    formData.append("image", image[0]);
+
+    const response = await axios.post("/api/images/profile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data.profileImage;
+  };
+
   // sign-up
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (userType !== "SOCIAL") {
-      let account = {
-        email: accountFields.email,
-        password: accountFields.password,
-      };
-
-      const response = await dispatch(createAccount(account));
-
-      let userInfo: UserInfo = {
-        uuid: response.payload.UUID_temp,
-        ...userInfoFields,
-      };
-
       try {
+        let account = {
+          email: accountFields.email,
+          password: accountFields.password,
+        };
+
+        const response = await dispatch(createAccount(account));
+
+        let imageURL: string = "기본이미지 url";
+
+        if (image.length) {
+          imageURL = await getImageUrl(image);
+        }
+
+        let userInfo: UserInfo = {
+          uuid: response.payload.UUID_temp,
+          profileImage: imageURL,
+          ...userInfoFields,
+        };
+
         dispatch(updateUserInfo(userInfo));
         navigate("/");
       } catch (err: any) {
@@ -130,6 +153,8 @@ function SignUpPage() {
             fields={userInfoFields}
             message={userInfoMessage}
             handleChange={userInfoHandleChange}
+            image={image}
+            setFunction={setImage}
           />
         )}
         {userType !== "SOCIAL" && (
