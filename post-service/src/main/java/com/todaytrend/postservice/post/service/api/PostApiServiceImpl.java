@@ -1,13 +1,7 @@
 package com.todaytrend.postservice.post.service.api;
 
-import com.todaytrend.postservice.post.dto.CRUD.RecommendPostIdListDto;
-import com.todaytrend.postservice.post.dto.CRUD.requestUpdatePostDto;
-import com.todaytrend.postservice.post.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor

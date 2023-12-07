@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class responseDetailPostsDto {
+public class ResponseDetailPostsDto {
     private String title1;
     private String title2;
     private List<Long> postIdList1;

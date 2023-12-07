@@ -1,11 +1,16 @@
 package com.todaytrend.postservice;
 
+import com.netflix.discovery.converters.Auto;
 import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
-import com.todaytrend.postservice.post.entity.Category;
-import com.todaytrend.postservice.post.repository.CategoryRepository;
+import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
+import com.todaytrend.postservice.post.entity.*;
+import com.todaytrend.postservice.post.feign.UserFeignClient;
+import com.todaytrend.postservice.post.feign.UserFeignDto;
+import com.todaytrend.postservice.post.repository.*;
 import com.todaytrend.postservice.post.service.PostService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,43 +25,63 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 @Transactional
 class PostServiceApplicationTests {
 
-    @PersistenceContext
+    @Autowired
     EntityManager em;
+    @Autowired
+    PostService postService;
+    @Autowired
+    PostRepository postRepository;
+    @Autowired
+    PostUserTagRepository postUserTagRepository;
+    @Autowired
+    PostLikeRepository postLikeRepository;
+    @Autowired
+    HashTagRepository hashTagRepository;
+    @Autowired
+    CategoryRepository categoryRepository;
+    @Autowired
+    AdminCategoryRepository adminCategoryRepository;
+    @Autowired
+    UserFeignClient feignClient;
 
-    @Autowired
-    private PostService postService;
-    @Autowired
-    private CategoryRepository categoryRepo;
+ /*   @Autowired
+    public PostServiceApplicationTests(
+            PostService postService,
+            PostRepository postRepository,
+            PostUserTagRepository postUserTagRepository,
+            PostLikeRepository postLikeRepository,
+            HashTagRepository hashTagRepository,
+            CategoryRepository categoryRepository,
+            AdminCategoryRepository adminCategoryRepository){
+        this.postService = postService;
+        this.postRepository = postRepository;
+        this.postUserTagRepository =  postUserTagRepository;
+        this.postLikeRepository = postLikeRepository;
+        this.hashTagRepository = hashTagRepository;
+        this.categoryRepository =categoryRepository;
+        this.adminCategoryRepository = adminCategoryRepository;
+    }*/
+
 
     @BeforeEach
     void init(){
-        categoryRepo.save(new Category(1l,1l));
-        categoryRepo.save(new Category(3l,1l));
-        categoryRepo.save(new Category(1l,2l));
-        categoryRepo.save(new Category(2l,2l));
-        categoryRepo.save(new Category(3l,2l));
-        categoryRepo.save(new Category(10l,2l));
-        categoryRepo.save(new Category(2l,3l));
+
+    }
+
+
+    @Test
+    void fegin_test() {
+        System.out.println(feignClient.findImgAndNickname("user2"));
     }
 
     @Test
-    void recommendPostForMain_테스트() {
-        List<Long> result =
-                postService.recommendPostForMain(
-                        new RequestPostListForMain(
-                                "user1",1l, List.of(1l,2l),0l));
-
-        List<Long> result2 =
-                postService.recommendPostForMain(
-                        new RequestPostListForMain(
-                                "user1",1l, List.of(1l),0l));
-
-        System.out.println("============");
-        categoryRepo.findAll().forEach(c-> System.out.println(c.getCategoryId()+"   "+c.getAdminCategoryId()+"    "+c.getPostId()));
-        System.out.println("============");
-
-        System.out.println("-----------"+result2);
-        assertThat(result).isEqualTo(List.of(2l,1l,3l));
+    void 게시물_생성(){
+        assertThat(postService.makePost(new ResponseMakePostDto(
+                "test_uuid","test_content",
+                List.of(),List.of(),List.of(1L))).getPostId())
+                .isEqualTo(postRepository.findPostIdByUserUuid("test_uuid").get(0));
     }
+
+
 
 }

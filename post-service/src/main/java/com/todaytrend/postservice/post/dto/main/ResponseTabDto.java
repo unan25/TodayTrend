@@ -1,5 +1,6 @@
 package com.todaytrend.postservice.post.dto.main;
 
+import com.todaytrend.postservice.post.dto.CRUD.selectedCategoryListDto;
 import lombok.*;
 
 import java.util.List;
@@ -10,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ResponseTabDto {
-    private List<Long> postIdList;
+    private List<ResponsePostDto> postIdList;
 }

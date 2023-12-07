@@ -4,8 +4,6 @@ server:
 server1:
   url: http://localhost:8000
 
-server1:
-  url: http://localhost:8000
 
 spring:
   application:
@@ -19,7 +17,7 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true

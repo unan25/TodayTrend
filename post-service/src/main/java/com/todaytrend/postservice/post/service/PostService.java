@@ -2,7 +2,6 @@ package com.todaytrend.postservice.post.service;
 
 import com.todaytrend.postservice.post.dto.CRUD.*;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
-import com.todaytrend.postservice.post.dto.ResponseCheckLikedDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
 import com.todaytrend.postservice.post.dto.ResponseDto;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
@@ -11,7 +10,7 @@ import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import java.util.List;
 
 public interface PostService {
-    ResponseCreatedPostDto makePost(responseMakePostDto responseMakePostDto);
+    ResponseCreatedPostDto makePost(ResponseMakePostDto responseMakePostDto);
 
     ResponseDto removePost(Long postId);
 
@@ -19,11 +18,11 @@ public interface PostService {
 
     boolean clickLike(RequestCheckLikedDto requestCheckLikedDto);
 
-    ResponsePostDetailDto updatePost(Long postId , requestUpdatePostDto requestUpdatePostDto);
+    ResponsePostDetailDto updatePost(Long postId , RequestUpdatePostDto requestUpdatePostDto);
 
     List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain);
 
-    responseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto);
+    ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto);
 
     //AdminCategoryList제공
     List<selectedCategoryListDto> findAdminCategoryList();
@@ -35,7 +34,7 @@ public interface PostService {
     boolean checkLiked(RequestCheckLikedDto requestCheckLikedDto);
     
     //좋아요 개수
-    Integer checkLikeCnt(RequestCheckLikedDto requestCheckLikedDto);
+    Integer checkLikeCnt(Long postId);
 
     List<String> postLikeList(Long postId);
 

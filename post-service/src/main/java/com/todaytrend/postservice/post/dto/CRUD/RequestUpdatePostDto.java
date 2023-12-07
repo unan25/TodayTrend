@@ -7,10 +7,17 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class responseMakePostDto {
-    private String uuid;
+public class RequestUpdatePostDto {
     private String content;
     private List<String> hashTagList;
     private List<String> userTagList;
     private List<Long> categoryIdList;
+
+    @Data
+    @NoArgsConstructor
+    public static class RequestRecommendPostIdDto {
+        private String userUuid;
+        private Integer tab;//1- 전체, 2- 팔로잉
+        private List<String> CategoryNameList;
+    }
 }
