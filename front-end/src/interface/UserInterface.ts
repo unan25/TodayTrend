@@ -19,6 +19,7 @@ type UserInfo = {
   birth?: string;
   website?: string;
   introduction?: string;
+  profileImage?: string;
 };
 
 type CurrentUser = {
