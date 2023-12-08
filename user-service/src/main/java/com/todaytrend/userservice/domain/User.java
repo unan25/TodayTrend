@@ -29,6 +29,7 @@ public class User {
 
     private String name;
 
+    @Column(unique = true)
     private String nickname; // 아이디 @nickname
 
     private String website;
@@ -46,4 +47,13 @@ public class User {
     private LocalDateTime updateAt;
 
     private String uuid;
+
+    // 프로필 수정
+    public void updateUserInfo(String name, String nickname, String website, String introduction, String profileImage) {
+        this.name = name;
+        this.nickname = nickname;
+        this.website = website;
+        this.introduction = introduction;
+        this.profileImage = profileImage;
+    }
 }

@@ -2,6 +2,7 @@ package com.todaytrend.userservice.controller;
 
 import com.todaytrend.userservice.dto.RequestCreateUserDto;
 import com.todaytrend.userservice.dto.ResponseImgAndNicknameDto;
+import com.todaytrend.userservice.dto.ResponseUserDto;
 import com.todaytrend.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +39,24 @@ public class UserController {
         }
     }
 
-    // 닉네임 조회
+    // 닉네임으로 닉네임, 프로필 이미지 조회
     @GetMapping("/{nickname}")
-    public ResponseEntity<ResponseImgAndNicknameDto> getUser(@PathVariable String nickname) {
-        ResponseImgAndNicknameDto user = userService.findByNickname(nickname); // 서비스 메소드 호출
-        return ResponseEntity.ok(user); // 결과를 ResponseEntity에 담아 반환합니다.
+    public ResponseEntity<ResponseImgAndNicknameDto> getNickname(@PathVariable String nickname) {
+        ResponseImgAndNicknameDto user = userService.getNicknameAndProfileImage(nickname); // 서비스 메소드 호출
+        return ResponseEntity.status(HttpStatus.OK).body(user); // 바디에 담아 반환
+    }
+    
+    // uuid로 닉네임, 프로필 이미지 조회
+    @GetMapping("/{uuid}")
+    public ResponseEntity<ResponseImgAndNicknameDto> getProfileImage(@PathVariable String uuid) {
+        ResponseImgAndNicknameDto user = userService.getProfileImage(uuid);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @GetMapping("/myPage/{uuid}")
+    public ResponseEntity<ResponseUserDto> getAll(@PathVariable String uuid){
+        ResponseUserDto user = userService.getAll(uuid);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
 
 }
