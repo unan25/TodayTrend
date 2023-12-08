@@ -1,0 +1,104 @@
+.profile_header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 1.5rem 3rem;
+  border-bottom: 3px solid black;
+  margin-bottom: 5rem;
+}
+
+.profile_body {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+  margin-bottom: 5rem;
+}
+
+.profile_section1,
+.profile_section2 {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile_section1__image {
+  text-align: center;
+  line-height: 12;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 12rem;
+  height: 12rem;
+  margin-bottom: 6rem;
+  border: 2px solid black;
+  border-radius: 50%;
+}
+
+.profile_section1__infoBox {
+  width: 80%;
+  margin-left: 2.5rem;
+}
+
+.profile_section2__countBox {
+  display: flex;
+  width: 80%;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 12rem;
+}
+
+.profile_section2__countBox__postCount,
+.profile_section2__countBox__followCount,
+.profile_section2__countBox__followingCount {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  height: 50%;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border: 2.5px solid var(--color-black);
+  border-radius: 0.5rem;
+}
+
+.profile_section1__infoBox__name {
+  border-bottom: 1px dotted var(--color-black);
+}
+
+.profile_section1__infoBox__link {
+  border-bottom: 1px dotted var(--color-black);
+  margin: 1rem 0rem 3rem 0rem;
+}
+
+.profile_section1__infoBox__introduction {
+  width: 100%;
+  height: 10rem;
+  border: 2px solid var(--color-black);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.profile_section2__buttonBox {
+  width: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 10rem;
+}
+
+.profile_section2__buttonBox__button1,
+.profile_section2__buttonBox__button2 {
+  padding: 1rem;
+  border: 4px solid var(--color-black);
+  border-top-right-radius: 1.5rem;
+}
+
+.profile_postList {
+  display: flex;
+  justify-content: center;
+  border: 1px dotted black;
+  width: 100%;
+}

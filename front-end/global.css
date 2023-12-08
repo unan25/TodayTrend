@@ -2,9 +2,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Knewave:wght@400&display=swap");
 
 body {
-  height: 100vh;
-  margin: 0;
-  line-height: normal;
+  all: unset;
+}
+
+#root {
+  all: unset;
 }
 
 .page-body {
@@ -14,7 +16,7 @@ body {
   align-items: center;
   box-shadow: 10px 20px 50px rgba(50, 50, 50, 0.4);
   border-radius: 20px;
-  width: 90%;
+  box-sizing: border-box;
 }
 
 a {
@@ -43,7 +45,7 @@ ul {
 
   /* Colors */
   --color-white: #fff;
-  --color-black: #000;
+  --color-black: rgb(60, 60, 60);
   --naver-bg: #03c75a;
   --color-gray: #7e7e7e;
   --color-hover: rgb(200, 200, 200);

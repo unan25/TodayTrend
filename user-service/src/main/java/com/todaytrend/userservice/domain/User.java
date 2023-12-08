@@ -1,6 +1,7 @@
 package com.todaytrend.userservice.domain;
 
 import com.todaytrend.userservice.domain.enum_.Gender;
+import com.todaytrend.userservice.vo.FollowUserVO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,4 +57,15 @@ public class User {
         this.introduction = introduction;
         this.profileImage = profileImage;
     }
+
+
+    public FollowUserVO toFollowVo() {
+        return FollowUserVO
+                .builder()
+                .uuid(this.uuid)
+                .nickName(this.nickname)
+                .profileImage(this.profileImage)
+                .build();
+    }
+
 }

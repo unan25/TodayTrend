@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./SideBar.module.css";
+import { Link } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,18 +19,15 @@ const Sidebar: React.FC = () => {
         <button className={styles.button} onClick={toggleSidebar}>
           {isOpen ? "Close" : "Menu"}
         </button>
-        <a href="/">
+        <Link to="/">
           <li className={styles.menu}>Home</li>
-        </a>
-        <a href="/search">
+        </Link>
+        <Link to="/search">
           <li className={styles.menu}>Search</li>
-        </a>
-        <a href="/upload-post">
+        </Link>
+        <Link to="/upload-post">
           <li className={styles.menu}>Post</li>
-        </a>
-        <a href="/profile">
-          <li className={styles.menu}>Profile</li>
-        </a>
+        </Link>
       </ul>
     </div>
   );
