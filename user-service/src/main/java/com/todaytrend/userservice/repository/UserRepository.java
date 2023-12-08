@@ -19,6 +19,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT new com.todaytrend.userservice.dto.ResponseImgAndNicknameDto(u.profileImage, u.nickname) FROM User u WHERE u.uuid = :UUID")
     List<ResponseImgAndNicknameDto> findImgAndNicknameByUuid(@Param("UUID") String UUID);
 
+    @Query("SELECT u FROM User u WHERE LOWER(u.nickname) LIKE LOWER(CONCAT(:nickname, '%'))")
+    List<User> findAllByNicknameStartingWith(String nickname);
+
     Optional<User> findByNickname(String nickname);
 
     Optional<User> findByUuid(String uuid);

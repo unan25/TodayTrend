@@ -1,17 +1,15 @@
 package com.todaytrend.userservice.controller;
 
-import com.todaytrend.userservice.dto.FollowRequestDto;
-import com.todaytrend.userservice.dto.FollowResponseDto;
-import com.todaytrend.userservice.dto.RequestCreateUserDto;
-import com.todaytrend.userservice.dto.ResponseImgAndNicknameDto;
+import com.todaytrend.userservice.dto.*;
 import com.todaytrend.userservice.service.FollowService;
-import com.todaytrend.userservice.dto.ResponseUserDto;
 import com.todaytrend.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/users")
@@ -45,9 +43,9 @@ public class UserController {
 
     // 닉네임으로 닉네임, 프로필 이미지 조회
     @GetMapping("nickname/{nickname}")
-    public ResponseEntity<ResponseImgAndNicknameDto> getNickname(@PathVariable String nickname) {
-        ResponseImgAndNicknameDto user = userService.getNicknameAndProfileImage(nickname); // 서비스 메소드 호출
-        return ResponseEntity.status(HttpStatus.OK).body(user); // 바디에 담아 반환
+    public ResponseEntity<List<ResponseNicknameListDto>> getNickname(@PathVariable String nickname) {
+        List<ResponseNicknameListDto> nicknameListDtos = userService.getNicknameAndProfileImage(nickname); // 서비스 메소드 호출
+        return ResponseEntity.status(HttpStatus.OK).body(nicknameListDtos); // 바디에 담아 반환
     }
 
     // uuid로 닉네임, 프로필 이미지 조회
@@ -65,9 +63,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    //
-    //                                     Follow
-    //
+    /* ------------------------------------- Follow ------------------------------------- */
 
     @PostMapping("follow")
     public ResponseEntity<FollowResponseDto> follow(@RequestBody FollowRequestDto followRequestDto) {
