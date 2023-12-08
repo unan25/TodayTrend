@@ -40,19 +40,21 @@ public class UserController {
     }
 
     // 닉네임으로 닉네임, 프로필 이미지 조회
-    @GetMapping("/{nickname}")
+    @GetMapping("nickname/{nickname}")
     public ResponseEntity<ResponseImgAndNicknameDto> getNickname(@PathVariable String nickname) {
         ResponseImgAndNicknameDto user = userService.getNicknameAndProfileImage(nickname); // 서비스 메소드 호출
         return ResponseEntity.status(HttpStatus.OK).body(user); // 바디에 담아 반환
     }
     
     // uuid로 닉네임, 프로필 이미지 조회
-    @GetMapping("/{uuid}")
+    @GetMapping("uuid/{uuid}")
     public ResponseEntity<ResponseImgAndNicknameDto> getProfileImage(@PathVariable String uuid) {
         ResponseImgAndNicknameDto user = userService.getProfileImage(uuid);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    // uuid로 myPage 조회
+    // todo : + 팔로잉, 팔로워 수
     @GetMapping("/myPage/{uuid}")
     public ResponseEntity<ResponseUserDto> getAll(@PathVariable String uuid){
         ResponseUserDto user = userService.getAll(uuid);
