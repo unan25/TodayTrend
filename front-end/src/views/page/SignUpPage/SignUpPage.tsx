@@ -92,17 +92,20 @@ function SignUpPage() {
 
         const response = await dispatch(createAccount(account));
 
-        let imageURL: string = "기본이미지 url";
+        let imageURL: string = "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
 
         if (image.length) {
+          console.log(image);
           imageURL = await getImageUrl(image);
         }
 
         let userInfo: UserInfo = {
-          uuid: response.payload.UUID,
+          uuid: response.payload.UUID_temp,
           profileImage: imageURL,
           ...userInfoFields,
         };
+
+        console.log(userInfo);
 
         dispatch(updateUserInfo(userInfo));
         navigate("/");
@@ -121,10 +124,18 @@ function SignUpPage() {
 
       dispatch(signInSocialUser(account));
 
-      let userInfo: UserInfo = {
-        uuid: UUID,
-        ...userInfoFields,
-      };
+      let imageURL: string = "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
+
+        if (image.length) {
+          console.log(image);
+          imageURL = await getImageUrl(image);
+        }
+
+        let userInfo: UserInfo = {
+          uuid: UUID,
+          profileImage: imageURL,
+          ...userInfoFields,
+        };
 
       try {
         dispatch(updateUserInfo(userInfo));

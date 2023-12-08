@@ -44,7 +44,7 @@ spring:
       - id: image-service
         uri: lb://IMAGE-SERVICE
         predicates:
-          - Path=/api/image/**
+          - Path=/api/images/**
 
 # Eureka
 eureka:

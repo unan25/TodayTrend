@@ -22,20 +22,14 @@ const ProfilePage: React.FC = () => {
   const me: string = useSelector((state: RootState) => state.user.UUID);
 
   // state
-  const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: "김채원",
-    nickname: "chae1",
-    website: "www.lesserafim.com",
-    profileImage: "#",
-    introduction: "안녕하세요 르세라핌의 김채원입니다",
-  });
+  const [userInfo, setUserInfo] = useState<UserInfo>({});
 
   const [followCount, seFollowCount] = useState<FollowCount>({
     follower: 0,
     following: 0,
   });
 
-  // param
+
   const { uuid } = useParams();
 
   // axios
@@ -43,6 +37,7 @@ const ProfilePage: React.FC = () => {
     try {
       const response = await axios.get(`/api/users/myPage/${uuid}`);
       setUserInfo(response.data);
+
     } catch (err) {
       console.error(err);
     }
@@ -86,7 +81,7 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     getFollowCount();
     getUserInfo();
-  }, []);
+  }, [uuid]);
 
   return (
     <div className="page-body">
@@ -141,7 +136,7 @@ const ProfilePage: React.FC = () => {
                 수정
               </Link>
             ) : (
-              <FollowButton from={me} to={uuid!} />
+              <FollowButton from={me} to={uuid!} fn={getFollowCount} />
             )}
             {me === uuid ? (
               <button

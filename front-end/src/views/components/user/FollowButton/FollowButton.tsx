@@ -8,24 +8,27 @@ import { useNavigate } from "react-router-dom";
 type Props = {
   from: string;
   to: string;
+  fn?: () => void
 };
 
-const FollowButton: React.FC<Props> = ({ from, to }) => {
+const FollowButton: React.FC<Props> = ({ from, to, fn }) => {
   const navigate = useNavigate();
 
   // 팔로우 상태 체크
   const [isfollowing, setIsFollowing] = useState<boolean>(false);
   const checkFollow = async () => {
     try {
-      const followTo: Props = {
-        from: from,
-        to: to,
+      const followTo = {
+        followerId: from,
+        followingId: to,
       };
+
+      console.log(followTo);
 
       const response = await axios.post("/api/users/follow-check", followTo);
 
-      console.log(response.data.result);
-      setIsFollowing(response.data.result);
+      console.log(response.data);
+      setIsFollowing(response.data);
     } catch (err) {
       console.error(err);
     }
@@ -40,15 +43,15 @@ const FollowButton: React.FC<Props> = ({ from, to }) => {
         return;
       }
 
-      const followTo: Props = {
-        from: from,
-        to: to,
+      const followTo = {
+        followerId: from,
+        followingId: to,
       };
 
       const response = await axios.post("/api/users/follow", followTo);
 
       console.log(response.data.result);
-      setFollowed(followed);
+      setFollowed(response.data.result);
     } catch (err) {
       console.error(err);
     }
@@ -56,6 +59,7 @@ const FollowButton: React.FC<Props> = ({ from, to }) => {
 
   useEffect(() => {
     checkFollow();
+    if(fn) fn();
   }, [followed]);
 
   return (
@@ -64,7 +68,7 @@ const FollowButton: React.FC<Props> = ({ from, to }) => {
       onClick={followHandler}
       className={styles.followButton}
     >
-      {isfollowing ? "언팔로우" : "팔로우"}
+      {isfollowing ? "팔로우"  : "언팔로우"}
     </button>
   );
 };
