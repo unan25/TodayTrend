@@ -81,6 +81,8 @@ function SignUpPage() {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // 로컬 회원가입
+
     if (userType !== "SOCIAL") {
       try {
         let account = {
@@ -97,7 +99,7 @@ function SignUpPage() {
         }
 
         let userInfo: UserInfo = {
-          uuid: response.payload.UUID_temp,
+          uuid: response.payload.UUID,
           profileImage: imageURL,
           ...userInfoFields,
         };
@@ -108,6 +110,8 @@ function SignUpPage() {
         console.error(err);
       }
     }
+
+    // 소셜 회원가입
 
     if (userType === "SOCIAL") {
       let account: SocialUser = {
@@ -131,6 +135,7 @@ function SignUpPage() {
     }
   };
 
+  // useEffect
   useEffect(() => {
     if (userType === "SOCIAL") {
       setSignInStep(false);

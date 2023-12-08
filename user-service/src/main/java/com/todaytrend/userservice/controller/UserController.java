@@ -1,7 +1,10 @@
 package com.todaytrend.userservice.controller;
 
+import com.todaytrend.userservice.dto.FollowRequestDto;
+import com.todaytrend.userservice.dto.FollowResponseDto;
 import com.todaytrend.userservice.dto.RequestCreateUserDto;
 import com.todaytrend.userservice.dto.ResponseImgAndNicknameDto;
+import com.todaytrend.userservice.service.FollowService;
 import com.todaytrend.userservice.dto.ResponseUserDto;
 import com.todaytrend.userservice.service.UserService;
 import jakarta.validation.Valid;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final FollowService followService;
 
     @GetMapping("health-check")
     public String healthCheck(){
@@ -45,7 +49,7 @@ public class UserController {
         ResponseImgAndNicknameDto user = userService.getNicknameAndProfileImage(nickname); // 서비스 메소드 호출
         return ResponseEntity.status(HttpStatus.OK).body(user); // 바디에 담아 반환
     }
-    
+
     // uuid로 닉네임, 프로필 이미지 조회
     @GetMapping("uuid/{uuid}")
     public ResponseEntity<ResponseImgAndNicknameDto> getProfileImage(@PathVariable String uuid) {
@@ -59,6 +63,40 @@ public class UserController {
     public ResponseEntity<ResponseUserDto> getAll(@PathVariable String uuid){
         ResponseUserDto user = userService.getAll(uuid);
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    //
+    //                                     Follow
+    //
+
+    @PostMapping("follow")
+    public ResponseEntity<FollowResponseDto> follow(@RequestBody FollowRequestDto followRequestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(followService.follow(followRequestDto));
+    }
+
+    @PostMapping("follow-check")
+    public ResponseEntity<Boolean> checkFollowed(@RequestBody FollowRequestDto followRequestDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(followService.checkFollow(followRequestDto));
+    }
+
+    @GetMapping("follower-count/{uuid}")
+    public ResponseEntity<Long> countFollower(@PathVariable String uuid) {
+        return ResponseEntity.status(HttpStatus.OK).body(followService.follwerCount(uuid));
+    }
+
+    @GetMapping("following-count/{uuid}")
+    public ResponseEntity<Long> countFollowing(@PathVariable String uuid) {
+        return ResponseEntity.status(HttpStatus.OK).body(followService.followingCount(uuid));
+    }
+
+    @GetMapping("follower-list/{uuid}")
+    public ResponseEntity<?> followerList(@PathVariable String uuid) {
+        return ResponseEntity.status(HttpStatus.OK).body(followService.getFollowerList(uuid));
+    }
+
+    @GetMapping("following-list/{uuid}")
+    public ResponseEntity<?> followingList(@PathVariable String uuid) {
+        return ResponseEntity.status(HttpStatus.OK).body(followService.getFollowingList(uuid));
     }
 
 }

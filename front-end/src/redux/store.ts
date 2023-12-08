@@ -7,7 +7,7 @@ import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 const userPersistConfig = {
   key: "user",
   storage: sessionStorage,
-  whitelist: ["UUID", "userType"],
+  whitelist: ["UUID", "userType", "role"],
 };
 
 const userPersistedReducer = persistReducer(userPersistConfig, UserReducer);

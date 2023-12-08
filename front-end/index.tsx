@@ -2,6 +2,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
+// react-router-dom
+import { BrowserRouter as Router } from "react-router-dom";
+
 // redux
 import { Provider } from "react-redux";
 import { Persistor } from "redux-persist";
@@ -26,11 +29,13 @@ const root: ReactDOM.Root = ReactDOM.createRoot(rootElement);
 const queryClient = new QueryClient();
 
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor as Persistor}>
-        <App />
-      </PersistGate>
-    </Provider>
-  </QueryClientProvider>
+  <Router>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor as Persistor}>
+          <App />
+        </PersistGate>
+      </Provider>
+    </QueryClientProvider>
+  </Router>
 );

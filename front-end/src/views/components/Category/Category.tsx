@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import styles from './Category.module.css';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import styles from "./Category.module.css";
 
 const Category: React.FC<any> = ({
   category,
@@ -28,7 +27,7 @@ const Category: React.FC<any> = ({
     <div>
       <button
         className={`${styles.button} ${
-          selectedCategories.includes(category.id) ? styles.selected : ''
+          selectedCategories.includes(category.id) ? styles.selected : ""
         }`}
         onClick={handleCategoryClick}
       >
