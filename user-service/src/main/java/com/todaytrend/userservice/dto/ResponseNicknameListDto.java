@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ResponseNicknameListDto {
-    private String uuid;
-    private String profileImage;
     private String nickname;
+    private String profileImage;
+    private String uuid;
 
-    public ResponseNicknameListDto(String profileImage, String nickname, String uuid){
-        this.profileImage = profileImage;
+    public ResponseNicknameListDto(String nickname, String profileImage, String uuid){
         this.nickname = nickname;
+        this.profileImage = profileImage;
         this.uuid = uuid;
     }
 }
