@@ -46,8 +46,6 @@ public class WebSecurityConfig {
                         //.anyRequest().authenticated() // 다른 요청은 인증 필요
                 );
 
-
-
         return http.build();
     }
 
