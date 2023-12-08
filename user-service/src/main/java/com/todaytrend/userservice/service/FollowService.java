@@ -8,6 +8,7 @@ import com.todaytrend.userservice.repository.UserRepository;
 import com.todaytrend.userservice.vo.FollowUserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +22,16 @@ public class FollowService {
 
     public FollowResponseDto follow(FollowRequestDto followRequestDto) {
 
+        System.out.println(followRequestDto.getFollowerId());
+        System.out.println(followRequestDto.getFollowingId());
+
         Follow followed = followRepository.findByFollowerIdAndFollowingId(
                 followRequestDto.getFollowerId(),
                 followRequestDto.getFollowingId()
         ).orElse(null);
 
         if(followed != null) {
-                followRepository.delete(followRequestDto.toEntity());
+                followRepository.delete(followed);
 
                 return FollowResponseDto.unfollowed();
         }
@@ -58,6 +62,8 @@ public class FollowService {
 
     public List<?> getFollowerList(String uuid) {
         var followerList = followRepository.findFollowerIdsByFollowingId(uuid);
+
+        System.out.println(followerList.get(0));
 
         var userList = new ArrayList<FollowUserVO>();
 
