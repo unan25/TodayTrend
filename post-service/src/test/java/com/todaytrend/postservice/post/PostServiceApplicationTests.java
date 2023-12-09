@@ -1,4 +1,4 @@
-package com.todaytrend.postservice;
+package com.todaytrend.postservice.post;
 
 import com.netflix.discovery.converters.Auto;
 import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
