@@ -41,7 +41,7 @@ public interface PostService {
     List<Long> userLikePost(String UUID);
 
     // /main chooseTab 최신, 좋아요, 팔로잉 순
-    ResponseTabDto postListTab(RequestTabDto requestTabDto);
+    ResponseTabDto postListTab(RequestTabDto requestTabDto, Integer page, Integer size);
 
 //    main 최신 + 카테고리
     ResponseTabDto postListCategory(List<Long> categoryIds);

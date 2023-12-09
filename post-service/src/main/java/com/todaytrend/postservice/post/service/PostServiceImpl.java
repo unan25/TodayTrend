@@ -6,14 +6,17 @@ import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
 import com.todaytrend.postservice.post.dto.ResponseDto;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
+import com.todaytrend.postservice.post.dto.main.ResponsePostDto;
 import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import com.todaytrend.postservice.post.entity.*;
 import com.todaytrend.postservice.post.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.text.Normalizer;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -232,6 +235,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain) {
 
+/*
         String userUuid = requestPostListForMain.getUserUuid();
         Long tab = requestPostListForMain.getTab();
         List<Long> categoryList = requestPostListForMain.getCategoryList();
@@ -247,6 +251,7 @@ public class PostServiceImpl implements PostService {
                     .map(list -> postRepo.findPostIdByUserUuidInAndPostIdIn(findFollowingUuids(userUuid), postIdList(list)))
                     .orElseGet(() -> postRepo.findPostIdByUserUuidIn(findFollowingUuids(userUuid)));
         }
+*/
         return List.of();
     }
 
@@ -312,20 +317,57 @@ public class PostServiceImpl implements PostService {
         return adminCategoryList;
     }
 
-// -------------------/main  chooseTab 최신, 좋아요, 팔로잉 순
+// -------------------main  chooseTab 최신, 좋아요, 팔로잉 순
 
     @Override
-    public ResponseTabDto postListTab(RequestTabDto requestTabDto) {
+    public ResponseTabDto postListTab(RequestTabDto requestTabDto, Integer page, Integer size) {
         ResponseTabDto responseTabDto = new ResponseTabDto();
+
+        PageRequest pageRequest = PageRequest.of(page,size);
+
         switch (requestTabDto.getTab()){
             case 0 -> {//최신
+                return ResponseTabDto.builder()
+                                .postIdList(
+                                        postRepo.findPostIdBy(pageRequest).getContent()
+                                                        .stream().filter(Objects::nonNull)
+                                                        .map(e -> ResponsePostDto.builder()
+                                                                .postId(e)
+                                                                .postImg(null)
+                                                                .build()
+                                                        ).toList()
+                                )
+                               .build();
 //                responseTabDto.setPostIdList(postRepo.findPostIdBy());
             }
             case 1 -> {//좋아요
-//                responseTabDto.setPostIdList(postLikeRepo.findPostIdBy());//todo : 중복제거
+
+                return ResponseTabDto.builder()
+                        .postIdList(
+                                postLikeRepo.findPostIdBy(pageRequest).getContent()
+                                        .stream().filter(Objects::nonNull)
+                                        .map(e->ResponsePostDto.builder()
+                                                .postId(e)
+                                                .postImg(null)
+                                                .build()
+                                        )
+                                        .toList()
+                        ).build();
+
+
+/*                postLikeRepo.findPostIdBy().stream().filter(Objects::nonNull)
+                        .collect(Collectors.groupingBy(e->e,Collectors.counting()))
+                        .entrySet().stream()
+                        .sorted((e1,e2)->Long.compare(e2.getValue(),e1.getValue()))
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());*/
+
             }
             case 2 -> {//팔로잉
 //                responseTabDto.setPostIdList(postRepo.findPostIdByUserUuidIn(findFollowingUuids(requestTabDto.getUuid())));
+
+
+
             }
         }
         return responseTabDto;
