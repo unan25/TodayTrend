@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.Normalizer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -336,5 +337,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponseTabDto postListCategory(List<Long> categoryIds) {
         return new ResponseTabDto(/*postIdList(categoryIds)*/);
+    }
+
+//---------------- 해시태그 검색
+    @Override
+    public List<String> findhashTag(String hashTag) {
+        return hashTagRepo.findHashTagByKeyword(Normalizer.normalize(hashTag,Normalizer.Form.NFD)).stream()
+                .filter(Objects::nonNull)
+                .map(e->Normalizer.normalize(e,Normalizer.Form.NFC))
+                .toList();
     }
 }

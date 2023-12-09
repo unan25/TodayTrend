@@ -82,6 +82,9 @@ class PostServiceApplicationTests {
                 .isEqualTo(postRepository.findPostIdByUserUuid("test_uuid").get(0));
     }
 
-
+    @Test
+    void 해시태그_검색(){
+        assertThat(postService.findhashTag("ㄱ").get(0)).isEqualTo("가나다");
+    }
 
 }

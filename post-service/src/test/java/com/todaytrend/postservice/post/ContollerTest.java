@@ -43,7 +43,7 @@ public class YourControllerTest {
 
     @Test
     void 저장되는_형태_확인() throws Exception{
-        mockMvc.perform(MockMvcRequestBuilders.get("/test/{test}", "가나다")
+      /*  mockMvc.perform(MockMvcRequestBuilders.get("/test/{test}", "가나다")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(Normalizer.normalize("가나다",Normalizer.Form.NFD)))
@@ -54,11 +54,11 @@ public class YourControllerTest {
         System.out.println(Normalizer.normalize("가나다",Normalizer.Form.NFC));
         System.out.println("=======================");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/test/a/{test2}", "가")
+        mockMvc.perform(MockMvcRequestBuilders.get("/test/a/{test2}", "가ㄴ")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(Normalizer.normalize("가나다",Normalizer.Form.NFC)))
-                .andDo(System.out::println);
+                .andDo(System.out::println);*/
 
     }
 

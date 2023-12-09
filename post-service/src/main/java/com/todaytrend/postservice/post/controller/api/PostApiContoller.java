@@ -33,7 +33,7 @@ public class PostApiContoller {
 
     private final HashTagRepository hashTagRepo;
 
-    @GetMapping("{test}")
+  /*  @GetMapping("{test}")
     public ResponseEntity<?> test(@PathVariable("test")String test){
         System.out.println("---------------------"+test);
         HashTag hashTag = hashTagRepo.save(new HashTag(test,1L));
@@ -55,7 +55,7 @@ public class PostApiContoller {
 
         return new ResponseEntity<>(hashTagByKeyword,HttpStatus.OK);
     }
-
+*/
 
 
 
