@@ -104,4 +104,10 @@ public class PostController {
         return new ResponseEntity<>(postService.postListCategory(categoryIds),HttpStatus.OK);
     }
 
+//    hashtag 검색
+    @GetMapping("/hashtag/{hashtag}")
+    public ResponseEntity<?> hashTagList(@PathVariable("hashtag")String hashtag){
+        return new ResponseEntity<>(postService.findhashTag(hashtag), HttpStatus.OK);
+    }
+
 }

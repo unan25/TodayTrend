@@ -28,6 +28,11 @@ public class HashTag {
         this.postId = postId;
     }
 
+    public String GetHashtag(){
+        return Normalizer.normalize(this.hashtag,Normalizer.Form.NFC);
+    }
+
+
     private static String decomposeHangul(String input) {
         StringBuilder result = new StringBuilder();
 

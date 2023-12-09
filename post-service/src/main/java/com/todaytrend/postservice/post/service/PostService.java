@@ -46,4 +46,7 @@ public interface PostService {
 //    main 최신 + 카테고리
     ResponseTabDto postListCategory(List<Long> categoryIds);
 
+//  hashTag 검색
+    List<String> findhashTag(String hashTag);
+
 }
