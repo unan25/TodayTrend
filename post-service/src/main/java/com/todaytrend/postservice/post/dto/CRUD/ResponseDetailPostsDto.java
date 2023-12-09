@@ -1,5 +1,6 @@
 package com.todaytrend.postservice.post.dto.CRUD;
 
+import com.todaytrend.postservice.post.dto.main.ResponsePostDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,8 @@ import java.util.List;
 public class ResponseDetailPostsDto {
     private String title1;
     private String title2;
-    private List<Long> postIdList1;
-    private List<Long> postIdList2;
+    private List<ResponsePostDto> postList1;
+    private List<ResponsePostDto> postList2;
     private List<selectedCategoryListDto> categoryList;
     private String postUuid;
 }
