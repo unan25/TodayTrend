@@ -11,20 +11,6 @@ spring:
     gateway:
       default-filters:
         - name: LogFilter
-      global-cors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: 'http://localhost:3000'
-            allow-credentials: true
-            allowedHeaders: '*'
-            allowedMethods:
-              - PUT
-              - GET
-              - POST
-              - DELETE
-              - OPTIONS
-              - PUT
-              - PATCH
       routes:
       - id: user-service
         uri: lb://USER-SERVICE

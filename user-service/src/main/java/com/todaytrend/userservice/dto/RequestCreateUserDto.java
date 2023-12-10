@@ -27,6 +27,7 @@ public class RequestCreateUserDto {
     private String name;
 
     @NotBlank(message = "별명은 반드시 입력하여야 합니다.")
+    @Pattern(regexp = "^[a-zA-Z0-9_.]*$", message = "닉네임은 알파벳, 숫자, 대시(-), 점(.)만 포함해야 합니다.")
     private String nickname; //@nickname
 
     private String website;

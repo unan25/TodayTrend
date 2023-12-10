@@ -5,6 +5,7 @@ import com.todaytrend.userservice.service.FollowService;
 import com.todaytrend.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -27,6 +29,8 @@ public class UserController {
     @PostMapping("signup")
     public ResponseEntity<?> createUser(@Valid @RequestBody RequestCreateUserDto requestCreateUserDto){
         userService.createUser(requestCreateUserDto);
+        
+        log.info("UserInfo 작성 완료");
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -45,6 +49,7 @@ public class UserController {
     @GetMapping("nickname/{nickname}")
     public ResponseEntity<List<ResponseNicknameListDto>> getNickname(@PathVariable String nickname) {
         List<ResponseNicknameListDto> nicknameListDtos = userService.getNicknameAndProfileImage(nickname); // 서비스 메소드 호출
+        log.info("닉네임으로 조회");
         return ResponseEntity.status(HttpStatus.OK).body(nicknameListDtos); // 바디에 담아 반환
     }
 
@@ -52,15 +57,37 @@ public class UserController {
     @GetMapping("uuid/{uuid}")
     public ResponseEntity<ResponseImgAndNicknameDto> getProfileImage(@PathVariable String uuid) {
         ResponseImgAndNicknameDto user = userService.getProfileImage(uuid);
+        log.info("uuid로 조회");
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     // uuid로 myPage 조회
-    // todo : + 팔로잉, 팔로워 수
-    @GetMapping("/myPage/{uuid}")
+    @GetMapping("profile/{uuid}")
     public ResponseEntity<ResponseUserDto> getAll(@PathVariable String uuid){
         ResponseUserDto user = userService.getAll(uuid);
+        log.info("프로필 조회");
         return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+    
+    // 프로필 수정 (이름, 닉네임, 웹 링크, 소개, 프로필 이미지)
+    @PutMapping("updateProfile")
+    public ResponseEntity<?> updateUserProfile(@RequestParam String uuid, @RequestParam(required = false) String name,
+                                  @RequestParam(required = false) String nickname,
+                                  @RequestParam(required = false) String website,
+                                  @RequestParam(required = false) String introduction,
+                                  @RequestParam(required = false) String profileImage) {
+        userService.updateUserProfile(uuid, name, nickname, website, introduction, profileImage);
+        log.info("프로필 수정 완료");
+        return ResponseEntity.status(HttpStatus.OK).body("프로필 수정 완료");
+    }
+
+    // 프로필 이미지 삭제 (기본 이미지로 변경)
+    @PatchMapping("deleteProfileImage/{uuid}")
+    public ResponseEntity<?> updateProfileImageToDefault(@PathVariable String uuid) {
+        ResponseProfileImageDto responseProfileImageDto = userService.deleteProfileImage(uuid);
+
+        log.info("프로필 이미지 삭제 (기본 이미지로 변경)");
+        return ResponseEntity.status(HttpStatus.OK).body(responseProfileImageDto);
     }
 
     /* ------------------------------------- Follow ------------------------------------- */

@@ -1,4 +1,4 @@
-package com.todaytrend.apigatewayserver.jwt;
+package com.todaytrend.apigatewayserver.config.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -26,8 +26,18 @@ public class TokenProvider {
         try {
             Claims claims = extractAllClaims(token); // 토큰에서 모든 Claim 추출
             return claims.get("role", String.class); // Role 클레임 추출
-        } catch (JwtException | IllegalArgumentException e){
-            return "유효한 토큰이 아닙니다.";
+        } catch (JwtException | IllegalArgumentException e) {
+            return "유효한 토큰이 아닙니다. role 추출 실패";
+        }
+    }
+
+    // todo : 레빗엠큐 연동 시, 메시지큐에 유저 정보를 담아 uuid를 이용해 유저 비교
+    public String getUuidFromToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return claims.get("uuid", String.class); // uuid 추출
+        } catch (JwtException | IllegalArgumentException e ){
+            return "유효한 토큰이 아닙니다. uuid 추출 실패";
         }
     }
 

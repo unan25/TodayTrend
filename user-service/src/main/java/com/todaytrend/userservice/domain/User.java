@@ -3,6 +3,7 @@ package com.todaytrend.userservice.domain;
 import com.todaytrend.userservice.domain.enum_.Gender;
 import com.todaytrend.userservice.vo.FollowUserVO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class User {
     private String name;
 
     @Column(unique = true)
+    @Pattern(regexp = "^[a-zA-Z0-9_.]*$", message = "닉네임은 알파벳, 숫자, 대시(-), 점(.)만 포함해야 합니다.")
     private String nickname; // 아이디 @nickname
 
     private String website;
@@ -56,6 +58,11 @@ public class User {
         this.website = website;
         this.introduction = introduction;
         this.profileImage = profileImage;
+    }
+
+    // 프로필 이미지 변경
+    public void changeProfileImage(String profileImageUrl) {
+        this.profileImage = profileImageUrl;
     }
 
 
