@@ -85,10 +85,8 @@ public class UserService {
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(() -> new IllegalArgumentException("해당 UUID의 사용자가 존재하지 않습니다. UUID: " + uuid));
         String currentImageUrl = user.getProfileImage();
-        System.out.println(currentImageUrl);
 
-//        if (currentImageUrl == null || !currentImageUrl.equals(currentImageUrl)) {
-            user.changeProfileImage("https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg");
+        user.changeProfileImage("https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg");
 
         userRepository.save(user);
         return ResponseProfileImageDto.builder()
