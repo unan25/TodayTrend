@@ -1,4 +1,4 @@
-package com.todaytrend.apigatewayserver.jwt;
+package com.todaytrend.apigatewayserver.config.jwt;
 
 import lombok.Getter;
 import lombok.Setter;

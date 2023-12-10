@@ -27,21 +27,18 @@ ext {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
 
     // 유효성 검사
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // JWT
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
-//    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
 
     // com.sun.xml.bind
     implementation 'com.sun.xml.bind:jaxb-impl:4.0.1'
@@ -53,16 +50,8 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    // OAuth
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-
-//    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis
-//    implementation 'org.springframework.boot:spring-boot-starter-data-redis:3.2.0'
-//    // https://mvnrepository.com/artifact/org.springframework.data/spring-data-redis
-//    implementation 'org.springframework.data:spring-data-redis:3.2.0'
 
     // SMTP
     implementation 'org.springframework.boot:spring-boot-starter-mail'
