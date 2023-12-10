@@ -38,7 +38,6 @@ const CategoryModal: React.FC<Props> = ({ setModal, checked, setCategory }) => {
   const getCategoryList = async () => {
     try {
       const response = await axios.get("/api/post/admin-categorylist");
-
       setCategoryList(response.data);
     } catch (err) {
       console.log(err);
