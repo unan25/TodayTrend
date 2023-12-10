@@ -1,10 +1,6 @@
 server:
   port: 8888
 
-server1:
-  url: http://localhost:8000
-
-
 spring:
   application:
     name: post-service

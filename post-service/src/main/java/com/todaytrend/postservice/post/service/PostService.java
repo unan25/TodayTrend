@@ -20,8 +20,6 @@ public interface PostService {
 
     ResponsePostDetailDto updatePost(Long postId , RequestUpdatePostDto requestUpdatePostDto);
 
-    List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain);
-
     ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto);
 
     //AdminCategoryList제공
@@ -31,7 +29,7 @@ public interface PostService {
     List<selectedCategoryListDto> findPostCategoryList(Long postId);
 
     //좋아요 유저의 클릭 여부
-    boolean checkLiked(RequestCheckLikedDto requestCheckLikedDto);
+    boolean checkLiked(String uuid, Long postId);
     
     //좋아요 개수
     Integer checkLikeCnt(Long postId);
@@ -41,7 +39,7 @@ public interface PostService {
     List<Long> userLikePost(String UUID);
 
     // /main chooseTab 최신, 좋아요, 팔로잉 순
-    ResponseTabDto postListTab(RequestTabDto requestTabDto, Integer page, Integer size);
+    ResponseTabDto postListTab(Integer tab,String uuid, Integer page, Integer size);
 
 //    main 최신 + 카테고리
     ResponseTabDto postListCategory(List<Long> categoryIds);
