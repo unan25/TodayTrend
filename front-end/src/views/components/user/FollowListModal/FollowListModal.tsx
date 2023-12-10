@@ -116,7 +116,6 @@ const FollowListModal: React.FC<Props> = ({
           X
         </button>
       </div>
-
       <div className={styles.modal_body}>
         <input
           className={styles.modal_body__search}

@@ -10,9 +10,6 @@ import AlertBox from "../../../components/common/AlertBox/AlertBox";
 // type
 import { UserInfo } from "interface/UserInterface";
 
-// image
-import profile from "../../../../images/user/basic.jpg";
-
 // styles
 import formStyle from "../../../../module/styles/form.module.css";
 
