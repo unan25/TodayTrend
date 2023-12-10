@@ -51,10 +51,6 @@ public class PostController {
     }
 
     //좋아요 클릭 여부 (true false)
-    /*@GetMapping("/liked")
-    public ResponseEntity<?> checkLiked(@RequestHeader RequestCheckLikedDto requestCheckLikedDto){
-        return new ResponseEntity<>(postService.checkLiked(requestCheckLikedDto),HttpStatus.OK);
-    }*///-> 기존
     @GetMapping("/liked")
     public ResponseEntity<?> checkLiked(@RequestParam("uuid")String uuid, @RequestParam("postId")Long postId){
         return new ResponseEntity<>(postService.checkLiked(uuid,postId),HttpStatus.OK);
@@ -85,8 +81,8 @@ public class PostController {
 
     // 게시물 상세 보기 하단 게시글 리스트
     @GetMapping("posts/detaillist")
-    public ResponseEntity<?> recommendPostWithDetail(@RequestHeader RequestCheckLikedDto requestDto){
-        return new ResponseEntity(postService.detailPostsList(requestDto), HttpStatus.OK);
+    public ResponseEntity<?> recommendPostWithDetail(@RequestParam("uuid")String uuid, @RequestParam("postId")Long postId){
+        return new ResponseEntity(postService.detailPostsList(uuid, postId), HttpStatus.OK);
     }
 
 //    AdminCategory 리스트 제공
@@ -96,12 +92,6 @@ public class PostController {
     }
 
 //     최신, 좋아요, 팔로잉 순
-/*    @GetMapping("main")
-    public ResponseEntity<?> chooseTab(@RequestHeader RequestTabDto requestTabDto,
-                                       @RequestParam(name = "page",defaultValue = "0")Integer page,
-                                       @RequestParam(name = "size",defaultValue = "24")Integer size){
-        return new ResponseEntity<>(postService.postListTab(requestTabDto,page,size),HttpStatus.OK);
-    } */
     @GetMapping("main")
     public ResponseEntity<?> chooseTab(@RequestParam(name = "tab")Integer tab,
                                        @RequestParam(name = "uuid")String uuid,
@@ -111,10 +101,6 @@ public class PostController {
     }
 
 //    main 최신 + 카테고리
-    /*@GetMapping("/main/category")
-    public ResponseEntity<?> chooseCategory(@RequestHeader List<Long> categoryIds){
-        return new ResponseEntity<>(postService.postListCategory(categoryIds),HttpStatus.OK);
-    }*/
     @PostMapping("main")
     public ResponseEntity<?> chooseCategory(@RequestBody List<Long> categoryIds){
         return new ResponseEntity<>(postService.postListCategory(categoryIds),HttpStatus.OK);
