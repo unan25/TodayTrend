@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ResponseTabDto {
-    private List<ResponsePostDto> postIdList;
+    private List<ResponsePostDto> postList;
 }

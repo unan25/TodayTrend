@@ -9,6 +9,8 @@ import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.dto.main.ResponsePostDto;
 import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import com.todaytrend.postservice.post.entity.*;
+import com.todaytrend.postservice.post.feign.UserFeignClient;
+import com.todaytrend.postservice.post.feign.UserFeignDto;
 import com.todaytrend.postservice.post.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +34,10 @@ public class PostServiceImpl implements PostService {
     private final PostUserTagRepository postUserTagRepo;
     private final HashTagRepository hashTagRepo;
     private final AdminCategoryRepository adminCategoryRepo;
+    private final UserFeignClient userFeignClient;
+    
+//    todo : 1. image 서버에 postid보내면 해당 포스트 img들 받아오기
+//    todo : 2. image 서버에 List<Long> postId 보내면 첫번째 img list형태로 받아오기
 
 //--------------------------- 포스트 생성 --------------------------------
     @Override
@@ -44,13 +50,13 @@ public class PostServiceImpl implements PostService {
                         .content(responseMakePostDto.getContent())
                         .build();
 
-        Post resultPost = postRepo.save(post);//save는 저장한 객체를 그대로 반환
+        Post resultPost = postRepo.save(post);
         Long postId = resultPost.getPostId();
 
 //        2.해시태그 저장
         makeHashTag(responseMakePostDto.getHashTagList(),postId);
 
-//        3. userTag저장(todo : 1 ) nickname -> userUuid)
+//        3. userTag저장
         makePostUserTag(responseMakePostDto.getUserTagList(),postId);
 
 //        3. category에 저장
@@ -76,7 +82,7 @@ public class PostServiceImpl implements PostService {
         for (String nickName :checkUserTag){
             postUserTagRepo.save(PostUserTag.builder()
                     .postId(postId)
-                    .nickname("")//todo : 1-1 ) 여기에 userUuid바꾼거 넣어야함!
+                    .nickname(nickName)
                     .build());
         }
     }
@@ -87,13 +93,6 @@ public class PostServiceImpl implements PostService {
             categoryRepo.save(Category.builder().adminCategoryId(id).postId(postId).build());
         }
     }
-
-
-    //@nickname으로 멘션시 nickname을 이용해서 userUuid값 가져오기
-   /* private String findUserUuidByNickname(String nickname){
-        //todo: 1-2 ) User서버로 넘어가서 uuid가져오는 로직
-        return "userUuid2";
-    }*/
 
 //---------------------------------------------------------------------------
 
@@ -116,18 +115,16 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponsePostDetailDto findPost(Long postId) {
-        //todo : 1. user-server에서 데이터 받기 ( profileImage, nickName )
 
-        //2. post불러오기 (내용, 업데이트 시간, 본인 포스트 여부)
         Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("post가 없음"));
 
+        UserFeignDto imgAndNickname = userFeignClient.findImgAndNickname(post.getUserUuid());
+
         return ResponsePostDetailDto.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Post was found successfully")
                 .postId(post.getPostId())
                 .postUserUUID(post.getUserUuid())
-                .profileImage("")//todo:
-                .nickName("")//todo:
+                .profileImage(imgAndNickname.getProfileImage())
+                .nickName(imgAndNickname.getNickname())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
                 .postImgs(List.of())//todo:
@@ -138,25 +135,21 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<selectedCategoryListDto> findPostCategoryList(Long postId) {
-        List<selectedCategoryListDto> adminCategoryList= new ArrayList<>();
 
-        for(AdminCategory category : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))){
-            adminCategoryList.add(new selectedCategoryListDto(category.getAdminCategoryId(), category.getAdminCategoryName()));
-        }
+        return adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId)).stream()
+                .filter(Objects::nonNull)
+                .map(category -> new selectedCategoryListDto(category.getAdminCategoryId(),category.getAdminCategoryName())).toList();
 
-        return adminCategoryList;
     }
 
-    //----------------------------포스트 좋아요 누르기------------------------------------
+//-------------------------------포스트 좋아요 누르기------------------------------------
     @Override
     public boolean clickLike(RequestCheckLikedDto requestCheckLikedDto) {
 
         String userUuid = requestCheckLikedDto.getUuid();
         Long postId = requestCheckLikedDto.getPostId();
 
-        boolean checkClickLike = postLikeRepo.findByUserUuidAndPostId(userUuid,postId) != null ? true : false; //T-좋아요 누른 사람
-
-        if(checkClickLike){
+        if(postLikeRepo.findByUserUuidAndPostId(userUuid, postId) != null){
             postLikeRepo.deleteByUserUuidAndPostId(userUuid,postId);
             postLikeRepo.countByPostId(postId);
             return false;
@@ -165,17 +158,16 @@ public class PostServiceImpl implements PostService {
             postLikeRepo.countByPostId(postId);
             return true;
         }
+
     }
 
 //------------------------------포스트 좋아요 클릭 갯수 및 클릭된 여부----------------------------------------------
 
     @Override
-    public boolean checkLiked(RequestCheckLikedDto requestCheckLikedDto) {
-        boolean checkClickLike =
-                postLikeRepo.findByUserUuidAndPostId(
-                        requestCheckLikedDto.getUuid(), requestCheckLikedDto.getPostId())
-                        != null ? true : false;
-        return checkClickLike;
+    public boolean checkLiked(String uuid, Long postId) {
+        return postLikeRepo.findByUserUuidAndPostId(
+                uuid, postId)
+                != null;
     }
 
     @Override
@@ -208,52 +200,21 @@ public class PostServiceImpl implements PostService {
             makePostUserTag(requestUpdatePostDto.getUserTagList(),postId);
             makeCategory(requestUpdatePostDto.getCategoryIdList(),postId);
 
-            List<selectedCategoryListDto> categoryList = new ArrayList<>();
-            for (Long id : categoryRepo.findAdminCategoryIdByPostId(postId)){
-                AdminCategory adminCategory = adminCategoryRepo.findById(id).orElseThrow(()->new RuntimeException("관리자 카테고리에 해당 카테고리id가 없습니다."));
-                categoryList.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(),adminCategory.getAdminCategoryName()));
-            }
+            UserFeignDto imgAndNickname = userFeignClient.findImgAndNickname(post.getUserUuid());
 
             return ResponsePostDetailDto.builder()
-                    .statusCode(HttpStatus.OK.value())
-                    .message("Post was found successfully")
                     .postId(post.getPostId())
                     .postUserUUID(post.getUserUuid())
-                    .profileImage("")//todo:
-                    .nickName("")//todo:
+                    .profileImage(imgAndNickname.getProfileImage())
+                    .nickName(imgAndNickname.getNickname())
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
                     .postImgs(List.of())//todo:
                     .build();
 
-
     }
 
 //----------------------------메인 페이지에서 post 추천-----------------------------------------
-
-
-    @Override
-    public List<Long> recommendPostForMain(RequestPostListForMain requestPostListForMain) {
-
-/*
-        String userUuid = requestPostListForMain.getUserUuid();
-        Long tab = requestPostListForMain.getTab();
-        List<Long> categoryList = requestPostListForMain.getCategoryList();
-
-        if (tab == 1L) {//전체 탭 선택(본인의 게시물도 포함되서 전체를 조회)
-            return Optional.ofNullable(categoryList)//유저가 고른 카테고리 리스트
-                    .filter(list -> !list.isEmpty()) //카테고리 리스트가 빈값이 아닐경우
-                    .map(list -> postIdList(list)) //해당 카테고리를 가진 postId 가져옴 : List<Long>
-                    .orElseGet(() -> postRepo.findPostIdBy());//고른 카테고리 리스트가 없을(list.isEmpty())일 경우 전체 리스트 최신순 조회 : List<Long>
-        } else if (tab == 2L) {//팔로우 탭 선택(해당 유저가 팔로우한 유저의 게시물만 보여줌)
-            return Optional.ofNullable(categoryList)
-                    .filter(list -> !list.isEmpty())
-                    .map(list -> postRepo.findPostIdByUserUuidInAndPostIdIn(findFollowingUuids(userUuid), postIdList(list)))
-                    .orElseGet(() -> postRepo.findPostIdByUserUuidIn(findFollowingUuids(userUuid)));
-        }
-*/
-        return List.of();
-    }
 
     public List<Long> postIdList(List<Long> categoryList){
         Map<Long, Long> frequencyMap = categoryRepo.findPostIdByAdminCategoryIdIn(categoryList).stream().filter(Objects::nonNull)
@@ -265,30 +226,20 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList());
     }
 
-    //todo : user서버가서 user에 대한 following Uuid 가져오기
-    public List<String> findFollowingUuids(String userUuid){
-        // 무언가 로직이 있겠지...
-        return List.of("user2","user3");
-    }
-
-
 //----------------------------------------------------------
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
     @Override
     public ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto) {
 
         Long postId = requestDto.getPostId();
-        String userUuid = requestDto.getUuid();
 
         String title1 = "@Nickname 님의 게시물";
         String title2 = "@Nickname 님의 게시물과 비슷한 게시물";
-        List<Long> postIdList1 = new ArrayList<>();
-        List<Long> postIdList2 = new ArrayList<>();
 
         Post post = postRepo.findByPostId(postId);
 
-        postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId).get(0));
-        postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId));
+        List<Long> postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId).get(0));
+        List<Long> postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId));
 
         List<ResponsePostDto> postList1 = new ArrayList<>();
         List<ResponsePostDto> postList2 = new ArrayList<>();
@@ -298,9 +249,9 @@ public class PostServiceImpl implements PostService {
         postIdList2.stream().filter(Objects::nonNull)
                 .forEach(id -> postList2.add(new ResponsePostDto(id,null)));
 
-        List<selectedCategoryListDto> categoryListDtos = new ArrayList<>();
+        List<selectedCategoryListDto> categoryList = new ArrayList<>();
         for (AdminCategory adminCategory : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))) {
-            categoryListDtos.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(), adminCategory.getAdminCategoryName()));
+            categoryList.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(), adminCategory.getAdminCategoryName()));
         }
 
         return ResponseDetailPostsDto.builder()
@@ -308,7 +259,7 @@ public class PostServiceImpl implements PostService {
                 .title2(title2)
                 .postList1(postList1)
                 .postList2(postList2)
-                .categoryList(categoryListDtos)
+                .categoryList(categoryList)
                 .postUuid(post.getUserUuid())
                 .build();
     }
@@ -329,15 +280,15 @@ public class PostServiceImpl implements PostService {
 // -------------------main  chooseTab 최신, 좋아요, 팔로잉 순
 
     @Override
-    public ResponseTabDto postListTab(RequestTabDto requestTabDto, Integer page, Integer size) {
+    public ResponseTabDto postListTab(Integer tab, String uuid, Integer page, Integer size) {
         ResponseTabDto responseTabDto = new ResponseTabDto();
 
         PageRequest pageRequest = PageRequest.of(page,size);
 
-        switch (requestTabDto.getTab()){
+        switch (tab){
             case 0 -> {//최신
                 return ResponseTabDto.builder()
-                                .postIdList(
+                                .postList(
                                         postRepo.findPostIdBy(pageRequest).getContent()
                                                         .stream().filter(Objects::nonNull)
                                                         .map(e -> ResponsePostDto.builder()
@@ -347,12 +298,10 @@ public class PostServiceImpl implements PostService {
                                                         ).toList()
                                 )
                                .build();
-//                responseTabDto.setPostIdList(postRepo.findPostIdBy());
             }
             case 1 -> {//좋아요
-
                 return ResponseTabDto.builder()
-                        .postIdList(
+                        .postList(
                                 postLikeRepo.findPostIdBy(pageRequest).getContent()
                                         .stream().filter(Objects::nonNull)
                                         .map(e->ResponsePostDto.builder()
@@ -362,15 +311,6 @@ public class PostServiceImpl implements PostService {
                                         )
                                         .toList()
                         ).build();
-
-
-/*                postLikeRepo.findPostIdBy().stream().filter(Objects::nonNull)
-                        .collect(Collectors.groupingBy(e->e,Collectors.counting()))
-                        .entrySet().stream()
-                        .sorted((e1,e2)->Long.compare(e2.getValue(),e1.getValue()))
-                        .map(Map.Entry::getKey)
-                        .collect(Collectors.toList());*/
-
             }
             case 2 -> {//팔로잉
 //                responseTabDto.setPostIdList(postRepo.findPostIdByUserUuidIn(findFollowingUuids(requestTabDto.getUuid())));
@@ -381,15 +321,15 @@ public class PostServiceImpl implements PostService {
     }
 
 
-//-----------------  main 최신 + 카테고리
-
+//-----------------  main 최신 + 카테고리 --------------------------
     @Override
     public ResponseTabDto postListCategory(List<Long> categoryIds) {
-
-        return new ResponseTabDto(/*postIdList(categoryIds)*/);
+        return new ResponseTabDto(postIdList(categoryIds).stream().filter(Objects::nonNull)
+                .map(id -> new ResponsePostDto(id,null))
+                .toList());
     }
 
-//---------------- 해시태그 검색
+//---------------- 해시태그 검색---------------
     @Override
     public List<String> findhashTag(String hashTag) {
         return hashTagRepo.findHashTagByKeyword(Normalizer.normalize(hashTag,Normalizer.Form.NFD)).stream()

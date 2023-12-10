@@ -13,8 +13,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class ResponsePostDetailDto {
-    private Integer statusCode;
-    private String message;
     private Long postId;
     private String postUserUUID;
     private String profileImage;

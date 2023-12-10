@@ -1,6 +1,7 @@
 package com.todaytrend.postservice.post;
 
 
+import com.todaytrend.postservice.post.controller.PostController;
 import com.todaytrend.postservice.post.controller.api.PostApiContoller;
 import org.bouncycastle.util.encoders.UTF8;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.text.Normalizer;
 import java.util.List;
 
-@WebMvcTest(PostApiContoller.class)
+@WebMvcTest(PostController.class)
 @AutoConfigureDataJpa
 public class ContollerTest {
 /*@WebMvcTest(YourController.class)
@@ -59,6 +60,13 @@ public class YourControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(Normalizer.normalize("가나다",Normalizer.Form.NFC)))
                 .andDo(System.out::println);*/
+
+    }
+
+    @Test
+    void main_tab_포스트리스트() {
+
+
 
     }
 
