@@ -74,6 +74,7 @@ public class PostController {
         return new ResponseEntity<>(postService.userLikePost(uuid), HttpStatus.OK);
     }
 
+//  게시물 업데이트
     @PutMapping("")
     public ResponseEntity<?> updatePost(@RequestParam("postId")Long postId, @RequestBody RequestUpdatePostDto requestPostDto){
         return new ResponseEntity(postService.updatePost(postId, requestPostDto), HttpStatus.OK);

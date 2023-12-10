@@ -34,7 +34,7 @@ public interface PostService {
     //좋아요 개수
     Integer checkLikeCnt(Long postId);
 
-    List<String> postLikeList(Long postId);
+    List<String> postLikeList(Long postId);//todo : img도 가져와야할꺼같은데
 
     List<Long> userLikePost(String UUID);
 
