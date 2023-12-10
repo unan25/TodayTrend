@@ -99,10 +99,7 @@ class PostServiceApplicationTests {
     void 게시물_상세보기_및_하단_게시물_리스트(){
         assertThat(postService.findPost(3L).getPostUserUUID()).isEqualTo("uuid1");
 
-        assertThat(postService.detailPostsList(RequestCheckLikedDto.builder()
-                        .uuid("uuid1")
-                        .postId(3L)
-                .build()).getPostList1()).isEmpty();
+        assertThat(postService.detailPostsList("uuid1",3L).getPostList1()).isEmpty();
 
         /*    private String title1;
     private String title2;

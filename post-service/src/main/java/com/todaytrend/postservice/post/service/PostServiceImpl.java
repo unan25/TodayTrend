@@ -229,9 +229,7 @@ public class PostServiceImpl implements PostService {
 //----------------------------------------------------------
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
     @Override
-    public ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestDto) {
-
-        Long postId = requestDto.getPostId();
+    public ResponseDetailPostsDto detailPostsList(String uuid, Long postId) {
 
         String title1 = "@Nickname 님의 게시물";
         String title2 = "@Nickname 님의 게시물과 비슷한 게시물";
