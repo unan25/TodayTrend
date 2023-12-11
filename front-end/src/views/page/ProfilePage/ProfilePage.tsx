@@ -46,7 +46,7 @@ const ProfilePage: React.FC = () => {
   // axios
   const getUserInfo = async () => {
     try {
-      const response = await axios.get(`/api/users/myPage/${uuid}`);
+      const response = await axios.get(`/api/users/profile/${uuid}`);
       setUserInfo(response.data);
     } catch (err) {
       console.error(err);

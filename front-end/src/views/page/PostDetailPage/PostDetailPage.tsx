@@ -1,8 +1,58 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./PostDetailPage.module.css";
+import axios from "axios";
 
 const PostDetailPage: React.FC = () => {
+  const [content, setContent] = useState<string>(
+    "@임승혁 안녕하세요! \n 임승혁입니다. #해시태그"
+  );
+
+  const { postId } = useParams();
+
+  const getUUID = async (nickname: string) => {
+    try {
+      const response = await axios.get(`/api/users/nickname/${nickname}`);
+      const uuid = response.data[0].uuid;
+      console.log(uuid);
+
+      return uuid;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const renderContentWithLinks = () => {
+    const words = content.split(" ");
+
+    return words.map((word, index) => {
+      if (word.startsWith("@")) {
+        const username = word.substring(1);
+
+        return (
+          <a
+            key={index}
+            className={styles.userTag}
+            href={`/profile/${username}`}
+          >
+            {word}{" "}
+          </a>
+        );
+      } else if (word.startsWith("#")) {
+        const hashtag = word.substring(1);
+        return (
+          <a key={index} className={styles.hashTag} href={`/search/${hashtag}`}>
+            {word}{" "}
+          </a>
+        );
+      } else {
+        return <span key={index}>{word} </span>;
+      }
+    });
+  };
+
+  useEffect(() => {}, []);
+
   return (
     <div className="page-body">
       <div className={styles.post_header}>
@@ -11,13 +61,13 @@ const PostDetailPage: React.FC = () => {
             src="https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg"
             className={styles.post_header__profile_image}
           />
-          <div className={styles.post_header__profile_nickName}>닉네임</div>
+          <div className={styles.post_header__profile_nickNamenp}>닉네임</div>
         </div>
       </div>
       <div className={styles.post_body}>
         <div className={styles.post_body_section1}>
           <img
-            src="https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg"
+            src="#"
             alt="#"
             className={styles.post_body_section1__post_image}
           />
@@ -46,7 +96,7 @@ const PostDetailPage: React.FC = () => {
           </div>
           <div className={styles.post_body_section2__contentBox}>
             <div className={styles.post_body_section2__contentBox__content}>
-              content
+              {renderContentWithLinks()}
             </div>
             <div className={styles.post_body_section2__contentBox__box}>
               <div

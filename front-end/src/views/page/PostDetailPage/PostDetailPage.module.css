@@ -1,19 +1,17 @@
 .post_header {
   display: flex;
   width: 90%;
-  border: 1px dotted black;
 }
 
 .post_header__profile {
   display: flex;
-  padding: 0rem 2rem;
-  border: 1px dotted black;
+  padding: 2rem;
   align-items: center;
 }
 
 .post_header__profile_image {
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 50%;
   margin-right: 2rem;
 }
@@ -22,7 +20,6 @@
   display: flex;
   width: 90%;
   padding: 3rem 0rem 10rem 0rem;
-  border: 1px dotted black;
 }
 
 .post_body_section1 {
@@ -30,7 +27,6 @@
   justify-content: center;
   padding: 3rem 0rem;
   width: 50%;
-  border: 1px dotted black;
 }
 
 .post_body_section1__post_image {
@@ -42,7 +38,8 @@
 
 .post_body_section2 {
   width: 50%;
-  border: 1px dotted black;
+
+  padding: 2rem;
 }
 
 .post_body_section2_header {
@@ -64,7 +61,6 @@
 }
 
 .post_body_section2__contentBox {
-  border: 1px dotted black;
   height: 95%;
   display: flex;
   flex-direction: column;
@@ -77,6 +73,11 @@
   padding: 1rem;
   border-radius: 2rem;
   height: 40%;
+}
+
+.userTag,
+.hashTag {
+  color: skyblue;
 }
 
 .post_body_section2__contentBox__box {
