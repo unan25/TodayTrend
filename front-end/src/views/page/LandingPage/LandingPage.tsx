@@ -60,40 +60,10 @@ function LandingPage() {
     }
   };
 
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    'posts',
-    ({ pageParam = 1 }) =>
-      fetchPost({
-        page: pageParam,
-        size: 6,
-        categoryList: categoryList,
-        uuid: uuid,
-        tab: tab,
-      }),
-    {
-      //lastPage = 서버에서 받은 현재 페이지의 데이터
-      getNextPageParam: (lastPage, allPosts) => {
-        return lastPage && lastPage.page < lastPage.totalPage
-          ? lastPage.page + 1
-          : null;
-      },
-      staleTime: 60000,
-      retry: false, // 1분주기 업데이트
-    }
-  );
-
-  if (!data) return <div>데이터 가져오는중</div>;
+  
 
   //카테고리 로직 ------------------------------------------------------------
   const [categories, setCategories] = useState<CategoryType[]>([
-    { id: 1, name: '남' },
-    { id: 2, name: '여' },
-    { id: 3, name: '미니멀' },
-    { id: 4, name: '스트릿' },
-    { id: 5, name: '이지캐주얼' },
-    { id: 6, name: '비즈니스캐주얼' },
-    { id: 7, name: '레트로' },
-    { id: 8, name: '하이루' },
   ]);
 
   // 메인페이지 로딩 카테고리리스트 받아오기
@@ -103,7 +73,8 @@ function LandingPage() {
         const response = await axios.get<CategoryType[]>(
           'api/post/admincategorylist'
         );
-        setCategories(response.data);
+        console.log(categories)
+        setCategories(response.data); 
       } catch (error) {
         console.log('카테고리 리스트 못 받는 중', error);
       }
@@ -145,6 +116,30 @@ function LandingPage() {
   const handleMainCategoryClick = (categoryId: number) => {
     toggleCategory(categoryId);
   };
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
+    'posts',
+    ({ pageParam = 0 }) =>
+      fetchPost({
+        page: pageParam,
+        size: 6,
+        categoryList: categoryList,
+        uuid: uuid,
+        tab: tab,
+      }),
+    {
+      //lastPage = 서버에서 받은 현재 페이지의 데이터
+      getNextPageParam: (lastPage, allPosts) => {
+        
+        return lastPage && lastPage.page < lastPage.totalPage
+          ? lastPage.page + 1
+          : null;
+      },
+      staleTime: 60000,
+      retry: false, // 1분주기 업데이트
+    }
+  );
+
+  if (!data) return <div>데이터 가져오는중</div>;
   return (
     <div>
       <div>
