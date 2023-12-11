@@ -20,9 +20,10 @@ public class SocialUserService {
         SocialUser user =
                 socialUserRepository.findByEmail(createSocialUserDto.getEmail()).orElse(null);
         
-        // DB에 Social 유저가 없다면 회원가입
+        // 첫 로그인 시점 / 회원정보 작성 X
         if (user == null) {
             SocialUser temp = socialUserRepository.save(createSocialUserDto.toEntity(Role.GUEST));
+
             return LoginResponseDto
                     .builder()
                     .uuid(temp.getUuid())
@@ -31,9 +32,10 @@ public class SocialUserService {
                     .build();
         }
         
-        // createSocialUserDto에 uuid가 있다면 UserInfo 작성x
+        // 회원정보 작성 O
         if (createSocialUserDto.getUuid() != null) {
             user.changeRole(Role.USER);
+
             return LoginResponseDto
                     .builder()
                     .uuid(user.getUuid())
@@ -42,17 +44,7 @@ public class SocialUserService {
                     .build();
         }
         
-        // UserInfo 작성 후, 정상적인 회원가입 시 Role 변겨
-        if (Role.GUEST == user.getRole()) {
-            return LoginResponseDto
-                    .builder()
-                    .uuid(user.getUuid())
-                    .userType("SOCIAL")
-                    .role(user.getRole())
-                    .build();
-        }
-        
-        // Login 성공 시, LoginResponseDto 반환
+        // 로그인
         return LoginResponseDto.builder()
                 .uuid(user.getUuid())
                 .role(user.getRole())

@@ -1,4 +1,4 @@
-package com.todaytrend.apigatewayserver.filter.exceptionpath;
+package com.todaytrend.apigatewayserver.config.exceptionpath;
 
 import org.springframework.stereotype.Component;
 
@@ -24,6 +24,10 @@ public class ExceptionPathManager {
                 "/api/users/signup",
                 "/api/users/findId"
                 ));
+    }
+
+    public Set<String> getExceptionPaths() {
+        return this.exceptionPaths;
     }
 
     public boolean isExceptionPath(String path) {

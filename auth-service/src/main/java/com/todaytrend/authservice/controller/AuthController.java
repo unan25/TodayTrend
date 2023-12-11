@@ -37,6 +37,7 @@ public class AuthController {
     @PostMapping("signup")
     public ResponseEntity<?> createUser(@Valid @RequestBody RequestUserDto requestUserDto) {
         ResponseUserDto responseUserDto = userService.createUser(requestUserDto);
+        log.info("LocalUser 회원가입 완료");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUserDto);
     }
 
@@ -46,8 +47,9 @@ public class AuthController {
         LoginResponseDto loginResponseDto = userService.login(requestUserDto);
         LocalUser user = userService.findByUuid(loginResponseDto.getUuid());
 
-        cookieUtils.setTokenCookies(user,response);
+        cookieUtils.setTokenCookies(user,response); // 토큰 생성 및 쿠키에 저장
 
+        log.info("LocalUser 로그인 완료");
         return ResponseEntity.ok(loginResponseDto);
     }
 
@@ -55,21 +57,20 @@ public class AuthController {
     @PostMapping("social-login")
     public ResponseEntity<?> socialLogin(@RequestBody CreateSocialUserDto createSocialUserDto, HttpServletResponse response) {
         LoginResponseDto loginResponseDto = socialUserService.login(createSocialUserDto);
-
-        System.out.println("userType" + loginResponseDto.getUserType());
-
         SocialUser user = socialUserService.findByUuid(loginResponseDto.getUuid());
 
-        cookieUtils.setTokenCookies(user, response);
-
+        cookieUtils.setTokenCookies(user, response); // 토큰 생성 및 쿠키에 저장
+        
+        log.info("소셜 로그인 완료");
         return ResponseEntity.ok(loginResponseDto);
     }
 
     // 로그아웃
     @PostMapping("logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        cookieUtils.deleteCookies(response, "access_token", "refresh_token");
+        cookieUtils.deleteCookies(response, "access_token", "refresh_token"); // 쿠키에서 토큰 삭제
         // 204를 반환하여 로그아웃과 토큰 값 null 처리를 알림
+        log.info("로그아웃");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -81,6 +82,7 @@ public class AuthController {
 
         response.addCookie(newAccessTokenCookie);
         // 204를 반환하여 엑세스 토큰의 재발급 성공적 알림
+        log.info("토큰 재발급 완료");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -90,8 +92,9 @@ public class AuthController {
     public ResponseEntity<?> deactivateUser(@RequestParam String uuid,
                                             @RequestParam String password, HttpServletResponse response){
         userService.deactivateUser(uuid, password);
-        cookieUtils.deleteCookies(response, "access_token", "refresh_token");
-
+        cookieUtils.deleteCookies(response, "access_token", "refresh_token"); // 쿠키에서 토큰 삭제
+        
+        log.info("LocalUser 회원 탈퇴 완료");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -106,14 +109,13 @@ public class AuthController {
         }
     }
 
+    // Password 찾기
     @PostMapping("findPassword")
     public ResponseEntity<?> findPwEmail(@RequestParam("userEmail") String userEmail) {
         // 임시 비밀번호 생성
         String tmpPassword = userEmailService.getTmpPassword();
-        
         // 임시 비밀번호 저장
         userEmailService.updatePassword(tmpPassword, userEmail);
-        
         // 메일 생성 및 전송
         MailDto mailDto = emailService.createMail(tmpPassword, userEmail);
         emailService.sendEmail(mailDto);
@@ -121,6 +123,17 @@ public class AuthController {
         log.info("임시 비밀번호 전송 완료");
         return ResponseEntity.status(HttpStatus.OK).body("임시 비밀번호 발송 완료");
     }
-
+    
+    
+    // Password 변경
+    @PutMapping("change-password")
+    public ResponseEntity<?> changePassword(@RequestParam String uuid,
+                                                    @RequestParam String currentPassword,
+                                                    @RequestParam String newPassword,
+                                                    @RequestParam String confirmPassword) {
+        LocalUser localUser = userService.changePassword(uuid, currentPassword, newPassword, confirmPassword);
+        log.info("비밀번호 변경 완료");
+        return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경 완료");
+    }
 }
 

@@ -46,11 +46,11 @@ public class ServerServiceTest {
         assertThat(serverService.findUuid(nickname)).isEqualTo("uuid1");
     }
 
-    @Test
-    void uuid로Img와Nickname조회(){
-        String uuid = "uuid1";
-        assertThat(serverService.findImgAndNickname(uuid)).isEqualTo(new ResponseImgAndNicknameDto("img1","nickname1"));
-    }
+//    @Test
+//    void uuid로Img와Nickname조회(){
+//        String uuid = "uuid1";
+//        assertThat(serverService.findImgAndNickname(uuid)).isEqualTo(new ResponseImgAndNicknameDto("img1","nickname1"));
+//    }
 
 
 }

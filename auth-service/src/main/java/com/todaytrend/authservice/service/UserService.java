@@ -22,7 +22,7 @@ public class UserService {
 
     public ResponseUserDto createUser(RequestUserDto requestUserDto) {
         // 이메일 중복 체크
-        if(localUserRepository.findByEmail(requestUserDto.getEmail()).isPresent())
+        if (localUserRepository.findByEmail(requestUserDto.getEmail()).isPresent())
             throw new IllegalArgumentException("이미 등록된 이메일 입니다.");
 
         LocalUser localUser = requestUserDto.toEntity();
@@ -44,7 +44,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         // active 상태 확인
-        if(!localUser.isActive()){
+        if (!localUser.isActive()) {
             throw new IllegalArgumentException("회원 탈퇴한 유저입니다.");
         }
 
@@ -59,7 +59,7 @@ public class UserService {
     // 소셜 유저 회원 탈퇴는 고민 해야 될 듯. (Social 연동 해제 등의 방법)
     public void deactivateUser(String uuid, String password) {
         LocalUser localUser = localUserRepository.findByUuid(uuid)
-                .orElseThrow(()-> new NotFoundException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다."));
         if (!bCryptPasswordEncoder.matches(password, localUser.getPassword())) {
             throw new IllegalArgumentException("패스워드가 불일치 합니다.");
         }
@@ -68,9 +68,11 @@ public class UserService {
         localUserRepository.save(localUser);
     }
 
+    //todo : 로컬 유저용 회원 탈퇴, 메시지 확인용
+
     // 이메일 중복 체크
     // 존재하면 ture
-    public boolean isEmailDuplicated(String email){
+    public boolean isEmailDuplicated(String email) {
         return socialUserRepository.findByEmail(email).isPresent()
                 || localUserRepository.findByEmail(email).isPresent();
     }
@@ -80,9 +82,23 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 입니다."));
     }
 
+    // 패스워드 변경
+    public LocalUser changePassword(String uuid, String currentPassword, String newPassword, String confirmPassword) {
+        LocalUser localUser = localUserRepository.findByUuid(uuid)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. (패스워드 변경)"));
 
-    public LocalUser findByLocalUserId(Long localUserId) {
-        return localUserRepository.findByLocalUserId(localUserId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        // 현재 비밀번호 비교
+        if (!bCryptPasswordEncoder.matches(currentPassword, localUser.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 변경 비밀번호와 변경 확인 비밀번호 비교
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalArgumentException("변경 비밀번호와 변경 확인 비밀번호가 일치하지 않습니다.");
+        }
+
+        // newPassword로 변경 및 암호화 후 저장
+        localUser.updatePassword(bCryptPasswordEncoder.encode(newPassword));
+        return localUserRepository.save(localUser);
     }
 }

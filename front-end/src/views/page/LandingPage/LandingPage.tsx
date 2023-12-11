@@ -52,7 +52,7 @@ function LandingPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get<CategoryList[]>(
-          'api/post/categoryFilter'
+          'api/post/admin-categorylist'
         );
         setCategories(response.data);
       } catch (error) {

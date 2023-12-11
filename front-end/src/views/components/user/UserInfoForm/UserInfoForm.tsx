@@ -10,6 +10,9 @@ import AlertBox from "../../../components/common/AlertBox/AlertBox";
 // type
 import { UserInfo } from "interface/UserInterface";
 
+// image
+import profile from "../../../../images/user/basic.jpg";
+
 // styles
 import formStyle from "../../../../module/styles/form.module.css";
 
@@ -17,18 +20,25 @@ type Props = {
   fields: UserInfo;
   message: string;
   handleChange: (field: string) => void;
+  image: File[];
+  setFunction: (file: File[]) => void;
 };
 
-const UserInfoForm: React.FC<Props> = ({ fields, message, handleChange }) => {
+const UserInfoForm: React.FC<Props> = ({
+  fields,
+  message,
+  handleChange,
+  image,
+  setFunction,
+}) => {
   // State
-  const [UploadedFile, SetUploadedFile] = useState("");
   const genders = ["", "MALE", "FEMALE"];
 
   //------------------------------------------------------------------------------
 
   return (
     <div className={formStyle.signup_form}>
-      <DropZone setFunction={SetUploadedFile} />
+      <DropZone setFunction={setFunction} image={image} />
       <OnChangeInput
         type="text"
         placeholder="이름"

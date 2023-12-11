@@ -26,6 +26,7 @@ import { RootState } from "redux/store";
 import AccountForm from "../../components/user/AccountForm/AccountForm";
 import UserInfoForm from "../../components/user/UserInfoForm/UserInfoForm";
 import { UserInfo, SocialUser } from "interface/UserInterface";
+import axios from "axios";
 
 function SignUpPage() {
   const userType = useSelector((state: RootState) => state.user.userType);
@@ -40,6 +41,7 @@ function SignUpPage() {
   //------------------------------------------------------------------------------
 
   const [signInStep, setSignInStep] = useState(true);
+  const [image, setImage] = useState<File[]>([]);
 
   const onClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     setSignInStep((prev) => !prev);
@@ -61,30 +63,58 @@ function SignUpPage() {
     IsValidated: accountIsValidated,
   } = useAccountValidation();
 
+  const getImageUrl = async (image: File[]) => {
+    const formData = new FormData();
+
+    formData.append("image", image[0]);
+
+    const response = await axios.post("/api/images/profile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data.profileImage;
+  };
+
   // sign-up
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // 로컬 회원가입
+
     if (userType !== "SOCIAL") {
-      let account = {
-        email: accountFields.email,
-        password: accountFields.password,
-      };
-
-      const response = await dispatch(createAccount(account));
-
-      let userInfo: UserInfo = {
-        uuid: response.payload.UUID_temp,
-        ...userInfoFields,
-      };
-
       try {
+        let account = {
+          email: accountFields.email,
+          password: accountFields.password,
+        };
+
+        const response = await dispatch(createAccount(account));
+
+        let imageURL: string = "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
+
+        if (image.length) {
+          console.log(image);
+          imageURL = await getImageUrl(image);
+        }
+
+        let userInfo: UserInfo = {
+          uuid: response.payload.UUID_temp,
+          profileImage: imageURL,
+          ...userInfoFields,
+        };
+
+        console.log(userInfo);
+
         dispatch(updateUserInfo(userInfo));
         navigate("/");
       } catch (err: any) {
         console.error(err);
       }
     }
+
+    // 소셜 회원가입
 
     if (userType === "SOCIAL") {
       let account: SocialUser = {
@@ -94,10 +124,18 @@ function SignUpPage() {
 
       dispatch(signInSocialUser(account));
 
-      let userInfo: UserInfo = {
-        uuid: UUID,
-        ...userInfoFields,
-      };
+      let imageURL: string = "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
+
+        if (image.length) {
+          console.log(image);
+          imageURL = await getImageUrl(image);
+        }
+
+        let userInfo: UserInfo = {
+          uuid: UUID,
+          profileImage: imageURL,
+          ...userInfoFields,
+        };
 
       try {
         dispatch(updateUserInfo(userInfo));
@@ -108,6 +146,7 @@ function SignUpPage() {
     }
   };
 
+  // useEffect
   useEffect(() => {
     if (userType === "SOCIAL") {
       setSignInStep(false);
@@ -130,6 +169,8 @@ function SignUpPage() {
             fields={userInfoFields}
             message={userInfoMessage}
             handleChange={userInfoHandleChange}
+            image={image}
+            setFunction={setImage}
           />
         )}
         {userType !== "SOCIAL" && (

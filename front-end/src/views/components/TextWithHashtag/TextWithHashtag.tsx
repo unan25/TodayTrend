@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./TextWithHashtag.module.css";
+import axios from "axios";
 
 type TagSwitch = {
   startPoint: number;
@@ -148,6 +149,16 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
     }
   };
 
+  
+  const fetchData = async (temp: string) => {
+    try{
+    const resonse = await axios.get(`/api/users/nickname/${temp}`)
+    console.log(resonse.data);
+  } catch (err) {
+    console.log("해당하는 유저가 없습니다.")
+  }
+  }
+
   // effect
   useEffect(() => {
     if (cursor) {
@@ -158,7 +169,7 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
   useEffect(() => {
     const temp = createHashtag();
     if (temp) {
-      console.log("해시태그 = " + temp);
+      fetchData(temp);     
     }
   }, [content]);
 

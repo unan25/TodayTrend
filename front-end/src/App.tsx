@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 // css
 import styles from "./App.module.css";
@@ -21,17 +21,15 @@ function App(): JSX.Element {
   return (
     <div className={styles.app}>
       <NavBar />
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/upload-post" element={<UploadPostPage />} />
-          <Route path="/signin" element={<SignInPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/profile/:userId" element={<ProfilePage />} />
-          <Route path="/post/:postId" element={<PostDetailPage />} />
-        </Routes>
-      </Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/upload-post" element={<UploadPostPage />} />
+        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/profile/:uuid" element={<ProfilePage />} />
+        <Route path="/post/:postId" element={<PostDetailPage />} />
+      </Routes>
       <SideBar />
     </div>
   );
