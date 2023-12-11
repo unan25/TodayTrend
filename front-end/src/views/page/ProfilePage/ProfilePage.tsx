@@ -12,10 +12,16 @@ import { UserInfo } from "interface/UserInterface";
 import FollowButton from "../../../views/components/user/FollowButton/FollowButton";
 //
 import styles from "./ProfilePage.module.css";
+import FollowListModal from "../../../views/components/user/FollowListModal/FollowListModal";
 
 type FollowCount = {
   follower: number;
   following: number;
+};
+
+type ListModal = {
+  follower: boolean;
+  following: boolean;
 };
 
 const ProfilePage: React.FC = () => {
@@ -29,15 +35,19 @@ const ProfilePage: React.FC = () => {
     following: 0,
   });
 
+  const [modal, setModal] = useState<ListModal>({
+    follower: false,
+    following: false,
+  });
 
+  // 대상 유저
   const { uuid } = useParams();
 
   // axios
   const getUserInfo = async () => {
     try {
-      const response = await axios.get(`/api/users/myPage/${uuid}`);
+      const response = await axios.get(`/api/users/profile/${uuid}`);
       setUserInfo(response.data);
-
     } catch (err) {
       console.error(err);
     }
@@ -52,26 +62,6 @@ const ProfilePage: React.FC = () => {
       ).data;
 
       seFollowCount({ follower: followCount, following: followingCount });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getFollwerList = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-    try {
-      const response = await axios.get(`/api/users/follower-list/${uuid}`);
-
-      console.log(response);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const getFollwingList = async () => {
-    try {
-      const response = await axios.get(`/api/users/following-list/${uuid}`);
-
-      console.log(response);
     } catch (err) {
       console.error(err);
     }
@@ -116,13 +106,29 @@ const ProfilePage: React.FC = () => {
             </div>
             <div className={styles.profile_section2__countBox__followCount}>
               <div>팔로워</div>
-              <Link onClick={getFollwerList} to="">
+              <Link
+                onClick={(e) =>
+                  setModal({
+                    follower: true,
+                    following: false,
+                  })
+                }
+                to=""
+              >
                 {followCount.follower}
               </Link>
             </div>
             <div className={styles.profile_section2__countBox__followingCount}>
               <div>팔로잉</div>
-              <Link onClick={getFollwingList} to="">
+              <Link
+                onClick={(e) =>
+                  setModal({
+                    follower: false,
+                    following: true,
+                  })
+                }
+                to=""
+              >
                 {followCount.following}
               </Link>
             </div>
@@ -136,7 +142,7 @@ const ProfilePage: React.FC = () => {
                 수정
               </Link>
             ) : (
-              <FollowButton from={me} to={uuid!} fn={getFollowCount} />
+              <FollowButton from={me} to={uuid!} updataCount={getFollowCount} />
             )}
             {me === uuid ? (
               <button
@@ -155,6 +161,20 @@ const ProfilePage: React.FC = () => {
             )}
           </div>
         </div>
+        {modal.follower && (
+          <FollowListModal
+            updataCount={getFollowCount}
+            modalType="follower"
+            setModal={setModal}
+          />
+        )}
+        {modal.following && (
+          <FollowListModal
+            updataCount={getFollowCount}
+            modalType="following"
+            setModal={setModal}
+          />
+        )}
       </div>
       <div className={styles.profile_postList}>바디</div>
     </div>

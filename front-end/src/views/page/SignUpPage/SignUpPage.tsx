@@ -92,10 +92,10 @@ function SignUpPage() {
 
         const response = await dispatch(createAccount(account));
 
-        let imageURL: string = "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
+        let imageURL: string =
+          "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
 
         if (image.length) {
-          console.log(image);
           imageURL = await getImageUrl(image);
         }
 
@@ -105,9 +105,8 @@ function SignUpPage() {
           ...userInfoFields,
         };
 
-        console.log(userInfo);
+        await dispatch(updateUserInfo(userInfo));
 
-        dispatch(updateUserInfo(userInfo));
         navigate("/");
       } catch (err: any) {
         console.error(err);
@@ -124,18 +123,19 @@ function SignUpPage() {
 
       dispatch(signInSocialUser(account));
 
-      let imageURL: string = "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
+      let imageURL: string =
+        "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
 
-        if (image.length) {
-          console.log(image);
-          imageURL = await getImageUrl(image);
-        }
+      if (image.length) {
+        console.log(image);
+        imageURL = await getImageUrl(image);
+      }
 
-        let userInfo: UserInfo = {
-          uuid: UUID,
-          profileImage: imageURL,
-          ...userInfoFields,
-        };
+      let userInfo: UserInfo = {
+        uuid: UUID,
+        profileImage: imageURL,
+        ...userInfoFields,
+      };
 
       try {
         dispatch(updateUserInfo(userInfo));
