@@ -126,6 +126,7 @@ public class AuthController {
     
     
     // Password 변경
+    // todo : dto로 parm ㄴㄴ
     @PutMapping("change-password")
     public ResponseEntity<?> changePassword(@RequestParam String uuid,
                                                     @RequestParam String currentPassword,
