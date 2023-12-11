@@ -352,6 +352,7 @@ public class PostServiceImpl implements PostService {
                             .postIdList(pageResult.getContent())
                             .build());
 
+
                     return ResponseTabDto.builder()
                             .data(imgResult.getData().stream().filter(Objects::nonNull)
                                             .map(e->new ResponsePostDto(e.getPostId(),e.getImageUrl()))
