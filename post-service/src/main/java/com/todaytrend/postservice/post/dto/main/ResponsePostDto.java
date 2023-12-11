@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResponsePostDto {
     private Long postId;
-    private String postImg;
+    private String imageUrl;
 }

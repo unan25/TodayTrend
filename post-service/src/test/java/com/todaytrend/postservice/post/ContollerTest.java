@@ -2,19 +2,11 @@ package com.todaytrend.postservice.post;
 
 
 import com.todaytrend.postservice.post.controller.PostController;
-import com.todaytrend.postservice.post.controller.api.PostApiContoller;
-import org.bouncycastle.util.encoders.UTF8;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.text.Normalizer;
-import java.util.List;
 
 @WebMvcTest(PostController.class)
 @AutoConfigureDataJpa

@@ -2,6 +2,7 @@ package com.todaytrend.postservice.post.service;
 
 import com.todaytrend.postservice.post.dto.CRUD.*;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
+import com.todaytrend.postservice.post.dto.RequestMainDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
 import com.todaytrend.postservice.post.dto.ResponseDto;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
@@ -34,7 +35,7 @@ public interface PostService {
     //좋아요 개수
     Integer checkLikeCnt(Long postId);
 
-    List<String> postLikeList(Long postId);//todo : img도 가져와야할꺼같은데
+    List<String> postLikeList(Long postId);
 
     List<Long> userLikePost(String UUID);
 
@@ -42,7 +43,7 @@ public interface PostService {
     ResponseTabDto postListTab(Integer tab,String uuid, Integer page, Integer size);
 
 //    main 최신 + 카테고리
-    ResponseTabDto postListCategory(List<Long> categoryIds);
+    ResponseTabDto postListCategory(/*List<Long> categoryIds*/ RequestMainDto requestMainDto);
 
 //  hashTag 검색
     List<String> findhashTag(String hashTag);
