@@ -8,6 +8,9 @@ import com.todaytrend.postservice.post.dto.ResponseDto;
 import com.todaytrend.postservice.post.dto.main.ResponsePostDto;
 import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import com.todaytrend.postservice.post.entity.*;
+import com.todaytrend.postservice.post.feign.img.ImgFeignClient;
+import com.todaytrend.postservice.post.feign.img.ImgFeignDto;
+import com.todaytrend.postservice.post.feign.img.RequestImageListDto;
 import com.todaytrend.postservice.post.feign.user.UserFeignClient;
 import com.todaytrend.postservice.post.feign.user.UserFeignDto;
 import com.todaytrend.postservice.post.repository.*;
@@ -36,7 +39,9 @@ public class PostServiceImpl implements PostService {
     private final HashTagRepository hashTagRepo;
     private final AdminCategoryRepository adminCategoryRepo;
     private final UserFeignClient userFeignClient;
-    
+    private final ImgFeignClient imgFeignClient;
+
+
 //    todo : 1. image 서버에 postid보내면 해당 포스트 img들 받아오기
 //    todo : 2. image 서버에 List<Long> postId 보내면 첫번째 img list형태로 받아오기
 
@@ -342,17 +347,29 @@ public class PostServiceImpl implements PostService {
 
                 if(!categoryIds.isEmpty()){
                     Page<Long> pageResult = categoryRepo.findPostIdByAdminCategoryIdIn(categoryIds, pageRequest);
+
+                    ImgFeignDto imgResult = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                            .postIdList(pageResult.getContent())
+                            .build());
+
                     return ResponseTabDto.builder()
-                                    .data(pageResult.getContent().stream().filter(Objects::nonNull)
-                                            .map(id -> new ResponsePostDto(id,null)).toList())
+                            .data(imgResult.getData().stream().filter(Objects::nonNull)
+                                            .map(e->new ResponsePostDto(e.getPostId(),e.getImageUrl()))
+                                            .toList())
                             .totalPage(pageResult.getTotalPages())
                             .page(page)
                             .build();
                 }else {
                     Page<Long> pageResult = postRepo.findPostIdBy(pageRequest);
+
+                    ImgFeignDto imgResult = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                            .postIdList(pageResult.getContent())
+                            .build());
+
                     return ResponseTabDto.builder()
-                            .data(pageResult.getContent().stream().filter(Objects::nonNull)
-                                    .map(id -> new ResponsePostDto(id, null)).toList())
+                            .data(imgResult.getData().stream().filter(Objects::nonNull)
+                                    .map(e->new ResponsePostDto(e.getPostId(),e.getImageUrl()))
+                                    .toList())
                             .totalPage(pageResult.getTotalPages())
                             .page(page)
                             .build();
@@ -363,15 +380,14 @@ public class PostServiceImpl implements PostService {
 //                    page
                 Page<Long> pageResult = postLikeRepo.findPostIdBy(pageRequest);
 
+                ImgFeignDto imgResult = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                        .postIdList(pageResult.getContent())
+                        .build());
+
                 return ResponseTabDto.builder()
                         .data(
-                                pageResult.getContent()
-                                        .stream().filter(Objects::nonNull)
-                                        .map(e->ResponsePostDto.builder()
-                                                .postId(e)
-                                                .imageUrl(null)
-                                                .build()
-                                        )
+                                imgResult.getData().stream().filter(Objects::nonNull)
+                                        .map(e->new ResponsePostDto(e.getPostId(),e.getImageUrl()))
                                         .toList()
                         )
                         .page(page)
@@ -382,15 +398,14 @@ public class PostServiceImpl implements PostService {
 
                 Page<Long> pageResult = postRepo.findPostIdByUserUuidIn(null, pageRequest);
 
+                ImgFeignDto imgResult = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                        .postIdList(pageResult.getContent())
+                        .build());
+
                 return ResponseTabDto.builder()
                         .data(
-                                pageResult.getContent()
-                                        .stream().filter(Objects::nonNull)
-                                        .map(e->ResponsePostDto.builder()
-                                                .postId(e)
-                                                .imageUrl(null)
-                                                .build()
-                                        )
+                                imgResult.getData().stream().filter(Objects::nonNull)
+                                        .map(e->new ResponsePostDto(e.getPostId(),e.getImageUrl()))
                                         .toList()
                         )
                         .page(page)
