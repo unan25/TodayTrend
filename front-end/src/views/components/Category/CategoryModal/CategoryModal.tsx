@@ -25,7 +25,7 @@ const CategoryModal: React.FC<ModalProps> = ({
   fetchPost,
 }) => {
   const handleViewClick: any = () => {
-    fetchPost({ page: 0, size: 6, categoryList: selectedCategories });
+    fetchPost({ page: 0, size: 6, categoryList: selectedCategories, tab:0 });
     closeModal();
   };
 
