@@ -2,13 +2,18 @@ package com.todaytrend.imageservice.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.todaytrend.imageservice.dto.request.RequestQueryDto;
 import com.todaytrend.imageservice.dto.response.ResponseImageDto;
+import com.todaytrend.imageservice.dto.response.ResponseImageListDto;
 import com.todaytrend.imageservice.dto.response.ResponseProfileImageDto;
 import com.todaytrend.imageservice.entity.Image;
 import com.todaytrend.imageservice.repository.ImageRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -65,7 +71,7 @@ public class ImageService {
     // 게시물 이미지 삭제
     @Transactional
     public  String deleteImages(Long postId){
-        List<Image> images = imageRepository.findImageByPostId(postId);
+        List<Image> images = imageRepository.findImagesByPostId(postId);
         imageRepository.deleteImageByPostId(postId);
         for (Image image : images) {
             String key = image.getImageUrl().split(".com/")[1]; //.com/ 이후의 파일명 반환
@@ -75,8 +81,8 @@ public class ImageService {
     }
 
     // 게시물 이미지 조회
-    public ResponseImageDto findImageByPostId(Long postId) {
-        List<Image> images = imageRepository.findImageByPostId(postId);
+    public ResponseImageDto findImagesByPostId(Long postId) {
+        List<Image> images = imageRepository.findImagesByPostId(postId);
         List<String> imageUrlList = new ArrayList<>();
         for (Image image : images) {
             imageUrlList.add(image.getImageUrl());
@@ -87,7 +93,17 @@ public class ImageService {
                 .build();
     }
     // 게시물 썸네일 이미지 조회
-//    public ResponseImageDto
+    public ResponseImageListDto findImageByPostIdList(List<Long> postIdList) {
+        List<ResponseImageDto> data = new ArrayList<>();
+        for (Long postId : postIdList) {
+            Image image = imageRepository.findFirstByPostId(postId);
+            data.add(ResponseImageDto.builder()
+                            .postId(postId)
+                            .imageUrl(image.getImageUrl())
+                    .build());
+        }
+        return ResponseImageListDto.builder().data(data).build();
+    }
 
     // 게시물 이미지 수정
     @Transactional
@@ -132,8 +148,24 @@ public class ImageService {
                 .build();
     }
 
-    // 무한 스크롤 포스트 이미지 리스트 반환
-//    public Object findImagesByPostIdList(List<Long> postIdList) {
-//
-//    }
+    // 무한스크롤 테스트용
+    public ResponseImageListDto test(RequestQueryDto dto) {
+        int size = dto.getSize();
+        int page = dto.getPage();
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Image> imagePage = imageRepository.findAll(pageable);
+        List<ResponseImageDto> data = imagePage.getContent().stream()
+                .map(image -> ResponseImageDto.builder()
+                        .postId(image.getPostId())
+                        .imageUrl(image.getImageUrl())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ResponseImageListDto.builder()
+                .page(page)
+                .nextPage(page+1)
+                .totalPage(imagePage.getTotalPages())
+                .data(data)
+                .build();
+    }
 }

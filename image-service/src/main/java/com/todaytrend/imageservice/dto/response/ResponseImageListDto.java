@@ -1,14 +1,16 @@
 package com.todaytrend.imageservice.dto.response;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
+@Builder
 public class ResponseImageListDto {
 
     private List<ResponseImageDto> data;
-    private boolean hasNextPage;
-    private int nextPageParam;
+    private int page;
+    private int totalPage;
+    private int nextPage;
 }

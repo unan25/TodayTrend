@@ -1,7 +1,123 @@
-import React from "react";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import styles from './SearchPage.module.css';
+import { useNavigate, useParams } from 'react-router-dom';
+
+export interface userTagType {
+  uuid: string;
+  nickname: string;
+  profileImage: string;
+}
+
+export interface hashTagType {
+  hashTag: string;
+}
 
 const SearchPage: React.FC = () => {
-  return <div className="page-body">검색 페이지</div>;
+  const tag = useParams();
+
+  const navigate = useNavigate();
+  const [userTag, setUserTag] = useState<string>('');
+  const [hashTag, setHashTag] = useState<string>('');
+  const [userData, setUserData] = useState<userTagType[]>(); //드롭다운리스트
+  const [hashData, setHashData] = useState<hashTagType[]>();
+  const [isInput, setIsInput] = useState<boolean>(false); //인풋이 있는지
+
+  const onChangeHandler = (e: any) => {
+    const newContent = e.target.value;
+    if (newContent.charAt(0) === '#') {
+      setHashTag(newContent.substring(1));
+    } else {
+      setUserTag(newContent);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`api/users/nickname/${userTag}`);
+        setUserData(response.data);
+      } catch (error) {
+        console.log('유저검색 리스트 못 받는 중', error);
+      }
+    };
+    fetchUserData();
+  }, [userTag]);
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      try {
+        const response = await axios.get(`api/post/hashtag/${hashTag}`);
+        setHashData(response.data);
+      } catch (error) {
+        console.log('포스트검색 리스트 못 받는 중', error);
+      }
+    };
+    fetchPostData();
+  }, [hashTag]);
+
+  useEffect(() => {
+    console.log('usertag:' + userTag);
+  }, [userTag]);
+  useEffect(() => {
+    console.log('hashtag:' + hashTag);
+  }, [hashTag]);
+
+  return (
+    <div className="page-body">
+      <input
+        className={styles.input}
+        type="search"
+        id="searchInput"
+        name="query"
+        placeholder="검색어를 입력하세요. #으로 시작하면 해시태그 검색"
+        onInput={onChangeHandler}
+      />
+      {isInput && (
+        <div className={styles.dropDownBox}>
+          {userData && (
+            <>
+              {userData.map((user) => (
+                <div
+                  key={user.uuid}
+                  className={styles.dropDownItem}
+                  onClick={() => navigate(`/profile/${user.nickname}`)}
+                >
+                  <img
+                    className={styles.profileimage}
+                    src={user.profileImage}
+                  />
+                  <span className={styles.nickname}>{user.nickname}</span>
+                </div>
+              ))}
+            </>
+          )}
+          {hashData && (
+            <>
+              {hashData.map((tag, i) => (
+                <div
+                  key={i}
+                  className={styles.dropDownItem}
+                  onClick={() => navigate(`/search/${tag.hashTag}`)}
+                >
+                  <span className={styles.nickname}>{tag.hashTag}</span>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default SearchPage;
+
+<div>
+  <img className={styles.profileimage} alt="유저사진"></img>
+  <span>유저닉네임</span>
+</div>;
+
+<div>
+  <span>해시태그이름</span>
+</div>;
