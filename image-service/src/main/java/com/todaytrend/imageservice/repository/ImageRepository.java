@@ -9,9 +9,11 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
-    List<Image> findImageByPostId(Long postId);
+    List<Image> findImagesByPostId(Long postId);
 
     void deleteImageByPostId(Long postId);
+
+    Image findFirstByPostId(Long postId);
 
     Page<Image> findAll(Pageable pageable);
 }

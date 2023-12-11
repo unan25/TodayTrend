@@ -1,0 +1,21 @@
+.categoryButton {
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
+  -webkit-box-align: center;
+  align-items: center;
+  width: max-content;
+  height: 2rem;
+  border: 0.1rem solid rgb(238, 238, 238);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  line-height: 1rem;
+  padding: 0 1rem;
+  word-break: keep-all;
+  white-space: nowrap;
+  color: rgb(153, 153, 153);
+  cursor: pointer;
+  &.selected {
+    background-color: #add3fd; /* 예시: 선택된 배경색 */
+    color: #000; /* 예시: 선택된 글자색 */
+  }
+}

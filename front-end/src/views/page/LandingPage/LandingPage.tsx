@@ -2,27 +2,90 @@
 import React, { useEffect, useState } from 'react';
 
 // react-query
-import { useQuery } from 'react-query';
-
+import { useInfiniteQuery } from 'react-query';
 // react-bootstrap
-import { Button, Nav } from 'react-bootstrap';
-
+import { Nav } from 'react-bootstrap';
 // styles
 import styles from './LandingPage.module.css';
-
 // components
-import Modal from '../../components/Modal/CustomModal';
-
+import CategoryModal from '../../components/Category/CategoryModal/CategoryModal';
+import CategoryList from '../../components/Category/CategoryList/CategoryList';
+import PostList from '../../components/post/PostList/PostList';
 // type
-import { CategoryList } from 'interface/CategoryList';
-
+import { CategoryType } from 'interface/CategoryInterface';
 // axios
 import axios from 'axios';
+import qs from 'qs';
+// router
+import { useNavigate } from 'react-router-dom';
+// redux
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 
+export interface IDetailPost {
+  page: number;
+  size: number;
+  categoryList?: number[];
+  uuid?: string;
+  tab?: number;
+}
 function LandingPage() {
-  const 카테고리: CategoryList[] = [];
+  const navigate = useNavigate();
+  const uuid = useSelector((state: RootState) => state.user.UUID);
 
-  const [categories, setCategories] = useState<CategoryList[]>([
+  //무한 스크롤
+  const fetchPost = async ({
+    page,
+    size,
+    categoryList,
+    uuid,
+    tab,
+  }: IDetailPost) => {
+    try {
+      const requestBody = {
+        page,
+        size,
+        categoryList,
+        uuid,
+        tab,
+      };
+      // axios.post를 사용하여 데이터를 body에 실어서 요청 보내기
+      const response = await axios.post('/api/post/main', requestBody);
+      if (response.data.data.length === 0) {
+        return { ...response.data, pages: [] };
+      }
+      return response.data;
+    } catch (error) {
+      console.error('포스트 리스트 못 받는 중', error);
+    }
+  };
+
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
+    'posts',
+    ({ pageParam = 1 }) =>
+      fetchPost({
+        page: pageParam,
+        size: 6,
+        categoryList: categoryList,
+        uuid: uuid,
+        tab: tab,
+      }),
+    {
+      //lastPage = 서버에서 받은 현재 페이지의 데이터
+      getNextPageParam: (lastPage, allPosts) => {
+        return lastPage && lastPage.page < lastPage.totalPage
+          ? lastPage.page + 1
+          : null;
+      },
+      staleTime: 60000,
+      retry: false, // 1분주기 업데이트
+    }
+  );
+
+  if (!data) return <div>데이터 가져오는중</div>;
+
+  //카테고리 로직 ------------------------------------------------------------
+  const [categories, setCategories] = useState<CategoryType[]>([
     { id: 1, name: '남' },
     { id: 2, name: '여' },
     { id: 3, name: '미니멀' },
@@ -33,26 +96,12 @@ function LandingPage() {
     { id: 8, name: '하이루' },
   ]);
 
-  const [posts1, setPosts1] = useState<any[]>([
-    {
-      postId: 1,
-      imageUrl: 'https://todaytrend.s3.ap-northeast-2.amazonaws.com/tt1.jpeg',
-    },
-    {
-      postId: 2,
-      imageUrl: 'https://todaytrend.s3.ap-northeast-2.amazonaws.com/tt1.jpeg',
-    },
-    {
-      postId: 3,
-      imageUrl: 'https://todaytrend.s3.ap-northeast-2.amazonaws.com/tt1.jpeg',
-    },
-  ]);
-
+  // 메인페이지 로딩 카테고리리스트 받아오기
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<CategoryList[]>(
-          'api/post/admin-categorylist'
+        const response = await axios.get<CategoryType[]>(
+          'api/post/admincategorylist'
         );
         setCategories(response.data);
       } catch (error) {
@@ -63,107 +112,102 @@ function LandingPage() {
   }, []);
 
   const mainCategories = categories.slice(0, 6);
-
   const [tab, setTab] = useState<number>(0);
-
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [categoryList, setCategoryList] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  // 탭or 카테고리 바뀌면 필터된 게시물 요청하기
   useEffect(() => {
-    console.log('Tab changed:', tab);
-    console.log('Selected categories:', selectedCategories);
-  }, [tab, selectedCategories]);
+    console.log('선택한 탭:' + tab);
+    console.log('선택한 카테고리:' + categoryList);
+    fetchPost({
+      page: 0,
+      size: 6,
+      tab: tab,
+      categoryList: categoryList,
+      uuid: uuid,
+    });
+  }, [tab, categoryList]);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
   const toggleCategory = (categoryId: number) => {
-    if (selectedCategories.includes(categoryId)) {
-      setSelectedCategories(
-        selectedCategories.filter((cat) => cat !== categoryId)
-      );
+    if (categoryList.includes(categoryId)) {
+      setCategoryList(categoryList.filter((cat) => cat !== categoryId));
     } else {
-      setSelectedCategories([...selectedCategories, categoryId]);
+      setCategoryList([...categoryList, categoryId]);
     }
   };
   const handleMainCategoryClick = (categoryId: number) => {
     toggleCategory(categoryId);
   };
-
-  const posts: any[] = [
-    {
-      id: 1,
-      image: 'https://todaytrend.s3.ap-northeast-2.amazonaws.com/tt1.jpeg',
-      category: '카테고리1',
-    },
-    {
-      id: 2,
-      image: 'https://todaytrend.s3.ap-northeast-2.amazonaws.com/tt2.png',
-      category: '카테고리2',
-    },
-    // 추가 게시물 데이터
-  ];
-
   return (
     <div>
       <div>
         <Nav variant="underline">
           <Nav.Item>
-            <Nav.Link eventKey="0" onSelect={() => setTab(0)}>
+            <Nav.Link onClick={() => setTab(0)} active={tab === 0}>
               최신
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link onClick={() => setTab(1)}>좋아요</Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                setTab(1), setCategoryList([]);
+              }}
+              active={tab === 1}
+            >
+              좋아요
+            </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link onClick={() => setTab(2)}>팔로잉</Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                setTab(2), setCategoryList([]);
+              }}
+              active={tab === 2}
+            >
+              팔로잉
+            </Nav.Link>
           </Nav.Item>
         </Nav>
       </div>
-
-      <div>
-        <button onClick={openModal}>
-          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAPTSURBVHgB7ZlNTttAFMefQ4RALFpuYJBYg3qChAO0dMOSKgu+NuXjAKXhAIVUQggQokWsWAR6AQIXqOgOIbW4awSCBQLx5f4fJNXETexxMo7H6vykUTz2aOzJe2/8/n5EBoPBYDAY4sKihFAqlejo6MhOpVID3LcsyxkbGzukkGi/4I2NDbq5ucm0tbXNua6b8Vw+QZsdHx/flZ0vRRrDi72/v/8Iq5ZqLJbpQSuura3NSU6pr4VXVlb45y1aUWK4+/j4ODg5ObkfNFBbC8OqbIxP4jlYeR8Ly+F3Gl1HuGTB5T9ITCtn4dXV1anyTVqNLRyfIFZ7Kx24u3V3d7cnuDpbuRdWdvwmTFMAy8vLGUy6SPHion0WT3R1dblnZ2eb8IRM5Rx27n6qtvw/aL1picB6F2L/9vaWXfwlhSTQwrwRwMp5/JNvGrlBM8BiduUQMTqC3y+Va9fX13zuvTgez/g7cE7SlBoxyjgcXmiXWOw7z7WqGK9HoIVjxH14eJgXYxTYsPoiGrtz1Vi0WZlJtY3hXC5HHR0dJcRuPmgsxszLZlvap5ZCAsLvZFu8xu9ltLxMwlEhMeJhe3ubTk9PB9LptM19WPUw6J1roAgtjFdZ01IuCpQvmDOzOlLOQZsJI+WiQOkuzTLNR8rZaDthpFwUKLMwdtMh/OzIjMWGkw2zs6pEpYUXxI6PlCN2eYoJlfLQFo4dxGqPZw6vqzukCGyKF2i7o6OjgUlKVPKw4D2BNPGrN00kRXCaidaPZz0ICpVIUkuvlCs/VCuUlhs0QMql8c/xh7TXfg8Nl+oRjvfRBjs7O9329na6urqyoF9/kWBVzHVCCsH9CgijQuA4UkStGEW/UJZyI41IuShQJg8Ro/kaUm6hhpRjpKRcFCiLYd4sylLOL474Q1s+zmxLeWpZTkDqSbn5uBKOCpGJh6WlJS2lXGL0MMMFtePj46fj7u5uGh4eprAkYsHlGpOFjZE3wr+SE+0Q3uNiT5CeS/vv0vz1EtXDLOJ/DwvkdznXmorof8diuT/Ef4gsWi94fX3dgmVZcu75SM4ij5FdtLYL5o93WMgQrOhVVi5Vv/osHsM1ZJJAKoa3traevvRTa+GF/KTqdJSzuU249gu0KXquDz8PtqxSX1/fYDab9Z+UAmBXQQVgGjeaotZjC8etqR6yqyCGFihe2IWrhMH/UD28FPuNVg+VycMo8JOc5+fnKfTFGHfRfxX0OTiJ1cOmJKfu1UNZycmdGZlJda8ehpGc30iCpFQP/SQnVw8PSJKkVg+xTvfHxMSEQwaDwWAwGBLDHxtjQaCfJOwKAAAAAElFTkSuQmCC"></img>
-        </button>
-        <span>선택된 카테고리 수: {selectedCategories.length}</span>
-      </div>
-
-      <div className={styles.mainCategoryContainer}>
-        {mainCategories.map((category) => (
-          <Button
-            key={category.id}
-            variant={
-              selectedCategories.includes(category.id)
-                ? 'primary'
-                : 'outline-primary'
-            }
-            onClick={() => handleMainCategoryClick(category.id)}
-            className={styles.mainCategoryButton}
-          >
-            {category.name}
-          </Button>
-        ))}
-      </div>
-
-      <div>
-        {posts.map((post) => (
-          <div key={post.id} className={styles.post}>
-            <img src={post.image} alt={post.title} />
+      {tab === 0 && (
+        <>
+          <div className={styles.mainCategoryContainer}>
+            <button onClick={openModal} className={styles.categoryFilterButton}>
+              <img
+                className={styles.categoryFilter}
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/NlyAAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAPTSURBVHgB7ZlNTttAFMefQ4RALFpuYJBYg3qChAO0dMOSKgu+NuXjAKXhAIVUQggQokWsWAR6AQIXqOgOIbW4awSCBQLx5f4fJNXETexxMo7H6vykUTz2aOzJe2/8/n5EBoPBYDAY4sKihFAqlejo6MhOpVID3LcsyxkbGzukkGi/4I2NDbq5ucm0tbXNua6b8Vw+QZsdHx/flZ0vRRrDi72/v/8Iq5ZqLJbpQSuura3NSU6pr4VXVlb45y1aUWK4+/j4ODg5ObkfNFBbC8OqbIxP4jlYeR8Ly+F3Gl1HuGTB5T9ITCtn4dXV1anyTVqNLRyfIFZ7Kx24u3V3d7cnuDpbuRdWdvwmTFMAy8vLGUy6SPHion0WT3R1dblnZ2eb8IRM5Rx27n6qtvw/aL1picB6F2L/9vaWXfwlhSTQwrwRwMp5/JNvGrlBM8BiduUQMTqC3y+Va9fX13zuvTgez/g7cE7SlBoxyjgcXmiXWOw7z7WqGK9HoIVjxH14eJgXYxTYsPoiGrtz1Vi0WZlJtY3hXC5HHR0dJcRuPmgsxszLZlvap5ZCAsLvZFu8xu9ltLxMwlEhMeJhe3ubTk9PB9LptM19WPUw6J1roAgtjFdZ01IuCpQvmDOzOlLOQZsJI+WiQOkuzTLNR8rZaDthpFwUKLMwdtMh/OzIjMWGkw2zs6pEpYUXxI6PlCN2eYoJlfLQFo4dxGqPZw6vqzukCGyKF2i7o6OjgUlKVPKw4D2BNPGrN00kRXCaidaPZz0ICpVIUkuvlCs/VCuUlhs0QMql8c/xh7TXfg8Nl+oRjvfRBjs7O9329na6urqyoF9/kWBVzHVCCsH9CgijQuA4UkStGEW/UJZyI41IuShQJg8Ro/kaUm6hhpRjpKRcFCiLYd4sylLOL474Q1s+zmxLeWpZTkDqSbn5uBKOCpGJh6WlJS2lXGL0MMMFtePj46fj7u5uGh4eprAkYsHlGpOFjZE3wr+SE+0Q3uNiT5CeS/vv0vz1EtXDLOJ/DwvkdznXmorof8diuT/Ef4gsWi94fX3dgmVZcu75SM4ij5FdtLYL5o93WMgQrOhVVi5Vv/osHsM1ZJJAKoa3traevvRTa+GF/KTqdJSzuU249gu0KXquDz8PtqxSX1/fYDab9Z+UAmBXQQVgGjeaotZjC8etqR6yqyCGFihe2IWrhMH/UD28FPuNVg+VycMo8JOc5+fnKfTFGHfRfxX0OTiJ1cOmJKfu1UNZycmdGZlJda8ehpGc30iCpFQP/SQnVw8PSJKkVg+xTvfHxMSEQwaDwWAwGBLDHxtjQaCfJOwKAAAAAElFTkSuQmCC"
+              ></img>
+              <span className={styles.categoryListLength}>
+                {categoryList.length}
+              </span>
+            </button>
+            <CategoryList
+              categories={mainCategories}
+              selectedCategories={categoryList}
+              onClick={handleMainCategoryClick}
+            />
           </div>
-        ))}
-      </div>
-
+        </>
+      )}
+      <PostList
+        data={data!}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        navigate={navigate}
+      />
       {isModalOpen && (
-        <Modal
+        <CategoryModal
           categories={categories}
-          selectedCategories={selectedCategories}
+          selectedCategories={categoryList}
           toggleCategory={toggleCategory}
+          fetchPost={fetchPost}
           closeModal={closeModal}
         />
       )}

@@ -17,6 +17,7 @@ import java.util.List;
 public class ResponseImageDto {
 
     private Long postId;
+    private String imageUrl;
     private List<String> imageUrlList;
 
 }

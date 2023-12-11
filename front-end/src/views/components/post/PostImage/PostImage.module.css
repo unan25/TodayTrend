@@ -1,0 +1,15 @@
+.post {
+  position: relative;
+  border-radius: 1rem;
+  width: 31%;
+  height: 24rem;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.postImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1rem;
+}

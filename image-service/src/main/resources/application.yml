@@ -33,7 +33,6 @@ spring:
 server:
   port: 0
 
-# Eureka
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
