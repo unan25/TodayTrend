@@ -11,6 +11,7 @@ import SignInPage from "./views/page/SignInPage/SignInPage";
 import UploadPostPage from "./views/page/UploadPostPage/UploadPostPage";
 import SearchPage from "./views/page/SearchPage/SearchPage";
 import ProfilePage from "./views/page/ProfilePage/ProfilePage";
+import ChangePwPage from "./views/page/ChangePwPage/ChangePwPage";
 
 // components
 import SideBar from "./views/components/common/Sidebar/SideBar";
@@ -29,6 +30,7 @@ function App(): JSX.Element {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/profile/:uuid" element={<ProfilePage />} />
         <Route path="/post/:postId" element={<PostDetailPage />} />
+        <Route path="/change-password" element={<ChangePwPage/>} />
       </Routes>
       <SideBar />
     </div>

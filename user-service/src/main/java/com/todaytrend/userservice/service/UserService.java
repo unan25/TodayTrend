@@ -54,10 +54,10 @@ public class UserService {
                 .build();
     }
 
-    // uuid로 UserInfo 전체 조회 (마이페이지)
-    public ResponseUserDto getAll(String uuid) {
-        User user = userRepository.findByUuid(uuid)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다. uuid : " + uuid));
+    // nickname으로 UserInfo 전체 조회 (마이페이지)
+    public ResponseUserDto getAll(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다. nickname : " + nickname));
         return ResponseUserDto.builder()
                 .name(user.getName())
                 .nickname(user.getNickname())

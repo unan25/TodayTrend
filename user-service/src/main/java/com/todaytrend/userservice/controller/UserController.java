@@ -62,9 +62,9 @@ public class UserController {
     }
 
     // uuid로 myPage 조회
-    @GetMapping("profile/{uuid}")
-    public ResponseEntity<ResponseUserDto> getAll(@PathVariable String uuid){
-        ResponseUserDto user = userService.getAll(uuid);
+    @GetMapping("profile/{nickname}")
+    public ResponseEntity<ResponseUserDto> getAll(@PathVariable String nickname){
+        ResponseUserDto user = userService.getAll(nickname);
         log.info("프로필 조회");
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
