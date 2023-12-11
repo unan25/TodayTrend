@@ -1,26 +1,27 @@
 package com.todaytrend.postservice.post.service;
 
 import com.todaytrend.postservice.post.dto.CRUD.*;
-import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
+import com.todaytrend.postservice.post.dto.RequestMainDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
 import com.todaytrend.postservice.post.dto.ResponseDto;
-import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.dto.main.ResponsePostDto;
 import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import com.todaytrend.postservice.post.entity.*;
-import com.todaytrend.postservice.post.feign.UserFeignClient;
-import com.todaytrend.postservice.post.feign.UserFeignDto;
+import com.todaytrend.postservice.post.feign.user.UserFeignClient;
+import com.todaytrend.postservice.post.feign.user.UserFeignDto;
 import com.todaytrend.postservice.post.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
 import java.text.Normalizer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -216,7 +217,7 @@ public class PostServiceImpl implements PostService {
 
 //----------------------------메인 페이지에서 post 추천-----------------------------------------
 
-    public List<Long> postIdList(List<Long> categoryList){
+/*    public List<Long> postIdList(List<Long> categoryList){
         Map<Long, Long> frequencyMap = categoryRepo.findPostIdByAdminCategoryIdIn(categoryList).stream().filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
 
@@ -224,7 +225,7 @@ public class PostServiceImpl implements PostService {
                 .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-    }
+    }*/
 
 //----------------------------------------------------------
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
@@ -237,7 +238,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepo.findByPostId(postId);
 
         List<Long> postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId).get(0));
-        List<Long> postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId));
+        List<Long> postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(post.getPostId()),PageRequest.of(0,6)).getContent();
 
         List<ResponsePostDto> postList1 = new ArrayList<>();
         List<ResponsePostDto> postList2 = new ArrayList<>();
@@ -279,19 +280,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseTabDto postListTab(Integer tab, String uuid, Integer page, Integer size) {
-        ResponseTabDto responseTabDto = new ResponseTabDto();
 
         PageRequest pageRequest = PageRequest.of(page,size);
 
         switch (tab){
             case 0 -> {//최신
                 return ResponseTabDto.builder()
-                                .postList(
+                                .data(
                                         postRepo.findPostIdBy(pageRequest).getContent()
                                                         .stream().filter(Objects::nonNull)
                                                         .map(e -> ResponsePostDto.builder()
                                                                 .postId(e)
-                                                                .postImg(null)
+                                                                .imageUrl(null)
                                                                 .build()
                                                         ).toList()
                                 )
@@ -299,32 +299,110 @@ public class PostServiceImpl implements PostService {
             }
             case 1 -> {//좋아요
                 return ResponseTabDto.builder()
-                        .postList(
+                        .data(
                                 postLikeRepo.findPostIdBy(pageRequest).getContent()
                                         .stream().filter(Objects::nonNull)
                                         .map(e->ResponsePostDto.builder()
                                                 .postId(e)
-                                                .postImg(null)
+                                                .imageUrl(null)
                                                 .build()
                                         )
                                         .toList()
                         ).build();
             }
             case 2 -> {//팔로잉
-//                responseTabDto.setPostIdList(postRepo.findPostIdByUserUuidIn(findFollowingUuids(requestTabDto.getUuid())));
-
+                return ResponseTabDto.builder()
+                        .data(
+                                postRepo.findPostIdByUserUuidIn(List.of(), pageRequest)
+                                        .stream().filter(Objects::nonNull)
+                                        .map(e->ResponsePostDto.builder()
+                                                .postId(e)
+                                                .imageUrl(null)
+                                                .build()
+                                        )
+                                        .toList()
+                        ).build();
             }
         }
-        return responseTabDto;
+        return new ResponseTabDto();
     }
-
 
 //-----------------  main 최신 + 카테고리 --------------------------
     @Override
-    public ResponseTabDto postListCategory(List<Long> categoryIds) {
-        return new ResponseTabDto(postIdList(categoryIds).stream().filter(Objects::nonNull)
+    public ResponseTabDto postListCategory(/*List<Long> categoryIds*/ RequestMainDto requestMainDto) {
+        Integer page = requestMainDto.getPage();
+        Integer size = requestMainDto.getSize();
+        Integer tab = requestMainDto.getTab();
+        List<Long> categoryIds = requestMainDto.getCategoryList();
+
+        PageRequest pageRequest = PageRequest.of(page,size);
+
+        switch (tab){
+            case 0 -> {//최신
+
+                if(!categoryIds.isEmpty()){
+                    Page<Long> pageResult = categoryRepo.findPostIdByAdminCategoryIdIn(categoryIds, pageRequest);
+                    return ResponseTabDto.builder()
+                                    .data(pageResult.getContent().stream().filter(Objects::nonNull)
+                                            .map(id -> new ResponsePostDto(id,null)).toList())
+                            .totalPage(pageResult.getTotalPages())
+                            .page(page)
+                            .build();
+                }else {
+                    Page<Long> pageResult = postRepo.findPostIdBy(pageRequest);
+                    return ResponseTabDto.builder()
+                            .data(pageResult.getContent().stream().filter(Objects::nonNull)
+                                    .map(id -> new ResponsePostDto(id, null)).toList())
+                            .totalPage(pageResult.getTotalPages())
+                            .page(page)
+                            .build();
+                }
+            }
+            case 1 -> {//좋아요
+//                postLikeRepo.findPostIdBy(pageRequest).getTotalPages();
+//                    page
+                Page<Long> pageResult = postLikeRepo.findPostIdBy(pageRequest);
+
+                return ResponseTabDto.builder()
+                        .data(
+                                pageResult.getContent()
+                                        .stream().filter(Objects::nonNull)
+                                        .map(e->ResponsePostDto.builder()
+                                                .postId(e)
+                                                .imageUrl(null)
+                                                .build()
+                                        )
+                                        .toList()
+                        )
+                        .page(page)
+                        .totalPage(pageResult.getTotalPages())
+                        .build();
+            }
+            case 2 -> {//팔로잉
+
+                Page<Long> pageResult = postRepo.findPostIdByUserUuidIn(null, pageRequest);
+
+                return ResponseTabDto.builder()
+                        .data(
+                                pageResult.getContent()
+                                        .stream().filter(Objects::nonNull)
+                                        .map(e->ResponsePostDto.builder()
+                                                .postId(e)
+                                                .imageUrl(null)
+                                                .build()
+                                        )
+                                        .toList()
+                        )
+                        .page(page)
+                        .totalPage(pageResult.getTotalPages())
+                        .build();
+            }
+        }
+
+        /*return new ResponseTabDto(postIdList(categoryIds).stream().filter(Objects::nonNull)
                 .map(id -> new ResponsePostDto(id,null))
-                .toList());
+                .toList());*/
+       return null;
     }
 
 //---------------- 해시태그 검색---------------
@@ -335,4 +413,6 @@ public class PostServiceImpl implements PostService {
                 .map(e->Normalizer.normalize(e,Normalizer.Form.NFC))
                 .toList();
     }
+
+//    -----------------------user-service feign---------------------
 }

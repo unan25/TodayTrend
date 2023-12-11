@@ -24,7 +24,7 @@ public interface PostRepository extends JpaRepository<Post,Long>{
     Page<Long> findPostIdBy(PageRequest pageRequest);
 
     @Query(value = "SELECT DISTINCT p.postId FROM Post p where p.userUuid in :followings ORDER BY p.postId DESC")
-    List<Long> findPostIdByUserUuidIn(@Param("followings") List<String> followings);
+    Page<Long> findPostIdByUserUuidIn(@Param("followings") List<String> followings, PageRequest pageRequest);
 
     @Query(value = "SELECT DISTINCT p.postId FROM Post p WHERE p.userUuid IN :followings AND p.postId IN :postIds ORDER BY p.postId DESC ")
     List<Long> findPostIdByUserUuidInAndPostIdIn(@Param("followings") List<String> followings, @Param("postIds") List<Long> postIds);
@@ -32,14 +32,11 @@ public interface PostRepository extends JpaRepository<Post,Long>{
     @Query(value = "SELECT p.userUuid FROM Post p WHERE p.postId = :postId")
     List<String> findUserUuidByPostId(@Param("postId") Long postId);
 
-    Long countByUserUuid(String userUuid);
 
     @Query(value = "SELECT p.postId FROM Post p WHERE  p.userUuid = :userUuid")
     List<Long> findPostIdByUserUuid(@Param("userUuid") String userUuid);
 
     @Query(value = "SELECT Post FROM Post p WHERE p.postId = :postId")
     Post findByPostId(@Param("postId") Long postId);
-
-//findPostIdBy
 
 }

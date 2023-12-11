@@ -1,20 +1,14 @@
 package com.todaytrend.postservice.post;
 
-import com.netflix.discovery.converters.Auto;
-import com.todaytrend.postservice.post.dto.CRUD.RequestPostListForMain;
 import com.todaytrend.postservice.post.dto.CRUD.RequestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponsePostDetailDto;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
-import com.todaytrend.postservice.post.entity.*;
-import com.todaytrend.postservice.post.feign.UserFeignClient;
-import com.todaytrend.postservice.post.feign.UserFeignDto;
+import com.todaytrend.postservice.post.feign.user.UserFeignClient;
 import com.todaytrend.postservice.post.repository.*;
 import com.todaytrend.postservice.post.service.PostService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
