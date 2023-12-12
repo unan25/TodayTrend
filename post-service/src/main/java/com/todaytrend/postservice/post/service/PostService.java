@@ -19,9 +19,9 @@ public interface PostService {
 
     boolean clickLike(RequestCheckLikedDto requestCheckLikedDto);
 
-    ResponsePostDetailDto updatePost(Long postId , RequestUpdatePostDto requestUpdatePostDto);
+    ResponsePostDetailDto updatePost(RequestUpdatePostDto requestUpdatePostDto);
 
-    ResponseDetailPostsDto detailPostsList(String uuid, Long postId);
+    ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestCheckLikedDto);
 
     //AdminCategoryList제공
     List<selectedCategoryListDto> findAdminCategoryList();
@@ -30,7 +30,7 @@ public interface PostService {
     List<selectedCategoryListDto> findPostCategoryList(Long postId);
 
     //좋아요 유저의 클릭 여부
-    boolean checkLiked(String uuid, Long postId);
+    boolean checkLiked(RequestCheckLikedDto requestCheckLikedDto);
     
     //좋아요 개수
     Integer checkLikeCnt(Long postId);

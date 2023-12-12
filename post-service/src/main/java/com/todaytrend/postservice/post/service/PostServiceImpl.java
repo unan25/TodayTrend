@@ -170,9 +170,9 @@ public class PostServiceImpl implements PostService {
 //------------------------------포스트 좋아요 클릭 갯수 및 클릭된 여부----------------------------------------------
 
     @Override
-    public boolean checkLiked(String uuid, Long postId) {
+    public boolean checkLiked(RequestCheckLikedDto requestCheckLikedDto) {
         return postLikeRepo.findByUserUuidAndPostId(
-                uuid, postId)
+                requestCheckLikedDto.getUuid(), requestCheckLikedDto.getPostId())
                 != null;
     }
 
@@ -194,9 +194,11 @@ public class PostServiceImpl implements PostService {
     //----------------------------포스트 업데이트------------------------------------
     @Override
     @Transactional
-    public ResponsePostDetailDto updatePost( Long postId, RequestUpdatePostDto requestUpdatePostDto) {
+    public ResponsePostDetailDto updatePost(RequestUpdatePostDto requestUpdatePostDto) {
 
-            Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("잘못된 게시물 업데이트 요청"));
+        Long postId = requestUpdatePostDto.getPostId();
+
+        Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("잘못된 게시물 업데이트 요청"));
             post.updatePostContent(requestUpdatePostDto.getContent());
             hashTagRepo.deleteAllByPostId(postId);
             postUserTagRepo.deleteAllByPostId(postId);
@@ -235,7 +237,10 @@ public class PostServiceImpl implements PostService {
 //----------------------------------------------------------
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
     @Override
-    public ResponseDetailPostsDto detailPostsList(String uuid, Long postId) {
+    public ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestCheckLikedDto) {
+
+        String uuid = requestCheckLikedDto.getUuid();
+        Long postId = requestCheckLikedDto.getPostId();
 
         String title1 = "@Nickname 님의 게시물";
         String title2 = "@Nickname 님의 게시물과 비슷한 게시물";
