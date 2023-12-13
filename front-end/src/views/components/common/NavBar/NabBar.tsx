@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 //
 import { Link } from "react-router-dom";
@@ -13,6 +13,7 @@ import { logOut } from "../../../../redux/_actions/user_action";
 
 //
 import styles from "./NabBar.module.css";
+import axios from "axios";
 
 const NavBar: React.FC = () => {
   const dispatch = useDispatch<any>();
@@ -20,12 +21,29 @@ const NavBar: React.FC = () => {
   const UUID = useSelector((state: RootState) => state.user.UUID);
   const role = useSelector((state: RootState) => state.user.role);
 
+  const [nickname, setNickname] = useState<string>();
+  const [profileImage, setProfileImage] = useState<string>();
+
   const onClickhandler = () => {
     const data = {
       uuid: UUID,
     };
     dispatch(logOut(data));
   };
+
+  const getNickname = async () => {
+    try {
+      const response = await axios.get(`/api/users/uuid/${UUID}`);
+      setNickname(response.data.nickname);
+      setProfileImage(response.data.profileImage);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (UUID) getNickname();
+  }, [UUID]);
 
   return (
     <nav className={styles.nav}>
@@ -56,7 +74,16 @@ const NavBar: React.FC = () => {
 
       {role === "USER" && (
         <div className={styles.section2}>
-          <Link to={`/profile/${UUID}`}>마이페이지</Link>
+          <Link
+            className={styles.nav_section_profile}
+            to={`/profile/${nickname}`}
+          >
+            <img
+              className={styles.nav_section_profileImage}
+              src={profileImage}
+            />
+            <span>{nickname}</span>
+          </Link>
           <div className={styles.nav_section2__notification}>알림</div>
           <button className={styles.button_logout} onClick={onClickhandler}>
             로그아웃

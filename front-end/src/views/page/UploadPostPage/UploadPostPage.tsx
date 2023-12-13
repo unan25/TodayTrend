@@ -70,9 +70,11 @@ const CreatePostPage: React.FC = () => {
         formData.append("images", image);
       });
 
-      formData.append("postId", postResponse.data);
+      formData.append("postId", postResponse.data.postId);
 
-      const imageResponse = await axios.post("/api/image/upload", formData, {
+      console.log(formData.getAll("images"));
+
+      const imageResponse = await axios.post("/api/images", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -28,9 +28,9 @@ function App(): JSX.Element {
         <Route path="/upload-post" element={<UploadPostPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/profile/:uuid" element={<ProfilePage />} />
+        <Route path="/profile/:nickname" element={<ProfilePage />} />
         <Route path="/post/:postId" element={<PostDetailPage />} />
-        <Route path="/change-password" element={<ChangePwPage/>} />
+        <Route path="/change-password" element={<ChangePwPage />} />
       </Routes>
       <SideBar />
     </div>

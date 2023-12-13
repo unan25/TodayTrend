@@ -13,9 +13,9 @@ import { useParams } from "react-router-dom";
 //
 import styles from "./FollowListModal.module.css";
 import FollowButton from "../FollowButton/FollowButton";
-import OnChangeInput from "../../../../views/components/common/OnChangeInput/OnChangeInput";
 
 type Props = {
+  UUID: string;
   setModal: React.Dispatch<React.SetStateAction<ListModal>>;
   modalType: string;
   updataCount: () => void;
@@ -33,6 +33,7 @@ type Users = {
 };
 
 const FollowListModal: React.FC<Props> = ({
+  UUID,
   setModal,
   modalType,
   updataCount,
@@ -43,8 +44,6 @@ const FollowListModal: React.FC<Props> = ({
   const [list, setList] = useState<Users[]>();
 
   const [filteredList, setFilteredList] = useState<Users[]>();
-
-  const { uuid } = useParams();
 
   const modalHandler = () => {
     setModal({ follower: false, following: false });
@@ -82,7 +81,7 @@ const FollowListModal: React.FC<Props> = ({
 
   const getFollwerList = async () => {
     try {
-      const response = await axios.get(`/api/users/follower-list/${uuid}`);
+      const response = await axios.get(`/api/users/follower-list/${UUID}`);
       setList(response.data);
       setFilteredList(response.data);
     } catch (err) {
@@ -92,7 +91,7 @@ const FollowListModal: React.FC<Props> = ({
 
   const getFollwingList = async () => {
     try {
-      const response = await axios.get(`/api/users/following-list/${uuid}`);
+      const response = await axios.get(`/api/users/following-list/${UUID}`);
       setList(response.data);
       setFilteredList(response.data);
     } catch (err) {

@@ -8,7 +8,7 @@ import com.todaytrend.userservice.repository.UserRepository;
 import com.todaytrend.userservice.vo.FollowUserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,15 +63,13 @@ public class FollowService {
     public List<?> getFollowerList(String uuid) {
         var followerList = followRepository.findFollowerIdsByFollowingId(uuid);
 
-        System.out.println(followerList.get(0));
-
         var userList = new ArrayList<FollowUserVO>();
 
         followerList
                 .forEach(
                         follower ->
                                 userRepository.findByUuid(follower)
-                                        .ifPresent(e -> userList.add(e.toFollowVo())
+                                        .ifPresent(user -> userList.add(user.toFollowVo())
                         )
                 );
 
@@ -83,10 +81,11 @@ public class FollowService {
 
         var userList = new ArrayList<FollowUserVO>();
 
-        followingList.forEach(
-                following ->
-                        userRepository.findByUuid(following)
-                                .ifPresent(user -> userList.add(user.toFollowVo())
+        followingList
+                .forEach(
+                        following ->
+                                userRepository.findByUuid(following)
+                                        .ifPresent(user -> userList.add(user.toFollowVo())
                 )
         );
 
