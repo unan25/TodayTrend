@@ -39,10 +39,7 @@ public class ImageService {
         return random+originName;
     }
     // 게시물 이미지 등록
-    public ResponseImageDto uploadImages(Long postId , MultipartFile[] images) throws IOException {
-        // 0. 반환할 이미지 dto 생성
-        ResponseImageDto imageDto = new ResponseImageDto();
-        imageDto.setPostId(postId);
+    public String uploadImages(Long postId , MultipartFile[] images) throws IOException {
         // 1. 이미지리스트에서 하나씩 S3에 저장 후 URL반환
         for (MultipartFile image : images) {
             String originalFilename = image.getOriginalFilename();
@@ -62,10 +59,8 @@ public class ImageService {
                     .postId(postId)
                     .imageUrl(imageUrl).build();
             imageRepository.save(imageEntity);
-            // 6. imageUrl dto에 넣어주기
-            imageDto.getImageUrlList().add(imageUrl);
         }
-        return imageDto;
+        return "이미지 저장완료";
     }
 
     // 게시물 이미지 삭제
@@ -97,6 +92,9 @@ public class ImageService {
         List<ResponseImageDto> data = new ArrayList<>();
         for (Long postId : postIdList) {
             Image image = imageRepository.findFirstByPostId(postId);
+            if(image == null) {
+                continue;
+            }
             data.add(ResponseImageDto.builder()
                             .postId(postId)
                             .imageUrl(image.getImageUrl())
@@ -107,9 +105,10 @@ public class ImageService {
 
     // 게시물 이미지 수정
     @Transactional
-    public ResponseImageDto updateImages(Long postId, MultipartFile[] images) throws IOException {
+    public String updateImages(Long postId, MultipartFile[] images) throws IOException {
         deleteImages(postId);
-        return uploadImages(postId, images);
+        uploadImages(postId, images);
+        return "이미지 수정 완료";
     }
 
     //프로필 이미지 등록

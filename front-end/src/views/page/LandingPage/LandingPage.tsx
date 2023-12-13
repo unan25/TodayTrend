@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 // react-query
-import { useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from 'react-query';
 // react-bootstrap
 import { Nav } from 'react-bootstrap';
 // styles
@@ -15,12 +15,12 @@ import PostList from '../../components/post/PostList/PostList';
 import { CategoryType } from 'interface/CategoryInterface';
 // axios
 import axios from 'axios';
-import qs from 'qs';
 // router
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 // redux
 import { useSelector } from 'react-redux';
 import { RootState } from 'redux/store';
+// import { sessionStorage } from 'redux-persist/es/storage/session';
 
 export interface IDetailPost {
   page: number;
@@ -31,7 +31,17 @@ export interface IDetailPost {
 }
 function LandingPage() {
   const navigate = useNavigate();
+  // const location = useLocation();
   const uuid = useSelector((state: RootState) => state.user.UUID);
+
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const mainCategories = categories.slice(0, 6);
+  const [tab, setTab] = useState<number>(0);
+  const [categoryList, setCategoryList] = useState<number[]>([]); //카테고리 ID List
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  //세션스토리지에 카테고리 저장해놓기
+  // const selectedCategoryList = sessionStorage.setItem('category', categoryList);
 
   //무한 스크롤
   const fetchPost = async ({
@@ -51,21 +61,12 @@ function LandingPage() {
       };
       // axios.post를 사용하여 데이터를 body에 실어서 요청 보내기
       const response = await axios.post('/api/post/main', requestBody);
-      if (response.data.data.length === 0) {
-        return { ...response.data, pages: [] };
-      }
+      refetch();
       return response.data;
     } catch (error) {
       console.error('포스트 리스트 못 받는 중', error);
     }
   };
-
-  
-
-  //카테고리 로직 ------------------------------------------------------------
-  const [categories, setCategories] = useState<CategoryType[]>([
-  ]);
-
   // 메인페이지 로딩 카테고리리스트 받아오기
   useEffect(() => {
     const fetchData = async () => {
@@ -73,39 +74,14 @@ function LandingPage() {
         const response = await axios.get<CategoryType[]>(
           'api/post/admincategorylist'
         );
-        console.log(categories)
-        setCategories(response.data); 
+        setCategories(response.data);
       } catch (error) {
         console.log('카테고리 리스트 못 받는 중', error);
       }
     };
     fetchData();
   }, []);
-
-  const mainCategories = categories.slice(0, 6);
-  const [tab, setTab] = useState<number>(0);
-  const [categoryList, setCategoryList] = useState<number[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
   // 탭or 카테고리 바뀌면 필터된 게시물 요청하기
-  useEffect(() => {
-    console.log('선택한 탭:' + tab);
-    console.log('선택한 카테고리:' + categoryList);
-    fetchPost({
-      page: 0,
-      size: 6,
-      tab: tab,
-      categoryList: categoryList,
-      uuid: uuid,
-    });
-  }, [tab, categoryList]);
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
   const toggleCategory = (categoryId: number) => {
     if (categoryList.includes(categoryId)) {
       setCategoryList(categoryList.filter((cat) => cat !== categoryId));
@@ -116,8 +92,26 @@ function LandingPage() {
   const handleMainCategoryClick = (categoryId: number) => {
     toggleCategory(categoryId);
   };
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    'posts',
+  useEffect(() => {
+    console.log('선택한 탭:' + tab);
+    console.log('선택한 카테고리:' + categoryList);
+    fetchPost({
+      page: 0,
+      size: 6,
+      categoryList: categoryList,
+      tab: tab,
+      uuid: uuid,
+    });
+  }, [tab, categoryList]);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery(
+    ['posts'],
     ({ pageParam = 0 }) =>
       fetchPost({
         page: pageParam,
@@ -129,16 +123,14 @@ function LandingPage() {
     {
       //lastPage = 서버에서 받은 현재 페이지의 데이터
       getNextPageParam: (lastPage, allPosts) => {
-        
         return lastPage && lastPage.page < lastPage.totalPage
           ? lastPage.page + 1
-          : null;
+          : undefined;
       },
       staleTime: 60000,
       retry: false, // 1분주기 업데이트
     }
   );
-
   if (!data) return <div>데이터 가져오는중</div>;
   return (
     <div>
@@ -192,7 +184,7 @@ function LandingPage() {
         </>
       )}
       <PostList
-        data={data!}
+        data={data}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage}
         navigate={navigate}
@@ -202,6 +194,7 @@ function LandingPage() {
           categories={categories}
           selectedCategories={categoryList}
           toggleCategory={toggleCategory}
+          refetch={refetch}
           fetchPost={fetchPost}
           closeModal={closeModal}
         />
