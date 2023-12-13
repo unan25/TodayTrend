@@ -48,7 +48,7 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const response = await axios.get(`api/post/hashtag/${hashTag}`);
+        const response = await axios.get(`api/post/hashtag?hashtag=${hashTag}`);
         setHashData(response.data);
         console.log(hashData);
       } catch (error) {
@@ -78,7 +78,7 @@ const SearchPage: React.FC = () => {
       />
       {isInput && (
         <div className={styles.dropDownBox}>
-          {userData && (
+          {userData && userTag && (
             <>
               {userData.map((user) => (
                 <div
@@ -95,7 +95,7 @@ const SearchPage: React.FC = () => {
               ))}
             </>
           )}
-          {hashData && (
+          {hashData && hashTag&&(
             <>
               {hashData.map((tag, i) => (
                 <div

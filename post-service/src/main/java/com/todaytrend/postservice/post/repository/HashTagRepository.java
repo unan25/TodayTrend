@@ -14,7 +14,7 @@ public interface HashTagRepository extends JpaRepository<HashTag,Long>{
 
     void deleteAllByPostId(Long postId);
 
-    @Query(value = "SELECT h.hashtag FROM HashTag h WHERE h.hashtag LIKE CONCAT('%', :keyword, '%') ")
+    @Query(value = "SELECT DISTINCT h.hashtag FROM HashTag h WHERE h.hashtag LIKE CONCAT('%', :keyword, '%') ")
     List<String> findHashTagByKeyword(String keyword);
 
 }

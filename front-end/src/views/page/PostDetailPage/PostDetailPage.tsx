@@ -60,7 +60,7 @@ const PostDetailPage: React.FC = () => {
 
   const getPostDetails = async () => {
     try {
-      const response = await axios.get(`/api/post/postdetail/${postId}`);
+      const response = await axios.get(`/api/post/postdetail?postId=${postId}`);
       setPostDetail({ ...response.data });
     } catch (err) {
       console.error(err);

@@ -47,7 +47,8 @@ const NavBar: React.FC = () => {
 
   return (
     <nav className={styles.nav}>
-      <div className={styles.section1}>로고</div>
+      <div className={styles.section1}><img className={styles.navBar_logo} src="https://todaytrend.s3.ap-northeast-2.amazonaws.com/5/84c99ce9-5079-41cd-a4c2-6cafffcb6c6cTodayTrendSmallLogo2.png" /></div>
+      <img className={styles.navBar_title} src="https://todaytrend.s3.ap-northeast-2.amazonaws.com/7/d3b700f5-201c-4c7a-a907-5299716e7aeeTodayTrendLogoTitle2.png.jpg" />
       {!UUID && (
         <div className={styles.section2}>
           <Link className={styles.section2__signUpButton} to="/signup">

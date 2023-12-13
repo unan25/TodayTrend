@@ -125,6 +125,8 @@ public class PostServiceImpl implements PostService {
         Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("post가 없음"));
 
         UserFeignDto imgAndNickname = userFeignClient.findImgAndNickname(post.getUserUuid());
+//        ImgFeignDto imgFeignDto = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder().postIdList(List.of(post.getPostId())).build());
+        ImgFeignDto imgFeignDto = imgFeignClient.getImageByPostId(postId);
 
         return ResponsePostDetailDto.builder()
                 .postId(post.getPostId())
@@ -133,7 +135,7 @@ public class PostServiceImpl implements PostService {
                 .nickName(imgAndNickname.getNickname())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
-                .postImgs(List.of())//todo:
+                .postImgs(imgFeignDto.getImageUrlList())//todo:
                 .build();
     }
 
@@ -209,6 +211,7 @@ public class PostServiceImpl implements PostService {
             makeCategory(requestUpdatePostDto.getCategoryIdList(),postId);
 
             UserFeignDto imgAndNickname = userFeignClient.findImgAndNickname(post.getUserUuid());
+            ImgFeignDto imgFeignDto = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder().postIdList(List.of(post.getPostId())).build());
 
             return ResponsePostDetailDto.builder()
                     .postId(post.getPostId())
@@ -217,24 +220,12 @@ public class PostServiceImpl implements PostService {
                     .nickName(imgAndNickname.getNickname())
                     .content(post.getContent())
                     .createdAt(post.getCreatedAt())
-                    .postImgs(List.of())//todo:
+                    .postImgs(imgFeignDto.getData().get(0).getImageUrlList())//todo:
                     .build();
 
     }
 
-//----------------------------메인 페이지에서 post 추천-----------------------------------------
 
-/*    public List<Long> postIdList(List<Long> categoryList){
-        Map<Long, Long> frequencyMap = categoryRepo.findPostIdByAdminCategoryIdIn(categoryList).stream().filter(Objects::nonNull)
-                .collect(Collectors.groupingBy(e -> e, Collectors.counting()));
-
-        return frequencyMap.entrySet().stream()
-                .sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-    }*/
-
-//----------------------------------------------------------
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
     @Override
     public ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestCheckLikedDto) {
@@ -254,9 +245,9 @@ public class PostServiceImpl implements PostService {
         List<ResponsePostDto> postList2 = new ArrayList<>();
 
         postIdList1.stream().filter(Objects::nonNull)
-                .forEach(id -> postList1.add(new ResponsePostDto(id,null)));
+                .forEach(id -> postList1.add(new ResponsePostDto(id,null)));//todo: 이미지 넣어야함
         postIdList2.stream().filter(Objects::nonNull)
-                .forEach(id -> postList2.add(new ResponsePostDto(id,null)));
+                .forEach(id -> postList2.add(new ResponsePostDto(id,null)));//todo: 이미지 넣어야함
 
         List<selectedCategoryListDto> categoryList = new ArrayList<>();
         for (AdminCategory adminCategory : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))) {
@@ -286,56 +277,6 @@ public class PostServiceImpl implements PostService {
         return adminCategoryList;
     }
 
-// -------------------main  chooseTab 최신, 좋아요, 팔로잉 순
-
-    @Override
-    public ResponseTabDto postListTab(Integer tab, String uuid, Integer page, Integer size) {
-
-        PageRequest pageRequest = PageRequest.of(page,size);
-
-        switch (tab){
-            case 0 -> {//최신
-                return ResponseTabDto.builder()
-                                .data(
-                                        postRepo.findPostIdBy(pageRequest).getContent()
-                                                        .stream().filter(Objects::nonNull)
-                                                        .map(e -> ResponsePostDto.builder()
-                                                                .postId(e)
-                                                                .imageUrl(null)
-                                                                .build()
-                                                        ).toList()
-                                )
-                               .build();
-            }
-            case 1 -> {//좋아요
-                return ResponseTabDto.builder()
-                        .data(
-                                postLikeRepo.findPostIdBy(pageRequest).getContent()
-                                        .stream().filter(Objects::nonNull)
-                                        .map(e->ResponsePostDto.builder()
-                                                .postId(e)
-                                                .imageUrl(null)
-                                                .build()
-                                        )
-                                        .toList()
-                        ).build();
-            }
-            case 2 -> {//팔로잉
-                return ResponseTabDto.builder()
-                        .data(
-                                postRepo.findPostIdByUserUuidIn(List.of(), pageRequest)
-                                        .stream().filter(Objects::nonNull)
-                                        .map(e->ResponsePostDto.builder()
-                                                .postId(e)
-                                                .imageUrl(null)
-                                                .build()
-                                        )
-                                        .toList()
-                        ).build();
-            }
-        }
-        return new ResponseTabDto();
-    }
 
 //-----------------  main 최신 + 카테고리 --------------------------
     @Override

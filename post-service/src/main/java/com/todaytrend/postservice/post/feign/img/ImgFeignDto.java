@@ -14,4 +14,8 @@ public class ImgFeignDto {
     private int page;
     private int totalPage;
     private int nextPage;
+
+    // 게시물 상세보기 dto
+    private Long postId;
+    private List<String> imageUrlList;
 }

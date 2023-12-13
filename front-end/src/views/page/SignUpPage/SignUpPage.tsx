@@ -138,8 +138,8 @@ function SignUpPage() {
       };
 
       try {
-        dispatch(updateUserInfo(userInfo));
-        navigate("/");
+        const response = await dispatch(updateUserInfo(userInfo));
+        if(response.meta.requestStatus === 'fulfilled') navigate("/");
       } catch (err: any) {
         console.error(err);
       }

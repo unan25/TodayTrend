@@ -23,7 +23,10 @@ public class ExceptionPathManager {
                 "/api/users/checkNickname",
                 "/api/users/signup",
                 "/api/users/findId",
-                "/api/users/server/**"
+                "/api/users/server/**",
+                "/api/post/**",
+                "/api/images/**",
+                "/api/users/uuid/**"
                 ));
     }
 

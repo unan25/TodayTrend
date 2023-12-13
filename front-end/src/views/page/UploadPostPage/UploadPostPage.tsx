@@ -31,7 +31,7 @@ const CreatePostPage: React.FC = () => {
     const fashionTag: string[] = [];
     const userTag: string[] = [];
 
-    const temp = content.split(" ");
+    const temp = content.split(/\s+/);
 
     temp.map((e) => {
       if (e.includes("@")) {
@@ -61,6 +61,8 @@ const CreatePostPage: React.FC = () => {
         userTagList: user,
         categoryIdList: category,
       };
+
+      console.log
 
       const postResponse = await axios.post("/api/post", postData, {
         cancelToken: source.token,

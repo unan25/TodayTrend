@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "user-service")
 public interface UserFeignClient {
-    @GetMapping("/user/server/uuid/{uuid}")
+    @GetMapping("api/users/server/uuid/{uuid}")
     UserFeignDto findImgAndNickname(@PathVariable("uuid")String uuid);
 }

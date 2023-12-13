@@ -46,9 +46,16 @@ function PostLikesButton() {
 
   const getLiked = async () => {
     try {
-      const response = await axios.get(
-        `/api/post/liked?uuid=${UUID}&postId=${postId}`
+
+      const data = {
+        uuid : UUID,
+        postId: postId
+      }
+
+      const response = await axios.post(
+        `/api/post/liked`, data
       );
+
 
       setHasLiked(response.data);
     } catch (err) {
