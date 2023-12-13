@@ -7,7 +7,6 @@ interface CategoryListProps {
   selectedCategories: number[];
   onClick: (id: number) => void;
 }
-
 const CategoryList: React.FC<CategoryListProps> = ({
   categories,
   selectedCategories,

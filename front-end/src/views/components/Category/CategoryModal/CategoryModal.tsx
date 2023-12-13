@@ -15,6 +15,7 @@ interface ModalProps {
   toggleCategory: (categoryId: number) => void;
   fetchPost: ({ page, size, categoryList, uuid, tab }: IDetailPost) => void;
   closeModal: () => void;
+  refetch: () => void;
 }
 
 const CategoryModal: React.FC<ModalProps> = ({
@@ -23,9 +24,10 @@ const CategoryModal: React.FC<ModalProps> = ({
   toggleCategory,
   closeModal,
   fetchPost,
+  refetch,
 }) => {
   const handleViewClick: any = () => {
-    fetchPost({ page: 0, size: 6, categoryList: selectedCategories, tab:0 });
+    refetch();
     closeModal();
   };
 

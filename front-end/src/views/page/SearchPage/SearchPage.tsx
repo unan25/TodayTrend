@@ -15,12 +15,11 @@ export interface hashTagType {
 
 const SearchPage: React.FC = () => {
   const tag = useParams();
-
   const navigate = useNavigate();
   const [userTag, setUserTag] = useState<string>('');
   const [hashTag, setHashTag] = useState<string>('');
-  const [userData, setUserData] = useState<userTagType[]>(); //드롭다운리스트
-  const [hashData, setHashData] = useState<hashTagType[]>();
+  const [userData, setUserData] = useState<userTagType[]>([]); //드롭다운리스트
+  const [hashData, setHashData] = useState<string[]>([]);
   const [isInput, setIsInput] = useState<boolean>(false); //인풋이 있는지
 
   const onChangeHandler = (e: any) => {
@@ -30,6 +29,7 @@ const SearchPage: React.FC = () => {
     } else {
       setUserTag(newContent);
     }
+    setIsInput(newContent.trim() !== '');
   };
 
   useEffect(() => {
@@ -39,6 +39,7 @@ const SearchPage: React.FC = () => {
         setUserData(response.data);
       } catch (error) {
         console.log('유저검색 리스트 못 받는 중', error);
+        setUserData([]);
       }
     };
     fetchUserData();
@@ -49,8 +50,10 @@ const SearchPage: React.FC = () => {
       try {
         const response = await axios.get(`api/post/hashtag/${hashTag}`);
         setHashData(response.data);
+        console.log(hashData);
       } catch (error) {
         console.log('포스트검색 리스트 못 받는 중', error);
+        setHashData([]);
       }
     };
     fetchPostData();
@@ -98,9 +101,9 @@ const SearchPage: React.FC = () => {
                 <div
                   key={i}
                   className={styles.dropDownItem}
-                  onClick={() => navigate(`/search/${tag.hashTag}`)}
+                  onClick={() => navigate(`/search/${tag}`)}
                 >
-                  <span className={styles.nickname}>{tag.hashTag}</span>
+                  <span className={styles.nickname}>{tag}</span>
                 </div>
               ))}
             </>
