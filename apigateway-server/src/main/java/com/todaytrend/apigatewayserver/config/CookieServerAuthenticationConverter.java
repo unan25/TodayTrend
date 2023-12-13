@@ -14,8 +14,12 @@ public class CookieServerAuthenticationConverter implements ServerAuthentication
     @Override
     public Mono<Authentication> convert(ServerWebExchange exchange) {
         log.info("쿠키에서 토큰 추출");
-        return Mono.justOrEmpty(exchange.getRequest().getCookies().getFirst("access_token"))
-                .map(HttpCookie::getValue)
-                .map(token -> new UsernamePasswordAuthenticationToken(token, token));
+
+        Mono<String> tokenMono = Mono.justOrEmpty(exchange.getRequest().getCookies().getFirst("access_token"))
+                .map(HttpCookie::getValue);
+
+        tokenMono.doOnNext(token -> log.info("토큰: " + token)).subscribe();
+
+        return tokenMono.map(token -> new UsernamePasswordAuthenticationToken(token, token));
     }
 }

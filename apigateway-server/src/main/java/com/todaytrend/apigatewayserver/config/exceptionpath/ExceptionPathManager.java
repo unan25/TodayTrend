@@ -22,7 +22,8 @@ public class ExceptionPathManager {
                 "/api/auth/findPassword",
                 "/api/users/checkNickname",
                 "/api/users/signup",
-                "/api/users/findId"
+                "/api/users/findId",
+                "/api/users/server/**"
                 ));
     }
 

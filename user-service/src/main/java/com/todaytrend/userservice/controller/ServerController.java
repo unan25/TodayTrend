@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("user/server")
+@RequestMapping("api/users/server")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ServerController {
