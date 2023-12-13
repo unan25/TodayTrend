@@ -104,6 +104,7 @@ public class UserController {
 
     @GetMapping("follower-count/{uuid}")
     public ResponseEntity<Long> countFollower(@PathVariable String uuid) {
+        System.out.println("팔로워 목록 조회");
         return ResponseEntity.status(HttpStatus.OK).body(followService.follwerCount(uuid));
     }
 

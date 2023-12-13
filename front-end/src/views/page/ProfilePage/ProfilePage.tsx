@@ -25,28 +25,42 @@ type ListModal = {
 };
 
 const ProfilePage: React.FC = () => {
+  // 현재 유저
   const me: string = useSelector((state: RootState) => state.user.UUID);
+
+  // 대상 유저 UUID
+  const [UUID, setUUID] = useState<string>("");
 
   // state
   const [userInfo, setUserInfo] = useState<UserInfo>({});
-
   const [followCount, seFollowCount] = useState<FollowCount>({
     follower: 0,
     following: 0,
   });
-
   const [modal, setModal] = useState<ListModal>({
     follower: false,
     following: false,
   });
 
   // 대상 유저
-  const { uuid } = useParams();
+  const { nickname } = useParams();
 
   // axios
+  const getUUID = async () => {
+    try {
+      const response = await axios.get(`/api/users/nickname/${nickname}`);
+      const uuid = response.data[0].uuid;
+      setUUID(response.data[0].uuid);
+
+      return uuid;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const getUserInfo = async () => {
     try {
-      const response = await axios.get(`/api/users/profile/${uuid}`);
+      const response = await axios.get(`/api/users/profile/${nickname}`);
       setUserInfo(response.data);
     } catch (err) {
       console.error(err);
@@ -55,13 +69,18 @@ const ProfilePage: React.FC = () => {
 
   const getFollowCount = async () => {
     try {
-      const followCount = (await axios.get(`/api/users/follower-count/${uuid}`))
-        .data;
-      const followingCount = (
-        await axios.get(`/api/users/following-count/${uuid}`)
-      ).data;
+      const UUID = await getUUID();
 
-      seFollowCount({ follower: followCount, following: followingCount });
+      const followCount = await axios.get(`/api/users/follower-count/${UUID}`);
+
+      const followingCount = await axios.get(
+        `/api/users/following-count/${UUID}`
+      );
+
+      seFollowCount({
+        follower: followCount.data,
+        following: followingCount.data,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -71,7 +90,7 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     getFollowCount();
     getUserInfo();
-  }, [uuid]);
+  }, [nickname]);
 
   return (
     <div className="page-body">
@@ -106,35 +125,35 @@ const ProfilePage: React.FC = () => {
             </div>
             <div className={styles.profile_section2__countBox__followCount}>
               <div>팔로워</div>
-              <Link
+              <button
+                type="button"
                 onClick={(e) =>
                   setModal({
                     follower: true,
                     following: false,
                   })
                 }
-                to=""
               >
                 {followCount.follower}
-              </Link>
+              </button>
             </div>
             <div className={styles.profile_section2__countBox__followingCount}>
               <div>팔로잉</div>
-              <Link
+              <button
+                type="button"
                 onClick={(e) =>
                   setModal({
                     follower: false,
                     following: true,
                   })
                 }
-                to=""
               >
                 {followCount.following}
-              </Link>
+              </button>
             </div>
           </div>
           <div className={styles.profile_section2__buttonBox}>
-            {me === uuid ? (
+            {me === UUID ? (
               <Link
                 className={styles.profile_section2__buttonBox__button1}
                 to={"/"}
@@ -142,9 +161,9 @@ const ProfilePage: React.FC = () => {
                 수정
               </Link>
             ) : (
-              <FollowButton from={me} to={uuid!} updataCount={getFollowCount} />
+              <FollowButton from={me} to={UUID!} updataCount={getFollowCount} />
             )}
-            {me === uuid ? (
+            {me === UUID ? (
               <button
                 type="button"
                 className={styles.profile_section2__buttonBox__button2}
@@ -163,6 +182,7 @@ const ProfilePage: React.FC = () => {
         </div>
         {modal.follower && (
           <FollowListModal
+            UUID={UUID}
             updataCount={getFollowCount}
             modalType="follower"
             setModal={setModal}
@@ -170,6 +190,7 @@ const ProfilePage: React.FC = () => {
         )}
         {modal.following && (
           <FollowListModal
+            UUID={UUID}
             updataCount={getFollowCount}
             modalType="following"
             setModal={setModal}

@@ -4,8 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "user-service", url = "localhost:8000/user/server")
+@FeignClient(name = "user-service")
 public interface UserFeignClient {
-    @GetMapping("uuid/{uuid}")
+    @GetMapping("/user/server/uuid/{uuid}")
     UserFeignDto findImgAndNickname(@PathVariable("uuid")String uuid);
 }
