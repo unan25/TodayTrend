@@ -31,7 +31,7 @@ public class TokenProvider {
         }
     }
 
-    // todo : 레빗엠큐 연동 시, 메시지큐에 유저 정보를 담아 uuid를 이용해 유저 비교
+    //todo : 레빗엠큐 연동 시, 메시지큐에 유저 정보를 담아 uuid를 이용해 유저 비교
     public String getUuidFromToken(String token) {
         try {
             Claims claims = extractAllClaims(token);

@@ -16,12 +16,16 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
+import reactor.core.publisher.Mono;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebFluxSecurity
 @Slf4j
 public class WebSecurityConfig {
+
+//    @Autowired
+//    private AuthFilter authFilter;
 
     @Bean
     public SecurityWebFilterChain
@@ -34,19 +38,26 @@ public class WebSecurityConfig {
         http
                 .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange(exchanges ->
-                                exchanges
-                                        .pathMatchers("/img/**", "/css/**", "/js/**", "/ts/**").permitAll()
-                                        .pathMatchers(exceptionPathManager.getExceptionPaths().toArray(new String[0])).permitAll()
-                                        .pathMatchers("/api/**").hasAuthority("USER")
-                                        .anyExchange().permitAll()
-//                                .anyExchange().authenticated()
+                        exchanges
+                                .pathMatchers("/img/**", "/css/**", "/js/**", "/ts/**").permitAll()
+                                .pathMatchers(exceptionPathManager.getExceptionPaths().toArray(new String[0])).permitAll()
+                                .pathMatchers("/api/**").hasAuthority("USER")
+                                .anyExchange().permitAll()
                 )
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .logout(logoutSpec -> logoutSpec
                         .logoutUrl("/api/auth/logout")
-                        .logoutSuccessHandler(logoutSuccessHandler()));
+                        .logoutSuccessHandler(logoutSuccessHandler()))
+//                .addFilterBefore(authFilter, SecurityWebFiltersOrder.AUTHENTICATION)
+                .exceptionHandling(
+                        exceptionHandlingSpec -> exceptionHandlingSpec.authenticationEntryPoint((exchange, ex) -> Mono.fromRunnable(() -> {
+                            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                        }))
+                        .accessDeniedHandler((exchange, denied) -> Mono.fromRunnable(() -> {
+                            exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                        })));
         return http.build();
     }
 
