@@ -3,6 +3,7 @@ package com.todaytrend.postservice.post.controller;
 import com.todaytrend.postservice.post.dto.CRUD.RequestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
+import com.todaytrend.postservice.post.dto.RequestHashTagResultDto;
 import com.todaytrend.postservice.post.dto.RequestMainDto;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.service.PostService;
@@ -36,7 +37,7 @@ public class PostController {
     }
 
 //  info : post 수정 (update)
-//  api : Put api/post @RequestBody
+//  api : Put api/post @RequestBody (수정 완)
     @PutMapping("")
     public ResponseEntity<?> updatePost(@RequestBody RequestUpdatePostDto requestPostDto){
         return new ResponseEntity(postService.updatePost(requestPostDto), HttpStatus.OK);
@@ -78,7 +79,7 @@ public class PostController {
     }
 
 //    info : post 좋아요 클릭 여부(T/F)
-//  api : Post api/post/liked @RequestBody
+//  api : Post api/post/liked @RequestBody (수정)
     @PostMapping("liked")
     public ResponseEntity<?> checkLiked(@RequestBody RequestCheckLikedDto requestCheckLikedDto){
         return new ResponseEntity<>(postService.checkLiked(requestCheckLikedDto),HttpStatus.OK);
@@ -99,7 +100,7 @@ public class PostController {
     }
 
 //    info : 한 유저가 좋아요를 누른 post 리스트
-//  api : Get api/post/likeposts/{uuid} @PathVariable
+//  api : Get api/post/likeposts/{uuid} @PathVariable (수정)
     @GetMapping("likeposts/{uuid}")
     public ResponseEntity<?> userLikePost(@PathVariable("uuid") String uuid){
         return new ResponseEntity<>(postService.userLikePost(uuid), HttpStatus.OK);
@@ -126,4 +127,5 @@ public class PostController {
     public ResponseEntity<?> hahTagSearchList(@RequestBody RequestHashTagResultDto requestDto){
         return new ResponseEntity<>(postService.findhashTagList(requestDto),HttpStatus.OK);
     }
+
 }
