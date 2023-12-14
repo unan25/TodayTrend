@@ -367,7 +367,7 @@ public class PostServiceImpl implements PostService {
 //---------------- 해시태그 검색---------------
     @Override
     public List<String> findhashTag(String hashTag) {
-        return hashTagRepo.findHashTagByKeyword(Normalizer.normalize(hashTag,Normalizer.Form.NFD)).stream()
+        return hashTagRepo.keywordSlice(hashTag).stream()
                 .filter(Objects::nonNull)
                 .map(e->Normalizer.normalize(e,Normalizer.Form.NFC))
                 .toList();
@@ -375,13 +375,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseTabDto findhashTagList(RequestHashTagResultDto resultDto) {
-        /*private List<ResponsePostDto> data;
-            private Long postId;
-    private String imageUrl;
-
-        private Integer totalPage;
-        private Integer page;*/
-
         Page<Long> postIdByHashtag = hashTagRepo.findPostIdByHashtag(
                 Normalizer.normalize(resultDto.getHashtag(), Normalizer.Form.NFD)
                 , PageRequest.of(resultDto.getPage(), resultDto.getSize()));
