@@ -120,6 +120,7 @@ public class PostController {
         return new ResponseEntity<>(postService.findhashTag(hashtag), HttpStatus.OK);
     }
 
+
 //    todo : 명세서에 추가해야함
 //    info : hashTag 검색 시 보여주는 포스트 리스트
 //    api : Post api/post/hashtag @RequestBody
