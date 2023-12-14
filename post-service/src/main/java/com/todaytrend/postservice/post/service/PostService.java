@@ -1,10 +1,7 @@
 package com.todaytrend.postservice.post.service;
 
+import com.todaytrend.postservice.post.dto.*;
 import com.todaytrend.postservice.post.dto.CRUD.*;
-import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
-import com.todaytrend.postservice.post.dto.RequestMainDto;
-import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
-import com.todaytrend.postservice.post.dto.ResponseDto;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 
@@ -40,10 +37,11 @@ public interface PostService {
     List<Long> userLikePost(String UUID);
 
 
-//    main 최신 + 카테고리
     ResponseTabDto postListCategory(/*List<Long> categoryIds*/ RequestMainDto requestMainDto);
 
 //  hashTag 검색
     List<String> findhashTag(String hashTag);
+
+    ResponseTabDto findhashTagList(RequestHashTagResultDto requestDto);
 
 }

@@ -3,6 +3,7 @@ package com.todaytrend.postservice.post.controller;
 import com.todaytrend.postservice.post.dto.CRUD.RequestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
+import com.todaytrend.postservice.post.dto.RequestHashTagResultDto;
 import com.todaytrend.postservice.post.dto.RequestMainDto;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.service.PostService;
@@ -117,6 +118,11 @@ public class PostController {
     @GetMapping("/hashtag")
     public ResponseEntity<?> hashTagList(@RequestParam("hashtag")String hashtag){
         return new ResponseEntity<>(postService.findhashTag(hashtag), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> hahTagSearchList(@RequestBody RequestHashTagResultDto requestDto){
+        return new ResponseEntity<>(postService.findhashTagList(requestDto),HttpStatus.OK);
     }
 
 }

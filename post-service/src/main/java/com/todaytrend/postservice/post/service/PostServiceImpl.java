@@ -1,10 +1,7 @@
 package com.todaytrend.postservice.post.service;
 
+import com.todaytrend.postservice.post.dto.*;
 import com.todaytrend.postservice.post.dto.CRUD.*;
-import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
-import com.todaytrend.postservice.post.dto.RequestMainDto;
-import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
-import com.todaytrend.postservice.post.dto.ResponseDto;
 import com.todaytrend.postservice.post.dto.main.ResponsePostDto;
 import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import com.todaytrend.postservice.post.entity.*;
@@ -376,5 +373,34 @@ public class PostServiceImpl implements PostService {
                 .toList();
     }
 
-//    -----------------------user-service feign---------------------
+    @Override
+    public ResponseTabDto findhashTagList(RequestHashTagResultDto resultDto) {
+        /*private List<ResponsePostDto> data;
+            private Long postId;
+    private String imageUrl;
+
+        private Integer totalPage;
+        private Integer page;*/
+
+        Page<Long> postIdByHashtag = hashTagRepo.findPostIdByHashtag(
+                Normalizer.normalize(resultDto.getHashtag(), Normalizer.Form.NFD)
+                , PageRequest.of(resultDto.getPage(), resultDto.getSize()));
+
+        ImgFeignDto imgFeignDto = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                        .postIdList(postIdByHashtag.getContent())
+                .build());
+
+        return ResponseTabDto.builder()
+                .data(imgFeignDto.getData().stream()
+                        .filter(Objects::nonNull)
+                        .map(c->ResponsePostDto.builder()
+                                .postId(c.getPostId())
+                                .imageUrl(c.getImageUrl())
+                                .build()
+                        ).toList()
+                )
+                .page(resultDto.getPage())
+                .totalPage(postIdByHashtag.getTotalPages())
+                .build();
+    }
 }
