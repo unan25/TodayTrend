@@ -37,7 +37,7 @@ public class PostController {
     }
 
 //  info : post 수정 (update)
-//  api : Put api/post @RequestBody (수정 완)
+//  api : Put api/post @RequestBody
     @PutMapping("")
     public ResponseEntity<?> updatePost(@RequestBody RequestUpdatePostDto requestPostDto){
         return new ResponseEntity(postService.updatePost(requestPostDto), HttpStatus.OK);
@@ -79,7 +79,7 @@ public class PostController {
     }
 
 //    info : post 좋아요 클릭 여부(T/F)
-//  api : Post api/post/liked @RequestBody (수정)
+//  api : Post api/post/liked @RequestBody
     @PostMapping("liked")
     public ResponseEntity<?> checkLiked(@RequestBody RequestCheckLikedDto requestCheckLikedDto){
         return new ResponseEntity<>(postService.checkLiked(requestCheckLikedDto),HttpStatus.OK);
@@ -100,7 +100,7 @@ public class PostController {
     }
 
 //    info : 한 유저가 좋아요를 누른 post 리스트
-//  api : Get api/post/likeposts/{uuid} @PathVariable (수정)
+//  api : Get api/post/likeposts/{uuid} @PathVariable
     @GetMapping("likeposts/{uuid}")
     public ResponseEntity<?> userLikePost(@PathVariable("uuid") String uuid){
         return new ResponseEntity<>(postService.userLikePost(uuid), HttpStatus.OK);
@@ -114,15 +114,17 @@ public class PostController {
     }
 
 //    info : hashTag 검색
-//  api : Get api/post/hashtag @RequestParam (수정)
+//  api : Get api/post/hashtag @RequestParam
     @GetMapping("/hashtag")
     public ResponseEntity<?> hashTagList(@RequestParam("hashtag")String hashtag){
         return new ResponseEntity<>(postService.findhashTag(hashtag), HttpStatus.OK);
     }
 
+//    todo : 명세서에 추가해야함
+//    info : hashTag 검색 시 보여주는 포스트 리스트
+//    api : Get api/post/hashtag @RequestBody
     @GetMapping("/search")
     public ResponseEntity<?> hahTagSearchList(@RequestBody RequestHashTagResultDto requestDto){
         return new ResponseEntity<>(postService.findhashTagList(requestDto),HttpStatus.OK);
     }
-
 }

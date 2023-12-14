@@ -5,6 +5,7 @@ import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponsePostDetailDto;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
 import com.todaytrend.postservice.post.dto.ResponseCreatedPostDto;
+import com.todaytrend.postservice.post.entity.HashTag;
 import com.todaytrend.postservice.post.feign.user.UserFeignClient;
 import com.todaytrend.postservice.post.repository.*;
 import com.todaytrend.postservice.post.service.PostService;
@@ -66,6 +67,16 @@ class PostServiceApplicationTests {
 
     }
 
+    @Test
+    void 테스트(){
+        hashTagRepository.save(HashTag.builder()
+                        .postId(1L)
+                        .hashtag("가나다라")
+                .build());
+
+        assertThat(hashTagRepository.keywordSlice("ㄱㄴㄷㄹ").size()).isEqualTo(1);
+
+    }
 
     @Test
     void fegin_test() {
