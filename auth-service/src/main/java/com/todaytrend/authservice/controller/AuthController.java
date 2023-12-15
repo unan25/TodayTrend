@@ -3,17 +3,23 @@ package com.todaytrend.authservice.controller;
 import com.todaytrend.authservice.config.jwt.TokenInfo;
 import com.todaytrend.authservice.domain.LocalUser;
 import com.todaytrend.authservice.domain.SocialUser;
+import com.todaytrend.authservice.domain.UserInterface;
 import com.todaytrend.authservice.dto.*;
 import com.todaytrend.authservice.service.*;
 import com.todaytrend.authservice.util.CookieUtils;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("api/auth")
@@ -29,7 +35,7 @@ public class AuthController {
     private final UserEmailService userEmailService;
 
     @GetMapping("health-check")
-    public String healthCheck(){
+    public String healthCheck() {
         return "Auth-service is available.";
     }
 
@@ -47,7 +53,7 @@ public class AuthController {
         LoginResponseDto loginResponseDto = userService.login(requestUserDto);
         LocalUser user = userService.findByUuid(loginResponseDto.getUuid());
 
-        cookieUtils.setTokenCookies(user,response); // 토큰 생성 및 쿠키에 저장
+        cookieUtils.setTokenCookies(user, response); // 토큰 생성 및 쿠키에 저장
 
         log.info("LocalUser 로그인 완료");
         return ResponseEntity.ok(loginResponseDto);
@@ -60,7 +66,7 @@ public class AuthController {
         SocialUser user = socialUserService.findByUuid(loginResponseDto.getUuid());
 
         cookieUtils.setTokenCookies(user, response); // 토큰 생성 및 쿠키에 저장
-        
+
         log.info("소셜 로그인 완료");
         return ResponseEntity.ok(loginResponseDto);
     }
@@ -74,26 +80,49 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // 토큰 재발급
     @PostMapping("refresh")
-    public ResponseEntity<Void> refreshAccessToken(@CookieValue("refresh_token") String refreshToken, HttpServletResponse response) {
-        TokenInfo newAccessToken = tokenService.refreshAccessToken(refreshToken);
-        Cookie newAccessTokenCookie = cookieUtils.createCookie("access_token", newAccessToken.getToken(), newAccessToken.getExpiresIn());
+    public ResponseEntity<Void> refreshAccessToken(HttpServletRequest request , HttpServletResponse response) {
+        String refreshToken = cookieUtils.getRefreshTokenFromCookie(request);
+        log.info("컨트롤러 리프레시 토큰 : " + refreshToken);
 
-        response.addCookie(newAccessTokenCookie);
-        // 204를 반환하여 엑세스 토큰의 재발급 성공적 알림
-        log.info("토큰 재발급 완료");
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        UserInterface user = tokenService.refreshAccessToken(refreshToken);
+        try {
+            log.info("리프레시 토큰 : " + refreshToken);
+
+            cookieUtils.setTokenCookies(user,response);
+            log.info("컨트롤러: 토큰 재발급 완료");
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204를 반환하여 엑세스 토큰의 재발급 성공적 알림
+        } catch (IllegalArgumentException e) {
+            // 예외가 발생하면 클라이언트에게 400 Bad Request 응답을 반환
+            log.error("토큰 재발급 실패: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
+
+
+//    @PostMapping("refresh")
+//    public ResponseEntity<Void> refreshAccessToken(@CookieValue("refresh_token") String refreshToken, HttpServletResponse response) {
+//        log.info("refreshAccessToken 컨트롤러 리프레시 토큰 : " + refreshToken);
+//        UserInterface user = tokenService.refreshAccessToken(refreshToken);
+//        cookieUtils.setTokenCookies(user, response);
+////        TokenInfo newAccessToken = tokenService.refreshAccessToken(user);
+////        Cookie newAccessTokenCookie = cookieUtils.createCookie("access_token", newAccessToken.getToken(), newAccessToken.getExpiresIn());
+//
+////        response.addCookie(newAccessTokenCookie);
+//        // 204를 반환하여 엑세스 토큰의 재발급 성공적 알림
+//        log.info("컨트롤러 : 토큰 재발급 완료");
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 
     // 회원 탈퇴 (회원 상태 변경 -> false)
     // 필요 Param : uuid, password
     @PostMapping("deactivate")
     public ResponseEntity<?> deactivateUser(@RequestParam String uuid,
-                                            @RequestParam String password, HttpServletResponse response){
+                                            @RequestParam String password, HttpServletResponse response) {
         userService.deactivateUser(uuid, password);
         cookieUtils.deleteCookies(response, "access_token", "refresh_token"); // 쿠키에서 토큰 삭제
-        
+
         log.info("LocalUser 회원 탈퇴 완료");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -123,15 +152,15 @@ public class AuthController {
         log.info("임시 비밀번호 전송 완료");
         return ResponseEntity.status(HttpStatus.OK).body("임시 비밀번호 발송 완료");
     }
-    
-    
+
+
     // Password 변경
     // todo : dto로 parm ㄴㄴ
     @PutMapping("change-password")
     public ResponseEntity<?> changePassword(@RequestParam String uuid,
-                                                    @RequestParam String currentPassword,
-                                                    @RequestParam String newPassword,
-                                                    @RequestParam String confirmPassword) {
+                                            @RequestParam String currentPassword,
+                                            @RequestParam String newPassword,
+                                            @RequestParam String confirmPassword) {
         LocalUser localUser = userService.changePassword(uuid, currentPassword, newPassword, confirmPassword);
         log.info("비밀번호 변경 완료");
         return ResponseEntity.status(HttpStatus.OK).body("비밀번호 변경 완료");

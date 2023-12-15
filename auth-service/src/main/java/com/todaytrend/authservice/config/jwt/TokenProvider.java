@@ -6,6 +6,7 @@ import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class TokenProvider {
 
     private final JwtProperties jwtProperties;
@@ -21,7 +23,10 @@ public class TokenProvider {
         Date now = new Date();
         String token = makeToken(new Date(now.getTime() + expiredAt.toMillis()), userInterface);
 
-        return new TokenInfo(token, (int) expiredAt.getSeconds());
+        // 쿠키의 만료 시간을 2시간으로 설정
+        int cookieExpiresIn = (int) Duration.ofHours(2).getSeconds();
+
+        return new TokenInfo(token, cookieExpiresIn);
     }
 
     // JWT 토큰 생성 메서드
@@ -44,11 +49,11 @@ public class TokenProvider {
     // JWT 토큰 유효성 검증 메서드
     public boolean validToken(String token) {
         try {
-            Jwts.parser()
-                    .setSigningKey(jwtProperties.getSecretKey()) // 비밀값으로 복호화
-                    .parseClaimsJws(token);
+            Jwts.parser().setSigningKey(jwtProperties.getSecretKey()).parseClaimsJws(token);
+            log.info("복호화 성공");
             return true;
         } catch (Exception e) { // 복호화 과정에서 에러가 나면 유효하지 않은 토큰
+            log.info("복호화 실패" + e);
             return false;
         }
     }
