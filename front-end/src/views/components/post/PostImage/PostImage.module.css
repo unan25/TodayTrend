@@ -1,8 +1,8 @@
 .post {
   position: relative;
   border-radius: 1rem;
-  width: 31%;
-  height: 24rem;
+  width: 21rem;
+  height: 28rem;
   object-fit: cover;
   cursor: pointer;
 }
