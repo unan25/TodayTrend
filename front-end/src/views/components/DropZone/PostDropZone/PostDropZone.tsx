@@ -1,6 +1,13 @@
+// state
 import React, { useCallback, useEffect, useState } from "react";
+
+// style
 import styles from "./PostDropZone.module.css";
+
+// dropzone
 import { useDropzone } from "react-dropzone";
+
+// component
 import ImageCropModal from "./ImageCropModal/ImageCropModal";
 
 type Props = {
@@ -8,17 +15,23 @@ type Props = {
 };
 
 const PostDropZone: React.FC<Props> = ({ setImages }) => {
-  const [SelectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [ImageURLs, setImageURLs] = useState<string[]>();
+  //
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [imageURLs, setImageURLs] = useState<string[]>();
+  const [URLToCrop, setURLToCrop] = useState<string | null>();
+  const [imageToCrop, setImageToCrop] = useState<File | null>(null);
 
+  //
+  /* ============================================================================= */
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setImages((prevImages: File[]) => [...prevImages, ...acceptedFiles]);
-      setSelectedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+      setImageToCrop(acceptedFiles[0]);
     },
-    [setImages]
+    [setImageToCrop]
   );
 
+  /* ============================================================================= */
+  // controller
   const handlePrevious = () => {
     setSelectedFiles((prevFiles) => {
       const updatedFiles = [...prevFiles];
@@ -41,33 +54,46 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
     });
   };
 
-  const handDelete = () => {
+  const handleDelete = () => {
     setSelectedFiles((prevFiles) => {
       const newImages = [...prevFiles];
       newImages.pop();
       return newImages;
     });
-
-    setImages((prevFiles) => {
-      const newImages = [...prevFiles];
-      newImages.pop();
-      return newImages;
-    });
   };
+  /* ============================================================================= */
 
   useEffect(() => {
-    const urls = SelectedFiles.map((file) => URL.createObjectURL(file));
+    setImages((prev) => [...selectedFiles]);
+
+    const urls = selectedFiles.map((file) => URL.createObjectURL(file));
     setImageURLs(urls);
     return () => {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [SelectedFiles]);
+  }, [selectedFiles]);
+
+  useEffect(() => {
+    setURLToCrop(null);
+    if (imageToCrop) {
+      const url = URL.createObjectURL(imageToCrop);
+
+      setURLToCrop(url);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    }
+  }, [imageToCrop]);
+
+  /* ============================================================================= */
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
+  /* ============================================================================= */
+
   return (
     <div className={styles.dropzone}>
-      {ImageURLs?.map((url, i) => (
+      {imageURLs?.map((url, i) => (
         <img
           key={i}
           src={url}
@@ -82,13 +108,19 @@ const PostDropZone: React.FC<Props> = ({ setImages }) => {
         <div className={styles.button__previous} onClick={handlePrevious}>
           이전
         </div>
-        <div className={styles.button__delete} onClick={handDelete}>
+        <div className={styles.button__delete} onClick={handleDelete}>
           지우기
         </div>
         <div className={styles.button__next} onClick={handleNext}>
           다음
         </div>
-        {ImageURLs !== undefined && <ImageCropModal image={ImageURLs[0]} />}
+        {URLToCrop && (
+          <ImageCropModal
+            setSelectedFiles={setSelectedFiles}
+            setImageToCrop={setImageToCrop}
+            image={URLToCrop}
+          />
+        )}
       </div>
     </div>
   );

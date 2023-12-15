@@ -14,10 +14,15 @@ import styles from "./UploadPostPage.module.css";
 // redux
 import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
+import { useNavigate } from "react-router-dom";
 
 const CreatePostPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  // Store
   const UUID = useSelector((state: RootState) => state.user.UUID);
 
+  // state
   const [Content, setContent] = useState("");
   const [hashTag, setHashTag] = useState({
     user: [""],
@@ -62,19 +67,17 @@ const CreatePostPage: React.FC = () => {
         categoryIdList: category,
       };
 
-      console.log
-
       const postResponse = await axios.post("/api/post", postData, {
         cancelToken: source.token,
       });
 
+      const postId = postResponse.data.postId;
+
+      formData.append("postId", postId);
+
       Images.forEach((image) => {
         formData.append("images", image);
       });
-
-      formData.append("postId", postResponse.data.postId);
-
-      console.log(formData.getAll("images"));
 
       const imageResponse = await axios.post("/api/images", formData, {
         headers: {
@@ -83,12 +86,14 @@ const CreatePostPage: React.FC = () => {
         cancelToken: source.token,
       });
 
-      console.log(imageResponse);
+      if (imageResponse.status === 200) {
+        navigate(`/post/${postId}`);
+      }
     } catch (err) {
       if (axios.isCancel(err)) {
         console.log("Request canceled");
       } else {
-        console.log(err);
+        console.error(err);
       }
     }
   };

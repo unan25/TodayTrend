@@ -17,7 +17,6 @@ const ProfileDropZone: React.FC<Props> = ({ setFunction, image }) => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       setFunction([...acceptedFiles]);
-      console.log(acceptedFiles);
     },
     [setFunction]
   );

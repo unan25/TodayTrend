@@ -1,5 +1,5 @@
 // react
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // components
 import OnChangeInput from "../../../components/common/OnChangeInput/OnChangeInput";
@@ -12,6 +12,8 @@ import { UserInfo } from "interface/UserInterface";
 
 // styles
 import formStyle from "../../../../module/styles/form.module.css";
+import axios from "axios";
+import { debounce } from "../../../../module/functions/debounce";
 
 type Props = {
   fields: UserInfo;
@@ -30,6 +32,20 @@ const UserInfoForm: React.FC<Props> = ({
 }) => {
   // State
   const genders = ["", "MALE", "FEMALE"];
+
+  const checkDuplication = async () => {
+    try {
+      const response = await axios.get(
+        `/api/users/checkNickname?nickname=${fields.nickname}`
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    debounce(checkDuplication, 2000)();
+  }, [fields.nickname]);
 
   //------------------------------------------------------------------------------
 

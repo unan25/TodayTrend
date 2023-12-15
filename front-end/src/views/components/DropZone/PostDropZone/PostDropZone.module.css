@@ -8,8 +8,8 @@
 
 .dropzone__img,
 .dropzone__drop {
-  width: 20rem;
-  height: 30rem;
+  width: 24em;
+  height: 32rem;
   padding: 0px;
   border-radius: 1rem;
 }

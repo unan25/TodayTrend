@@ -11,12 +11,23 @@ import { useParams } from "react-router-dom";
 import styles from "./PostLikesButton.module.css";
 import axios from "axios";
 
-function PostLikesButton() {
+type Props = {
+  to?: string;
+};
+
+const PostLikesButton: React.FC<Props> = ({ to }) => {
   const [likesCount, setLikesCount] = useState<number>(0);
   const [hasLiked, setHasLiked] = useState<boolean>(false);
   const [clicked, setClicked] = useState<boolean>();
 
   const { postId } = useParams();
+
+  let toPost = postId;
+
+  if (to) {
+    toPost = to;
+  }
+
   const UUID = useSelector((state: RootState) => state.user.UUID);
 
   const likesHandler = async () => {
@@ -46,16 +57,12 @@ function PostLikesButton() {
 
   const getLiked = async () => {
     try {
-
       const data = {
-        uuid : UUID,
-        postId: postId
-      }
+        uuid: UUID,
+        postId: postId,
+      };
 
-      const response = await axios.post(
-        `/api/post/liked`, data
-      );
-
+      const response = await axios.post(`/api/post/liked`, data);
 
       setHasLiked(response.data);
     } catch (err) {
@@ -88,6 +95,6 @@ function PostLikesButton() {
       </div>
     </div>
   );
-}
+};
 
 export default PostLikesButton;

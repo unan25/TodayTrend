@@ -149,15 +149,14 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
     }
   };
 
-  
   const fetchData = async (temp: string) => {
-    try{
-    const resonse = await axios.get(`/api/users/nickname/${temp}`)
-    console.log(resonse.data);
-  } catch (err) {
-    console.log("해당하는 유저가 없습니다.")
-  }
-  }
+    try {
+      const resonse = await axios.get(`/api/users/nickname/${temp}`);
+      console.log(resonse.data);
+    } catch (err) {
+      console.log("해당하는 유저가 없습니다.");
+    }
+  };
 
   // effect
   useEffect(() => {
@@ -169,7 +168,7 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
   useEffect(() => {
     const temp = createHashtag();
     if (temp) {
-      fetchData(temp);     
+      fetchData(temp);
     }
   }, [content]);
 

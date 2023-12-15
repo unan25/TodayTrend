@@ -50,15 +50,14 @@ function SignInPage() {
     };
 
     const response = await dispatch(signInUser(account));
-    console.log(response);
   };
 
   // signIn Success
   useEffect(() => {
     if (UUID && role === "GUEST") {
-      navigate("/signup")
+      navigate("/signup");
       return;
-    };
+    }
 
     if (UUID && role) {
       navigate("/");
