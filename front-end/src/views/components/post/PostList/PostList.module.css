@@ -1,9 +1,10 @@
 .postList {
   display: flex;
   justify-content: center;
-  margin: 0 auto;
+  margin: auto;
+  margin-top: 1rem;
   flex-wrap: wrap;
-  row-gap: 3rem;
+  row-gap: 1rem;
   column-gap: 1rem;
   width: 80%;
 }

@@ -36,19 +36,29 @@ const SearchPage: React.FC = () => {
   }, []);
 
   const onClickUserHandler = (user: userTagType) => () => {
-    sessionStorage.setItem('searchUser', JSON.stringify([...searchUser, user]));
+    sessionStorage.setItem(
+      'searchUser',
+      JSON.stringify(Array.from(new Set([user, ...searchUser])))
+    );
     navigate(`/profile/${user.nickname}`);
   };
   const onClickHashHandler = (hashtag: string) => () => {
     sessionStorage.setItem(
       'searchHash',
-      JSON.stringify([...searchHash, hashtag])
+      JSON.stringify(Array.from(new Set([hashtag, ...searchHash])))
     );
     navigate(`/search/${hashtag}`);
   };
-
+  // 검색로직
   const onChangeHandler = (e: any) => {
-    const newContent = e.target.value;
+    var newContent = e.target.value;
+    const hasSpace = /\s/.test(newContent);
+    console.log(hasSpace);
+    //모든 공백 제거
+    if (hasSpace) {
+      newContent = newContent.replace(/\s/g, '');
+      console.log(newContent);
+    }
     if (newContent.charAt(0) === '#') {
       setHashTag(newContent.substring(1));
     } else if (newContent.charAt(0) === '@') {
@@ -56,6 +66,7 @@ const SearchPage: React.FC = () => {
     }
     setIsInput(newContent.trim() !== '');
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       // 사용자가 Enter를 눌렀을 때 실행할 로직을 여기에 추가
@@ -81,8 +92,10 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`api/users/nickname/${userTag}`);
-        setUserData(response.data);
+        if (userTag != '') {
+          const response = await axios.get(`api/users/nickname/${userTag}`);
+          setUserData(response.data);
+        }
       } catch (error) {
         console.log('유저검색 리스트 못 받는 중', error);
         setUserData([]);
@@ -94,8 +107,12 @@ const SearchPage: React.FC = () => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const response = await axios.get(`api/post/hashtag?hashtag=${hashTag}`);
-        setHashData(response.data);
+        if (hashTag != '') {
+          const response = await axios.get(
+            `api/post/hashtag?hashtag=${hashTag}`
+          );
+          setHashData(response.data);
+        }
       } catch (error) {
         console.log('포스트검색 리스트 못 받는 중', error);
         setHashData([]);
@@ -126,9 +143,7 @@ const SearchPage: React.FC = () => {
             <div className={styles.dropDownBox}>
               {searchUser && (
                 <>
-                  <div className={styles.searchTitle}>
-                    최근 유저 검색어 목록
-                  </div>
+                  <div className={styles.searchTitle}>최근 유저 검색 목록</div>
                   {searchUser.map((user, i) => (
                     <div
                       key={user.uuid}
@@ -158,7 +173,7 @@ const SearchPage: React.FC = () => {
               {searchHash && (
                 <>
                   <div className={styles.searchTitle}>
-                    최근 해시태그 검색어 목록
+                    최근 해시태그 검색 목록
                   </div>
                   {searchHash.map((tag, i) => (
                     <div
@@ -182,7 +197,6 @@ const SearchPage: React.FC = () => {
           </div>
         </div>
       )}{' '}
-      ;
       {isInput && (
         <div className={styles.dropDownBox}>
           {userData && userTag && (

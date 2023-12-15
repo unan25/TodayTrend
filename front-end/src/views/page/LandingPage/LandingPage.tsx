@@ -134,7 +134,7 @@ function LandingPage() {
   if (!data) return <div>데이터 가져오는중</div>;
   return (
     <div>
-      <div>
+      <div className={styles.nav}>
         <Nav variant="underline">
           <Nav.Item>
             <Nav.Link onClick={() => setTab(0)} active={tab === 0}>
