@@ -5,6 +5,11 @@
   margin-top: 10rem;
   margin-left: 20rem;
 }
+.nav {
+  display: flex;
+  margin-left: 10rem;
+  margin-bottom: 0.5rem;
+}
 
 .category {
   display: flex;

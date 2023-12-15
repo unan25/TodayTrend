@@ -123,7 +123,7 @@ public class PostController {
 //    todo : 명세서에 추가해야함
 //    info : hashTag 검색 시 보여주는 포스트 리스트
 //    api : Get api/post/hashtag @RequestBody
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<?> hahTagSearchList(@RequestBody RequestHashTagResultDto requestDto){
         return new ResponseEntity<>(postService.findhashTagList(requestDto),HttpStatus.OK);
     }
