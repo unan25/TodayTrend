@@ -5,7 +5,7 @@ import { RootState } from "redux/store";
 //
 import { Link, useParams } from "react-router-dom";
 //
-import axios from "axios";
+import axios from "../../../api";
 //
 import { UserInfo } from "interface/UserInterface";
 //

@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.Date;
 
@@ -49,5 +50,17 @@ public class TokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public Mono<Claims> extractMonoAllClaims(String token) {
+        return Mono.just(Jwts.parser().setSigningKey(jwtProperties.getSecretKey()).parseClaimsJws(token).getBody());
+    }
+
+    public Mono<String> extractMonoRole(Claims claims) {
+        return Mono.justOrEmpty((String) claims.get("role"));
+    }
+
+    public Mono<String> extractMonoUuid(Claims claims) {
+        return Mono.justOrEmpty((String) claims.get("uuid"));
     }
 }

@@ -33,8 +33,4 @@ public class ExceptionPathManager {
     public Set<String> getExceptionPaths() {
         return this.exceptionPaths;
     }
-
-    public boolean isExceptionPath(String path) {
-        return this.exceptionPaths.contains(path);
-    }
 }

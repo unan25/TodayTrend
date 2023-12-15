@@ -25,7 +25,7 @@ public class LogFilter extends AbstractGatewayFilterFactory<LogFilter.Config> {
             log.info("log preFilter : {} ", request.getURI().getPath());
 
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-                log.info("log postFilter : {} ", response.getStatusCode());
+                log.info("log postFilter - 상태 코드: {}, 헤더: {} 쿠키: {}", response.getStatusCode(), response.getHeaders(),response.getCookies());
             }));
         });
     }

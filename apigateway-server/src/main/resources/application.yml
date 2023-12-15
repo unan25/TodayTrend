@@ -11,6 +11,7 @@ spring:
     gateway:
       default-filters:
         - name: LogFilter
+#        - name: CustomTokenExpirationFilter
       routes:
       - id: user-service
         uri: lb://USER-SERVICE
@@ -46,3 +47,9 @@ eureka:
 jwt:
   issuer: ${issuer}
   secret_key: ${secret_key}
+
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:
