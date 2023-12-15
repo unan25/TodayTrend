@@ -51,7 +51,7 @@ export const signInUser = createAsyncThunk(
   async (account: Account, { rejectWithValue }) => {
     try {
       const response = await axios.post("/api/auth/login", account);
-      console.log(document.cookie.length);
+
       return {
         UUID: response.data.uuid,
         userType: response.data.userType,

@@ -17,7 +17,7 @@ import { useUserInfoValidation } from "../../../hook/useUserInfoValidation";
 import { useAccountValidation } from "../../../hook/useAccountValidation";
 
 // style
-import styles from "./SignUpPage.module.css";
+
 import buttonStyle from "../../../module/styles/button.module.css";
 import formStyle from "../../../module/styles/form.module.css";
 
@@ -139,7 +139,7 @@ function SignUpPage() {
 
       try {
         const response = await dispatch(updateUserInfo(userInfo));
-        if(response.meta.requestStatus === 'fulfilled') navigate("/");
+        if (response.meta.requestStatus === "fulfilled") navigate("/");
       } catch (err: any) {
         console.error(err);
       }

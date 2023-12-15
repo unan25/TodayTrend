@@ -58,7 +58,6 @@ const KakaoLoginService = {
         email: userData.data.kakao_account.email,
       };
 
-      console.log(userInfo);
       return userInfo;
     } catch (err) {
       console.log("유저 정보를 불러오지 못했습니다.");
@@ -77,7 +76,6 @@ const KakaoLoginService = {
 
       window.location.assign(KakaoSessionUrl);
 
-      console.log(response.data);
       return response;
     } catch (error) {
       console.error("로그아웃에 실패했습니다.");

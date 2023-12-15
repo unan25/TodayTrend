@@ -1,8 +1,15 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
+//
 import { Link, useParams } from "react-router-dom";
-import styles from "./PostDetailPage.module.css";
+
+//
 import axios from "axios";
 import PostLikesButton from "../../../views/components/post/PostLikesButton/PostLikesButton";
+
+//
+import styles from "./PostDetailPage.module.css";
+
+//
 
 type PostDetail = {
   postId: number;
@@ -12,6 +19,11 @@ type PostDetail = {
   content: string;
   createdAt: string;
   postImgs: string[];
+};
+
+type Category = {
+  id: number;
+  name: string;
 };
 
 const PostDetailPage: React.FC = () => {
@@ -26,9 +38,15 @@ const PostDetailPage: React.FC = () => {
   });
 
   const [currentImage, setCurrentImage] = useState<number>(0);
+  const [boxShadow, setBoxShadow] = useState<string>();
+  const [category, setCategory] = useState<Category[]>([
+    { name: "스포티", id: 1 },
+  ]);
 
   const { postId } = useParams();
 
+  /* ================================================================ */
+  // contents
   const renderContentWithLinks = () => {
     const words = postDetail!.content.split(/\s+/);
 
@@ -58,16 +76,8 @@ const PostDetailPage: React.FC = () => {
     });
   };
 
-  const getPostDetails = async () => {
-    try {
-      const response = await axios.get(`/api/post/postdetail?postId=${postId}`);
-      setPostDetail({ ...response.data });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const renderPage = (length: number) => {
+  // image index
+  const renderImageIndex = (length: number) => {
     let pages: ReactNode[] = [];
 
     for (let i = 0; i < length; i++) {
@@ -85,10 +95,52 @@ const PostDetailPage: React.FC = () => {
     return pages;
   };
 
-  //
+  const renderCateogory = () => {
+    const categories: ReactNode[] = [];
+
+    category.map((e, i) => {
+      categories.push(
+        <div
+          className={
+            styles.post_body_section2__contentBox__box_category__category
+          }
+          key={i}
+        >
+          {e.name}
+        </div>
+      );
+    });
+
+    return categories;
+  };
+  /* ================================================================ */
+
+  /* ================================================================ */
+  // axios
+  const getPostDetails = async () => {
+    try {
+      const response = await axios.get(`/api/post/postdetail?postId=${postId}`);
+      setPostDetail({ ...response.data });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getCategory = async () => {
+    try {
+      const response = await axios.get(`/api/post/category?postId=${postId}`);
+      setCategory(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     getPostDetails();
+    getCategory();
   }, [postId]);
+
+  /* ================================================================ */
 
   return (
     <div className="page-body">
@@ -122,7 +174,7 @@ const PostDetailPage: React.FC = () => {
             <div
               className={styles.post_body_section1__image_controller__iconBox}
             >
-              {renderPage(postDetail.postImgs.length)}
+              {renderImageIndex(postDetail.postImgs.length)}
             </div>
             <button
               onClick={() =>
@@ -165,13 +217,7 @@ const PostDetailPage: React.FC = () => {
               <div
                 className={styles.post_body_section2__contentBox__box_category}
               >
-                <div
-                  className={
-                    styles.post_body_section2__contentBox__box_category__category
-                  }
-                >
-                  category
-                </div>
+                {renderCateogory()}
               </div>
               <div
                 className={styles.post_body_section2__contentBox__box_detail}

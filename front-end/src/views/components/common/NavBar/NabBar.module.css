@@ -4,17 +4,22 @@
   padding: 2rem 1rem 2rem 1rem;
 }
 
-.navBar_logo{
+.navBar_logo {
   width: 4rem;
   height: 4rem;
 }
+
 .navBar_title {
-  margin-left: 30rem;
   width: 12rem;
-  border: 2px solid #3D3775;
+  height: 5rem;
+  border: 2px solid #3d3775;
   padding: 1rem;
   border-radius: 2rem;
-  box-shadow: 0.5rem 0.2rem 0.3rem 0.1rem #3D3775;
+  box-shadow: 0.5rem 0.2rem 0.3rem 0.1rem #3d3775;
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .section2 {
