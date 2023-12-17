@@ -5,7 +5,7 @@ import { RootState } from "redux/store";
 //
 import { Link, useParams } from "react-router-dom";
 //
-import axios from "../../../api";
+import axios from "../../../setUpAxios";
 //
 import { UserInfo } from "interface/UserInterface";
 //
@@ -156,7 +156,7 @@ const ProfilePage: React.FC = () => {
             {me === UUID ? (
               <Link
                 className={styles.profile_section2__buttonBox__button1}
-                to={"/"}
+                to={`/update-userinfo/${nickname}`}
               >
                 수정
               </Link>
