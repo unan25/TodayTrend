@@ -79,5 +79,9 @@ public class ImageController {
                                               @RequestPart("imageUrl") String imageUrl) throws IOException {
         return new ResponseEntity<>(imageService.updateProfileImage(image, imageUrl) , HttpStatus.OK);
     }
-    //프로필 이미지 삭제
+    //게시물 이미지 파일 조회 (수정페이지)
+    @GetMapping("update/{postId}")
+    public ResponseEntity<?> getImages(@PathVariable Long postId) {
+        return new ResponseEntity<>(imageService.getImages(postId) , HttpStatus.OK);
+    }
 }

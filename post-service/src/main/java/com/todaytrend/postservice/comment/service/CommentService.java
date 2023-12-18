@@ -10,13 +10,15 @@ import com.todaytrend.postservice.comment.dto.response.ResponseCommentListDto;
 import com.todaytrend.postservice.comment.entity.Comment;
 import com.todaytrend.postservice.comment.entity.CommentLike;
 import com.todaytrend.postservice.comment.entity.CommentTag;
-import com.todaytrend.postservice.comment.feignClient.UserFeignClient;
-import com.todaytrend.postservice.comment.feignClient.dto.UserFeignDto;
+import com.todaytrend.postservice.comment.feignClient.UserCommentFeignClient;
+import com.todaytrend.postservice.comment.feignClient.dto.UserCommentFeignDto;
 import com.todaytrend.postservice.comment.repository.CommentLikeRepository;
 import com.todaytrend.postservice.comment.repository.CommentRepository;
 import com.todaytrend.postservice.comment.repository.CommentTagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
     private final CommentTagRepository commentTagRepository;
-     private final UserFeignClient userFeignClient;
+     private final UserCommentFeignClient userCommentFeignClient;
 
     //---------------------------댓글 검증--------------------------
 
@@ -66,23 +68,22 @@ public class CommentService {
                 .content(comment.getContent())
                 .commentId(comment.getCommentId())
                 .uuid(comment.getUuid())
-                .commentLikeCount(0)
-                .isLiked(false)
                 .build();
     }
 
     //---------------------------댓글 조회--------------------------
 
-    // postId로 부모 댓글만 조회
-    public ResponseCommentListDto findParentCommentByPostId(Long postId) {
-        List<Comment> comments = commentRepository.findByPostIdAndParentIdIsNull(postId);
+    // postId로 부모 댓글만 조회 /페이징 처리
+    public ResponseCommentListDto findParentCommentByPostId(Long postId, int page, int size, String uuid) {
+        PageRequest pageRequest = PageRequest.of(page,size);
+        Page<Comment> commentPage = commentRepository.findCommentsByPostIdAndParentIdIsNullAndUuidNot(postId, uuid,pageRequest);
+        List<Comment> comments = commentPage.getContent();
         List<ResponseCommentDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
             // 유저 프로필 이미지랑 닉네임 얻어 오는 feign 실행
-            UserFeignDto userFeignDto = userFeignClient.findImgAndNickname(comment.getUuid());
-
-            String nickname = userFeignDto.getNickname();
-            String profileImage = userFeignDto.getProfileImage();
+            UserCommentFeignDto userCommentFeignDto = userCommentFeignClient.findImageAndNickname(comment.getUuid());
+            String nickname = userCommentFeignDto.getNickname();
+            String profileImage = userCommentFeignDto.getProfileImage();
 
             ResponseCommentDto build = ResponseCommentDto.builder()
                     .createAt(comment.getCreateAt())
@@ -96,20 +97,21 @@ public class CommentService {
         }
         return ResponseCommentListDto.builder()
                 .commentList(commentList)
-                .commentCount(commentList.size())
+                .page(page)
+                .totalPages(commentPage.getTotalPages())
                 .build();
     }
-    // commentId로 parent-comment 대댓글 조회
-    public ResponseCommentListDto findCommentByCommentId(Long commentId) {
+    // commentId로 대댓글 조회
+    public ResponseCommentListDto findCommentByCommentId(Long commentId, int page, int size) {
         List<Comment> comments = commentRepository.findByParentId(commentId);
 
         List<ResponseCommentDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
             // 유저 프로필 이미지랑 닉네임 얻어 오는 feign 실행
-            UserFeignDto userFeignDto = userFeignClient.findImgAndNickname(comment.getUuid());
+            UserCommentFeignDto userCommentFeignDto = userCommentFeignClient.findImageAndNickname(comment.getUuid());
 
-            String nickname = userFeignDto.getNickname();
-            String profileImage = userFeignDto.getProfileImage();
+            String nickname = userCommentFeignDto.getNickname();
+            String profileImage = userCommentFeignDto.getProfileImage();
 
             ResponseCommentDto build = ResponseCommentDto.builder()
                     .createAt(comment.getCreateAt())
@@ -118,6 +120,34 @@ public class CommentService {
                     .uuid(comment.getUuid())
                     .nickname(nickname)
                     .profileImage(profileImage)
+                    .build();
+            commentList.add(build);
+        }
+        return ResponseCommentListDto.builder()
+                .commentList(commentList)
+                .build();
+    }
+    // 총 댓글수 조회
+    public Long getTotalCount(Long postId) {
+       return commentRepository.countByPostId(postId);
+    }
+
+    // 대댓글수 조회
+    public Long getReplyCount(Long commentId) {
+        return commentRepository.countByParentId(commentId);
+    }
+
+    // 내가 쓴 댓글 조회
+    public ResponseCommentListDto findMyComment(Long postId, String uuid){
+        List<ResponseCommentDto> commentList = new ArrayList<>();
+        List<Comment> comments = commentRepository.findByPostIdAndUuidAndParentIdIsNull(postId, uuid);
+
+        for (Comment comment : comments) {
+            ResponseCommentDto build = ResponseCommentDto.builder()
+                    .createAt(comment.getCreateAt())
+                    .content(comment.getContent())
+                    .commentId(comment.getCommentId())
+                    .uuid(comment.getUuid())
                     .build();
             commentList.add(build);
         }
@@ -191,6 +221,18 @@ public class CommentService {
         // if 실행 안되면 예외 처리
         throw new IllegalStateException("좋아요 등록/삭제 에러 발생");
     }
+    //댓글 좋아요 수 조회  return Integer
+    public Long getLikeCount(Long commentId) {
+       return commentLikeRepository.countByCommentId(commentId);
+    }
+
+    //댓글 좋아요 내가 눌렀는지 조회 return boolean
+    public boolean checkLike(RequestCommentLikeDto requestCommentLikeDto) {
+        return commentLikeRepository.existsByCommentIdAndUuid
+                (requestCommentLikeDto.getCommentId(),
+                requestCommentLikeDto.getUuid());
+    }
+
     // 댓글 좋아요 목록 조회
     public ResponseCommentLikeUserDto getCommentLikeUserList(Long commentId) {
         return ResponseCommentLikeUserDto.builder()
@@ -201,26 +243,24 @@ public class CommentService {
     // 댓글 태그 등록
     public void makeCommentTag(List<String> userTag ,Long commentId) {
         for (String nickname : userTag) {
-            // nickname 을 uuid로 변환하는 feign
-            String uuid = nickname;
             commentTagRepository.save(CommentTag.builder()
-                            .uuid(uuid)
+                            .nickname(nickname)
                             .commentId(commentId)
                     .build());
         }
     }
-    // 댓글 태그 조회
-    public List<String> getCommentTag(Long commentId) {
-        List<String> uuidList = commentTagRepository.findByUuidCommentId(commentId);
-        List<String> userTagList = new ArrayList<>();
-
-        for (String uuid : uuidList) {
-            // uuid를 nickname으로 변환하는 feign
-            String nickname = uuid;
-            userTagList.add(nickname);
-        }
-        return userTagList;
-    }
+//    // 댓글 태그 조회
+//    public List<String> getCommentTag(Long commentId) {
+//        List<String> uuidList = commentTagRepository.findByUuidCommentId(commentId);
+//        List<String> userTagList = new ArrayList<>();
+//
+//        for (String uuid : uuidList) {
+//            // uuid를 nickname으로 변환하는 feign
+//            String nickname = uuid;
+//            userTagList.add(nickname);
+//        }
+//        return userTagList;
+//    }
 
 
 }
