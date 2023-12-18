@@ -14,15 +14,11 @@ public class ResponseCommentDto {
     private Long commentId;
     private String content;
     private LocalDateTime createAt;
-    private List<String> userTagList;
+    private Long parentId;
 
+    //유저
     private String uuid;
     private String nickname;
     private String profileImage;
-
-    private int replyCommentCount;
-    private int commentLikeCount;
-    private boolean isLiked;
-
 
 }

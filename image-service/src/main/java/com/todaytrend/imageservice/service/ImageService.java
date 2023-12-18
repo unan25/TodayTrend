@@ -2,6 +2,7 @@ package com.todaytrend.imageservice.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import com.todaytrend.imageservice.dto.request.RequestQueryDto;
 import com.todaytrend.imageservice.dto.response.ResponseImageDto;
 import com.todaytrend.imageservice.dto.response.ResponseImageListDto;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -166,5 +168,16 @@ public class ImageService {
                 .totalPage(imagePage.getTotalPages())
                 .data(data)
                 .build();
+    }
+
+    // 이미지 파일 다운로드 (게시물 이미지 수정페이지 조회)
+    public List<S3Object> getImages(Long postId) {
+        List<Image> images = imageRepository.findImagesByPostId(postId);
+        List<S3Object> imageList = new ArrayList<>();
+        for (Image image : images) {
+            String key = image.getImageUrl().split(".com/")[1]; //.com/ 이후의 파일명 반환
+            imageList.add(amazonS3.getObject(bucket, key));
+        }
+        return imageList;
     }
 }

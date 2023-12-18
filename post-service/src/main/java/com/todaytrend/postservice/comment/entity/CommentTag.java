@@ -19,7 +19,7 @@ public class CommentTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentTagId ;
 
-    private String uuid;
+    private String nickname;
 
     private Long commentId;
 }
