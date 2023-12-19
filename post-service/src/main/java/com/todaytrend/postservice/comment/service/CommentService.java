@@ -14,11 +14,10 @@ import com.todaytrend.postservice.comment.feignClient.UserCommentFeignClient;
 import com.todaytrend.postservice.comment.feignClient.dto.UserCommentFeignDto;
 import com.todaytrend.postservice.comment.repository.CommentLikeRepository;
 import com.todaytrend.postservice.comment.repository.CommentRepository;
+import com.todaytrend.postservice.comment.repository.CommentRepositoryImpl;
 import com.todaytrend.postservice.comment.repository.CommentTagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
     private final CommentTagRepository commentTagRepository;
      private final UserCommentFeignClient userCommentFeignClient;
+     private final CommentRepositoryImpl commentRepositoryImpl;
 
     //---------------------------댓글 검증--------------------------
 
@@ -75,12 +75,14 @@ public class CommentService {
 
     // postId로 부모 댓글만 조회 /페이징 처리
     public ResponseCommentListDto findParentCommentByPostId(Long postId, int page, int size, String uuid) {
-        PageRequest pageRequest = PageRequest.of(page,size);
-        Page<Comment> commentPage = commentRepository.findCommentsByPostIdAndParentIdIsNullAndUuidNot(postId, uuid,pageRequest);
-        List<Comment> comments = commentPage.getContent();
+//        PageRequest pageRequest = PageRequest.of(page,size);
+//        Page<Comment> commentPage = commentRepository.findCommentsByPostIdAndParentIdIsNullAndUuidNot(postId, uuid,pageRequest);
+//        List<Comment> comments = commentPage.getContent();
+        List<Comment> comments = commentRepositoryImpl.findParentComments(postId,page,size,uuid);
+
         List<ResponseCommentDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
-            // 유저 프로필 이미지랑 닉네임 얻어 오는 feign 실행
+//             유저 프로필 이미지랑 닉네임 얻어 오는 feign 실행
             UserCommentFeignDto userCommentFeignDto = userCommentFeignClient.findImageAndNickname(comment.getUuid());
             String nickname = userCommentFeignDto.getNickname();
             String profileImage = userCommentFeignDto.getProfileImage();
@@ -97,14 +99,13 @@ public class CommentService {
         }
         return ResponseCommentListDto.builder()
                 .commentList(commentList)
-                .page(page)
-                .totalPages(commentPage.getTotalPages())
                 .build();
     }
     // commentId로 대댓글 조회
     public ResponseCommentListDto findCommentByCommentId(Long commentId, int page, int size) {
-        List<Comment> comments = commentRepository.findByParentId(commentId);
+//        List<Comment> comments = commentRepository.findByParentId(commentId);
 
+        List<Comment> comments = commentRepositoryImpl.findReplyComments(commentId, page, size);
         List<ResponseCommentDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
             // 유저 프로필 이미지랑 닉네임 얻어 오는 feign 실행
