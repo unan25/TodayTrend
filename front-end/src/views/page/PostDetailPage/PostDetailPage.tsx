@@ -39,9 +39,7 @@ const PostDetailPage: React.FC = () => {
 
   const [currentImage, setCurrentImage] = useState<number>(0);
   const [boxShadow, setBoxShadow] = useState<string>();
-  const [category, setCategory] = useState<Category[]>([
-    { name: "스포티", id: 1 },
-  ]);
+  const [category, setCategory] = useState<Category[]>([]);
 
   const { postId } = useParams();
 
