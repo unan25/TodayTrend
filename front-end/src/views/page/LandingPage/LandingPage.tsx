@@ -183,12 +183,12 @@ function LandingPage() {
           </div>
         </>
       )}
-      {/* <PostList
+      <PostList
         data={data}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage}
         navigate={navigate}
-      /> */}
+      />
       {isModalOpen && (
         <CategoryModal
           categories={categories}

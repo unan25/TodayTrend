@@ -1,10 +1,13 @@
 .componenet_body {
-  width: 100%;
+  width: 20rem;
   height: 4rem;
   display: flex;
+  position: absolute;
   flex-direction: row;
   border: 1px solid black;
   padding: 1rem;
+  top: 32rem;
+  left: 1rem;
   border-radius: 1rem;
   margin: 2rem 0rem;
   justify-content: space-between;
