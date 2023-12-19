@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 // components
 import OnChangeInput from "../../../components/common/OnChangeInput/OnChangeInput";
-import DropZone from "../../../components/DropZone/ProfileDropZone/ProfileDropZone";
+import DropZone from "../../../components/common/DropZone/ProfileDropZone/ProfileDropZone";
 import SelectBox from "../../../components/common/SelectBox/SelectBox";
 import AlertBox from "../../../components/common/AlertBox/AlertBox";
 
