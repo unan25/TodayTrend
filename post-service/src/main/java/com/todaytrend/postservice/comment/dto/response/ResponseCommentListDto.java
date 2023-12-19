@@ -11,6 +11,4 @@ import java.util.List;
 public class ResponseCommentListDto {
 
     private List<ResponseCommentDto> commentList;
-    private int page;
-    private int totalPages;
 }

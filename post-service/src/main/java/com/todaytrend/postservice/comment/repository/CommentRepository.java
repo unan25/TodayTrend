@@ -20,13 +20,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     List<Comment> findByPostIdAndParentIdIsNull(Long postId);
 
-
     Long countByPostId(Long postId);
     Long countByParentId(Long commentId);
-
-//    @Query(value = "SELECT c FROM Comment c ")
-    Page<Comment> findCommentsByPostIdAndParentIdIsNullAndUuidNot(@Param("postId")Long postId, @Param("uuid")String uuid, PageRequest pageRequest);
-//    Page<Comment> findCommentsByParentId(PageRequest pageRequest);
 
     // postId , uuid로 내가 쓴 부모댓글 찾기
     List<Comment> findByPostIdAndUuidAndParentIdIsNull(Long postId, String uuid);

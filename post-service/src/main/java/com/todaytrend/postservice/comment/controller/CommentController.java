@@ -4,6 +4,7 @@ import com.todaytrend.postservice.comment.dto.request.RequestCommentDto;
 import com.todaytrend.postservice.comment.dto.request.RequestCommentLikeDto;
 import com.todaytrend.postservice.comment.dto.request.RequestDeleteCommentDto;
 import com.todaytrend.postservice.comment.dto.response.ResponseCommentLikeDto;
+import com.todaytrend.postservice.comment.repository.CommentRepositoryImpl;
 import com.todaytrend.postservice.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/comments")
 public class CommentController {
     private final CommentService commentService;
+    private final CommentRepositoryImpl commentRepository;
 
     @GetMapping("health-check")
     public String healthCheck() {
@@ -33,7 +35,7 @@ public class CommentController {
                                                        @RequestParam("uuid") String uuid) {
         return new ResponseEntity<>(commentService.findParentCommentByPostId(postId,page,size,uuid), HttpStatus.OK);
     }
-    @GetMapping("reply") // 대댓글만 조회 (최신순..?)
+    @GetMapping("reply") // 대댓글만 조회 (좋아요순)
     public ResponseEntity<?> findCommentByCommentId(@RequestParam("commentId") Long commentId,
                                                     @RequestParam("page") int page,
                                                     @RequestParam("size") int size) {
@@ -64,7 +66,6 @@ public class CommentController {
     public ResponseEntity<?> getLiked(@RequestBody RequestCommentLikeDto requestCommentLikeDto) {
         return new ResponseEntity<>(commentService.checkLike(requestCommentLikeDto), HttpStatus.OK);
     }
-
     @GetMapping("cnt") // 총 댓글 수 조회
     public ResponseEntity<?> getTotalCount(@RequestParam("postId") Long postId) {
         return new ResponseEntity<>(commentService.getTotalCount(postId), HttpStatus.OK);
@@ -73,4 +74,11 @@ public class CommentController {
     public ResponseEntity<?> getReplyCount(@RequestParam("commentId") Long commentId) {
         return new ResponseEntity<>(commentService.getReplyCount(commentId), HttpStatus.OK);
     }
+//    @GetMapping("test") //부모 댓글만 조회 (좋아요순) + 내가쓰지않은로직추가 + uuid //테스트
+//    public ResponseEntity<?> test(@RequestParam("postId") Long postId,
+//                                                       @RequestParam("page") int page,
+//                                                       @RequestParam("size") int size,
+//                                                       @RequestParam("uuid") String uuid) {
+//        return new ResponseEntity<>(commentRepository.test(postId,page,size,uuid), HttpStatus.OK);
+//    }
 }
