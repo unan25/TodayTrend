@@ -22,6 +22,11 @@ spring:
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 100
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
 
 logging:
   level:
@@ -44,7 +49,6 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka # discovery-server
-
 
 ## Eureka(CI/CD)
 #eureka:

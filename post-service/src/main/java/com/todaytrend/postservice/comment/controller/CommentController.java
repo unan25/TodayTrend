@@ -1,5 +1,7 @@
 package com.todaytrend.postservice.comment.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todaytrend.postservice.comment.dto.request.RequestCommentDto;
 import com.todaytrend.postservice.comment.dto.request.RequestCommentLikeDto;
 import com.todaytrend.postservice.comment.dto.request.RequestDeleteCommentDto;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/comments")
 public class CommentController {
     private final CommentService commentService;
-    private final CommentRepositoryImpl commentRepository;
+
 
     @GetMapping("health-check")
     public String healthCheck() {
@@ -24,8 +26,10 @@ public class CommentController {
     }
 
     @PostMapping("") // 댓글 등록
-    public ResponseEntity<?> createComment(@RequestBody RequestCommentDto requestCommentDto) {
-        return new ResponseEntity<>(commentService.createComment(requestCommentDto), HttpStatus.CREATED);
+    public ResponseEntity<?> createComment(@RequestBody RequestCommentDto requestCommentDto) throws JsonProcessingException {
+        // 메세지큐에 전달하기
+        commentService.publishCreateCommentMessage(requestCommentDto);
+        return ResponseEntity.ok("댓글 등록");
     }
 
     @GetMapping("") //부모 댓글만 조회 (좋아요순) + 내가쓰지않은로직추가 + uuid
@@ -81,4 +85,10 @@ public class CommentController {
 //                                                       @RequestParam("uuid") String uuid) {
 //        return new ResponseEntity<>(commentRepository.test(postId,page,size,uuid), HttpStatus.OK);
 //    }
+    //래빗엠큐 테스트
+    @GetMapping("message/{message}")
+    public ResponseEntity<?> testMessage(@PathVariable String message) {
+        commentService.publishTestMessage(message);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
 }

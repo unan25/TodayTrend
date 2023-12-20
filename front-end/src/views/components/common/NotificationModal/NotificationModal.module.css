@@ -1,0 +1,19 @@
+.modalContainer {
+  position: fixed;
+  top: 20%;
+  left: 85%;
+  width: 20rem;
+  height: auto;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 2rem;
+  border: 2px solid #3d3775;
+  border-radius: 1rem;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.close {
+  position: fixed;
+  top: 5%;
+  left: 95%;
+}

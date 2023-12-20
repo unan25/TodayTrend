@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 //
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 //
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { RootState } from "redux/store";
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { RootState } from 'redux/store';
 
 //
-import { logOut } from "../../../../redux/_actions/user_action";
+import { logOut } from '../../../../redux/_actions/user_action';
 
 //
-import styles from "./NabBar.module.css";
-import axios from "axios";
+import styles from './NabBar.module.css';
+import axios from 'axios';
+//
+import NotificationModal from '../NotificationModal/NotificationModal';
 
 const NavBar: React.FC = () => {
   const dispatch = useDispatch<any>();
@@ -23,6 +25,8 @@ const NavBar: React.FC = () => {
 
   const [nickname, setNickname] = useState<string>();
   const [profileImage, setProfileImage] = useState<string>();
+
+  const [modal, setModal] = useState<boolean>(false);
 
   const onClickhandler = () => {
     const data = {
@@ -62,12 +66,18 @@ const NavBar: React.FC = () => {
           <Link className={styles.section2__signUpButton} to="/signup">
             회원가입
           </Link>
+          <div
+            className={styles.nav_section2__notification}
+            onClick={() => setModal(true)}
+          >
+            알림
+          </div>
           <Link className={styles.section2__signInButton} to="/signin">
             로그인
           </Link>
         </div>
       )}
-      {role === "GUEST" && (
+      {role === 'GUEST' && (
         <div className={styles.section2}>
           <Link className={styles.section2__signUpButton} to="/signup">
             회원가입
@@ -81,7 +91,7 @@ const NavBar: React.FC = () => {
         </div>
       )}
 
-      {role === "USER" && (
+      {role === 'USER' && (
         <div className={styles.section2}>
           <Link
             className={styles.nav_section_profile}
@@ -93,12 +103,18 @@ const NavBar: React.FC = () => {
             />
             <span>{nickname}</span>
           </Link>
-          <div className={styles.nav_section2__notification}>알림</div>
+          <div
+            className={styles.nav_section2__notification}
+            onClick={() => setModal(true)}
+          >
+            알림
+          </div>
           <button className={styles.button_logout} onClick={onClickhandler}>
             로그아웃
           </button>
         </div>
       )}
+      {modal && <NotificationModal onClose={() => setModal(false)} />}
     </nav>
   );
 };
