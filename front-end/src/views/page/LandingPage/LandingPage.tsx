@@ -1,25 +1,25 @@
 // react
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 // react-query
-import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery } from 'react-query';
 // react-bootstrap
-import { Nav } from "react-bootstrap";
+import { Nav } from 'react-bootstrap';
 // styles
-import styles from "./LandingPage.module.css";
+import styles from './LandingPage.module.css';
 // components
-import CategoryModal from "../../components/category/CategoryModal/CategoryModal";
-import CategoryList from "../../components/category/CategoryList/CategoryList";
-import PostList from "../../components/post/PostList/PostList";
+import CategoryModal from '../../components/category/CategoryModal/CategoryModal';
+import CategoryList from '../../components/category/CategoryList/CategoryList';
+import PostList from '../../components/post/PostList/PostList';
 // type
-import { CategoryType } from "interface/CategoryInterface";
+import { CategoryType } from 'interface/CategoryInterface';
 // axios
-import axios from "axios";
+import axios from 'axios';
 // router
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 // redux
-import { useSelector } from "react-redux";
-import { RootState } from "redux/store";
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 
 export interface IDetailPost {
   page: number;
@@ -30,7 +30,6 @@ export interface IDetailPost {
 }
 function LandingPage() {
   const navigate = useNavigate();
-  // const location = useLocation();
   const uuid = useSelector((state: RootState) => state.user.UUID);
 
   const [categories, setCategories] = useState<CategoryType[]>([]);
@@ -59,11 +58,11 @@ function LandingPage() {
         tab,
       };
       // axios.post를 사용하여 데이터를 body에 실어서 요청 보내기
-      const response = await axios.post("/api/post/main", requestBody);
+      const response = await axios.post('/api/post/main', requestBody);
       refetch();
       return response.data;
     } catch (error) {
-      console.error("포스트 리스트 못 받는 중", error);
+      console.error('포스트 리스트 못 받는 중', error);
     }
   };
   // 메인페이지 로딩 카테고리리스트 받아오기
@@ -71,11 +70,11 @@ function LandingPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get<CategoryType[]>(
-          "api/post/admincategorylist"
+          'api/post/admincategorylist'
         );
         setCategories(response.data);
       } catch (error) {
-        console.log("카테고리 리스트 못 받는 중", error);
+        console.log('카테고리 리스트 못 받는 중', error);
       }
     };
     fetchData();
@@ -92,8 +91,8 @@ function LandingPage() {
     toggleCategory(categoryId);
   };
   useEffect(() => {
-    console.log("선택한 탭:" + tab);
-    console.log("선택한 카테고리:" + categoryList);
+    console.log('선택한 탭:' + tab);
+    console.log('선택한 카테고리:' + categoryList);
     fetchPost({
       page: 0,
       size: 6,
@@ -110,7 +109,7 @@ function LandingPage() {
     setIsModalOpen(false);
   };
   const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery(
-    ["posts"],
+    ['posts'],
     ({ pageParam = 0 }) =>
       fetchPost({
         page: pageParam,

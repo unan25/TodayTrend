@@ -26,4 +26,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     // postId , uuid로 내가 쓴 부모댓글 찾기
     List<Comment> findByPostIdAndUuidAndParentIdIsNull(Long postId, String uuid);
 
+    @Query(value = "SELECT c.uuid FROM Comment c WHERE c.commentId = :parentId")
+    String findUuidByCommentId(@Param(value = "parentId") Long parentId);
+
 }

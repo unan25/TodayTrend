@@ -1,5 +1,7 @@
 package com.todaytrend.postservice.comment.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todaytrend.postservice.comment.dto.request.RequestCommentDto;
 import com.todaytrend.postservice.comment.dto.request.RequestCommentLikeDto;
 import com.todaytrend.postservice.comment.dto.request.RequestDeleteCommentDto;
@@ -12,6 +14,8 @@ import com.todaytrend.postservice.comment.entity.CommentLike;
 import com.todaytrend.postservice.comment.entity.CommentTag;
 import com.todaytrend.postservice.comment.feignClient.UserCommentFeignClient;
 import com.todaytrend.postservice.comment.feignClient.dto.UserCommentFeignDto;
+import com.todaytrend.postservice.comment.rabbitmq.MessageDto;
+import com.todaytrend.postservice.comment.rabbitmq.Producer;
 import com.todaytrend.postservice.comment.repository.CommentLikeRepository;
 import com.todaytrend.postservice.comment.repository.CommentRepository;
 import com.todaytrend.postservice.comment.repository.CommentRepositoryImpl;
@@ -32,6 +36,8 @@ public class CommentService {
     private final CommentTagRepository commentTagRepository;
      private final UserCommentFeignClient userCommentFeignClient;
      private final CommentRepositoryImpl commentRepositoryImpl;
+     private final Producer producer;
+    private final ObjectMapper objectMapper;
 
     //---------------------------댓글 검증--------------------------
 
@@ -262,6 +268,38 @@ public class CommentService {
 //        }
 //        return userTagList;
 //    }
+
+    // RabbitMQ 테스트
+    public void publishTestMessage(String message) {
+        producer.sendTestMessage(message);
+    }
+
+    // 댓글 등록 알림
+    public void publishCreateCommentMessage(RequestCommentDto requestCommentDto) throws JsonProcessingException {
+        // DTO를 json(String)으로 직렬화
+        String message = objectMapper.writeValueAsString(requestCommentDto);
+        producer.sendCreateCommentMessage(message);
+
+        // 댓글 등록시 글작성자에게 알림
+        if(requestCommentDto.getParentId() ==null) {
+        MessageDto messageDto = new MessageDto();
+        messageDto.setSender(requestCommentDto.getUuid());
+        messageDto.setPostId(requestCommentDto.getPostId());
+        messageDto.setContent(requestCommentDto.getContent());
+        String findUuidMessage = objectMapper.writeValueAsString(messageDto);
+        producer.sendFindUuidMessage(findUuidMessage);}
+
+        // 대댓글 등록시 글작성자 , 댓글작성자에게 알림
+        if (requestCommentDto.getParentId() != null) {
+            MessageDto messageDto = new MessageDto();
+            messageDto.setSender(requestCommentDto.getUuid());
+            messageDto.setPostId(requestCommentDto.getPostId());
+            messageDto.setContent(requestCommentDto.getContent());
+            messageDto.setCommentWriter(commentRepository.findUuidByCommentId(requestCommentDto.getParentId()));
+            String findUuidMessage = objectMapper.writeValueAsString(messageDto);
+            producer.sendFindUuidMessage(findUuidMessage);
+        }
+    }
 
 
 }
