@@ -1,6 +1,6 @@
-import React from 'react';
-import CategoryButton from '../CategoryButton/CategoryButton';
-import styles from './CategoryList.module.css';
+import React from "react";
+import CategoryButton from "../CategoryButton/CategoryButton";
+import styles from "./CategoryList.module.css";
 
 interface CategoryListProps {
   categories: { id: number; name: string }[];
