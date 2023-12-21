@@ -26,7 +26,10 @@ public class ExceptionPathManager {
                 "/api/users/server/**",
                 "/api/post/**",
                 "/api/images/**",
-                "/api/users/uuid/**"
+                "/api/users/uuid/**",
+                "/api/auth/health-check",
+                "/api/users/health-check"
+
                 ));
     }
 
