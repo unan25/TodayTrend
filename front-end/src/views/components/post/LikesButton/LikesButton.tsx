@@ -8,38 +8,46 @@ import { RootState } from "redux/store";
 import { useParams } from "react-router-dom";
 
 //
-import styles from "./PostLikesButton.module.css";
+import styles from "./LikesButton.module.css";
 import axios from "axios";
 
 type Props = {
-  to?: string;
+  type: "post" | "comment";
+  to?: number;
 };
 
-const PostLikesButton: React.FC<Props> = ({ to }) => {
+const PostLikesButton: React.FC<Props> = ({ type, to }) => {
   const [likesCount, setLikesCount] = useState<number>(0);
   const [hasLiked, setHasLiked] = useState<boolean>(false);
   const [clicked, setClicked] = useState<boolean>();
 
   const { postId } = useParams();
 
-  let toPost = postId;
-
-  if (to) {
-    toPost = to;
-  }
-
   const UUID = useSelector((state: RootState) => state.user.UUID);
 
   const likesHandler = async () => {
     try {
-      const data = {
-        uuid: UUID,
-        postId: postId,
-      };
+      if (type === "post") {
+        const data = {
+          uuid: UUID,
+          postId: postId,
+        };
 
-      const response = await axios.put("/api/post/like", data);
+        const response = await axios.put("/api/post/like", data);
 
-      setClicked(response.data);
+        setClicked(response.data);
+      }
+
+      if (type === "comment") {
+        const data = {
+          uuid: UUID,
+          commentId: to,
+        };
+
+        const response = await axios.post("/api/post/comments/like", data);
+
+        setClicked(response.data);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -47,9 +55,19 @@ const PostLikesButton: React.FC<Props> = ({ to }) => {
 
   const getLikesCount = async () => {
     try {
-      const response = await axios.get(`/api/post/likecnt?postId=${postId}`);
+      if (type === "post") {
+        const response = await axios.get(`/api/post/likecnt?postId=${postId}`);
 
-      setLikesCount(response.data);
+        setLikesCount(response.data);
+      }
+
+      if (type === "comment") {
+        const response = await axios.get(
+          `/api/post/comments/like-cnt?commentId=${to}`
+        );
+
+        setLikesCount(response.data);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -57,14 +75,27 @@ const PostLikesButton: React.FC<Props> = ({ to }) => {
 
   const getLiked = async () => {
     try {
-      const data = {
-        uuid: UUID,
-        postId: postId,
-      };
+      if (type === "post") {
+        const data = {
+          uuid: UUID,
+          postId: postId,
+        };
 
-      const response = await axios.post(`/api/post/liked`, data);
+        const response = await axios.post(`/api/post/liked`, data);
 
-      setHasLiked(response.data);
+        setHasLiked(response.data);
+      }
+
+      if (type === "comment") {
+        const data = {
+          uuid: UUID,
+          commentId: to,
+        };
+
+        const response = await axios.post(`/api/post/comments/liked`, data);
+
+        setHasLiked(response.data);
+      }
     } catch (err) {
       console.error(err);
     }

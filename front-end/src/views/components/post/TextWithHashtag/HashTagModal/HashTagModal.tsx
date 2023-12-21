@@ -8,6 +8,7 @@ type UserTag = {
 };
 
 type Props = {
+  type: "content" | "comment";
   tagType: string | undefined;
   userTagList: UserTag[];
   fashionTagList: string[];
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const HashTagModal: React.FC<Props> = ({
+  type,
   tagType,
   userTagList,
   fashionTagList,
@@ -59,7 +61,11 @@ const HashTagModal: React.FC<Props> = ({
 
   return (
     <div>
-      <div className={styles.modal}>
+      <div
+        className={
+          type === "content" ? styles.modal_content : styles.modal_comment
+        }
+      >
         {userTagList.length || fashionTagList.length ? (
           renderList()
         ) : (

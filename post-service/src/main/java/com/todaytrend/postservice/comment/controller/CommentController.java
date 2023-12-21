@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/comments")
+@RequestMapping("api/post/comments")
 public class CommentController {
     private final CommentService commentService;
     private final CommentRepositoryImpl commentRepository;
@@ -33,6 +33,7 @@ public class CommentController {
                                                        @RequestParam("page") int page,
                                                        @RequestParam("size") int size,
                                                        @RequestParam("uuid") String uuid) {
+
         return new ResponseEntity<>(commentService.findParentCommentByPostId(postId,page,size,uuid), HttpStatus.OK);
     }
     @GetMapping("reply") // 대댓글만 조회 (좋아요순)

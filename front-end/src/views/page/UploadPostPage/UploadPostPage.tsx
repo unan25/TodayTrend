@@ -105,10 +105,9 @@ const CreatePostPage: React.FC = () => {
           <PostDropZone setImages={setImages} />
           <div className={styles.section2}>
             <TextWithHashtag
+              type="content"
               content={Content}
               setContent={setContent}
-              hashtag={hashTag}
-              setHashtag={setHashTag}
             />
             <CategoryBox setCategory={setCategory} />
           </div>

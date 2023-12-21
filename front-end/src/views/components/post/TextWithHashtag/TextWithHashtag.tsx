@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+
+// style
 import styles from "./TextWithHashtag.module.css";
+import push from "../../../../images/comment/comment-upload.png";
+
+// axios
 import axios from "axios";
+
+// component
 import HashTagModal from "./HashTagModal/HashTagModal";
 
 type TagSwitch = {
@@ -11,16 +18,12 @@ type TagSwitch = {
   tagOn: boolean;
 };
 
-type HashTag = {
-  user: string[];
-  fashion: string[];
-};
-
 type Props = {
+  type: "content" | "comment";
   content: string;
-  hashtag: HashTag;
-  setHashtag: (value: HashTag) => void;
   setContent: (value: string) => void;
+  submitComment?: React.MouseEventHandler<HTMLImageElement>;
+  placeHolder?: string;
 };
 
 type UserTag = {
@@ -29,7 +32,13 @@ type UserTag = {
   uuid: string;
 };
 
-const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
+const TextWithHashtag: React.FC<Props> = ({
+  content,
+  setContent,
+  type,
+  submitComment,
+  placeHolder,
+}) => {
   const USER = "user";
   const FASHION = "fashion";
 
@@ -179,8 +188,6 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
     }
   };
 
-  // modal postion
-
   /* ==================================================================== */
   // axios
   const fetchData = async (temp: string) => {
@@ -205,8 +212,6 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
         content.slice(0, tagSwitch.startPoint) +
         selectedTag +
         content.slice(tagSwitch.focus, content.length);
-
-      console.log(newContent);
 
       setContent(newContent);
 
@@ -236,7 +241,6 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
 
   useEffect(() => {
     if (selectedTag !== "") {
-      console.log(selectedTag);
       insertTag();
       setSelectedTag("");
     }
@@ -245,16 +249,28 @@ const TextWithHashtag: React.FC<Props> = ({ content, setContent }) => {
   /* ==================================================================== */
   // elements
   return (
-    <div className={styles.body}>
+    <div
+      className={type === "content" ? styles.body_content : styles.body_comment}
+    >
       <textarea
-        className={styles.textarea}
+        className={type === "content" ? styles.content : styles.comment}
         ref={textareaRef}
         value={content}
         onChange={onChangeHandler}
         onKeyDown={onKeyDownHandler}
+        placeholder={placeHolder}
       ></textarea>
+      {type === "comment" && (
+        <img
+          onClick={submitComment}
+          className={styles.comment_input_image}
+          src={push}
+          alt={push}
+        />
+      )}
       {tagSwitch.tagOn && (
         <HashTagModal
+          type={type}
           tagType={tagSwitch.tagType}
           userTagList={userTagList}
           fashionTagList={fashionTagList}

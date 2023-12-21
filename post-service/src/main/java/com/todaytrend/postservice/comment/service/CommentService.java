@@ -63,11 +63,17 @@ public class CommentService {
         //댓글 태그 등록
         makeCommentTag(requestCommentDto.getUserTagList() , comment.getCommentId());
 
+        UserCommentFeignDto userCommentFeignDto = userCommentFeignClient.findImageAndNickname(comment.getUuid());
+        String nickname = userCommentFeignDto.getNickname();
+        String profileImage = userCommentFeignDto.getProfileImage();
+
         return ResponseCommentDto.builder()
                 .createAt(comment.getCreateAt())
                 .content(comment.getContent())
                 .commentId(comment.getCommentId())
                 .uuid(comment.getUuid())
+                .nickname(nickname)
+                .profileImage(profileImage)
                 .build();
     }
 
@@ -78,6 +84,7 @@ public class CommentService {
 //        PageRequest pageRequest = PageRequest.of(page,size);
 //        Page<Comment> commentPage = commentRepository.findCommentsByPostIdAndParentIdIsNullAndUuidNot(postId, uuid,pageRequest);
 //        List<Comment> comments = commentPage.getContent();
+
         List<Comment> comments = commentRepositoryImpl.findParentComments(postId,page,size,uuid);
 
         List<ResponseCommentDto> commentList = new ArrayList<>();
@@ -86,6 +93,10 @@ public class CommentService {
             UserCommentFeignDto userCommentFeignDto = userCommentFeignClient.findImageAndNickname(comment.getUuid());
             String nickname = userCommentFeignDto.getNickname();
             String profileImage = userCommentFeignDto.getProfileImage();
+
+
+
+
 
             ResponseCommentDto build = ResponseCommentDto.builder()
                     .createAt(comment.getCreateAt())
@@ -144,11 +155,17 @@ public class CommentService {
         List<Comment> comments = commentRepository.findByPostIdAndUuidAndParentIdIsNull(postId, uuid);
 
         for (Comment comment : comments) {
+            UserCommentFeignDto userCommentFeignDto = userCommentFeignClient.findImageAndNickname(comment.getUuid());
+            String nickname = userCommentFeignDto.getNickname();
+            String profileImage = userCommentFeignDto.getProfileImage();
+
             ResponseCommentDto build = ResponseCommentDto.builder()
                     .createAt(comment.getCreateAt())
                     .content(comment.getContent())
                     .commentId(comment.getCommentId())
                     .uuid(comment.getUuid())
+                    .nickname(nickname)
+                    .profileImage(profileImage)
                     .build();
             commentList.add(build);
         }
