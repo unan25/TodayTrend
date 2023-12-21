@@ -8,8 +8,8 @@ import { Nav } from "react-bootstrap";
 // styles
 import styles from "./LandingPage.module.css";
 // components
-import CategoryModal from "../../components/Category/CategoryModal/CategoryModal";
-import CategoryList from "../../components/Category/CategoryList/CategoryList";
+import CategoryModal from "../../components/category/CategoryModal/CategoryModal";
+import CategoryList from "../../components/category/CategoryList/CategoryList";
 import PostList from "../../components/post/PostList/PostList";
 // type
 import { CategoryType } from "interface/CategoryInterface";
@@ -20,7 +20,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 // redux
 import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
-// import { sessionStorage } from 'redux-persist/es/storage/session';
 
 export interface IDetailPost {
   page: number;

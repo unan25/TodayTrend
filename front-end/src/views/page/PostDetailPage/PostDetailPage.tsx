@@ -4,12 +4,17 @@ import { Link, useParams } from "react-router-dom";
 
 //
 import axios from "axios";
-import PostLikesButton from "../../../views/components/post/PostLikesButton/PostLikesButton";
+import LikesButton from "../../components/post/LikesButton/LikesButton";
 
 //
 import styles from "./PostDetailPage.module.css";
+import commentIcon from "../../../images/comment/comments.png";
+
+// component
+import CommentsBox from "../../../views/components/comments/CommentsBox/CommentsBox";
 
 //
+import { renderContentWithLinks } from "../../../module/functions/renderContentWithTag/renderContentWithLinks";
 
 type PostDetail = {
   postId: number;
@@ -27,6 +32,7 @@ type Category = {
 };
 
 const PostDetailPage: React.FC = () => {
+  // state
   const [postDetail, setPostDetail] = useState<PostDetail>({
     postId: 0,
     postUserUUID: "",
@@ -38,41 +44,14 @@ const PostDetailPage: React.FC = () => {
   });
 
   const [currentImage, setCurrentImage] = useState<number>(0);
-  const [boxShadow, setBoxShadow] = useState<string>();
+
   const [category, setCategory] = useState<Category[]>([]);
+
+  const [commentsCount, setCommentsCount] = useState<number>(0);
 
   const { postId } = useParams();
 
   /* ================================================================ */
-  // contents
-  const renderContentWithLinks = () => {
-    const words = postDetail!.content.split(/\s+/);
-
-    return words.map((word, index) => {
-      if (word.startsWith("@")) {
-        const username = word.substring(1);
-
-        return (
-          <a
-            key={index}
-            className={styles.userTag}
-            href={`/profile/${username}`}
-          >
-            {word}{" "}
-          </a>
-        );
-      } else if (word.startsWith("#")) {
-        const hashtag = word.substring(1);
-        return (
-          <a key={index} className={styles.hashTag} href={`/search/${hashtag}`}>
-            {word}{" "}
-          </a>
-        );
-      } else {
-        return <span key={index}>{word} </span>;
-      }
-    });
-  };
 
   // image index
   const renderImageIndex = (length: number) => {
@@ -93,6 +72,7 @@ const PostDetailPage: React.FC = () => {
     return pages;
   };
 
+  // category
   const renderCateogory = () => {
     const categories: ReactNode[] = [];
 
@@ -111,7 +91,6 @@ const PostDetailPage: React.FC = () => {
 
     return categories;
   };
-  /* ================================================================ */
 
   /* ================================================================ */
   // axios
@@ -133,9 +112,27 @@ const PostDetailPage: React.FC = () => {
     }
   };
 
+  const getCommentsCount = async () => {
+    try {
+      const params = { postId: postId };
+
+      const response = await axios.get("/api/post/comments/cnt", {
+        params: params,
+      });
+
+      setCommentsCount(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  /* ================================================================ */
+  // effecnt
+
   useEffect(() => {
     getPostDetails();
     getCategory();
+    getCommentsCount();
   }, [postId]);
 
   /* ================================================================ */
@@ -209,7 +206,7 @@ const PostDetailPage: React.FC = () => {
           </div>
           <div className={styles.post_body_section2__contentBox}>
             <div className={styles.post_body_section2__contentBox__content}>
-              {renderContentWithLinks()}
+              {renderContentWithLinks(postDetail.content)}
             </div>
             <div className={styles.post_body_section2__contentBox__box}>
               <div
@@ -225,31 +222,24 @@ const PostDetailPage: React.FC = () => {
                     styles.post_body_section2__contentBox__box_detail__commentsBox
                   }
                 >
-                  <div
+                  <img
+                    src={commentIcon}
                     className={
-                      styles.post_body_section2__contentBox__box_detail__commentsBox__btn_comments
+                      styles.post_body_section2__contentBox__box_detail__commentsBox__icon_comments
                     }
-                  >
-                    comments
-                  </div>
+                  />
                   <div
                     className={
                       styles.post_body_section2__contentBox__box_detail__commentsBox__count_comments
                     }
                   >
-                    5
+                    {commentsCount}
                   </div>
                 </div>
-                <PostLikesButton />
+                <LikesButton type="post" />
               </div>
             </div>
-            <div className={styles.post_body_section2__contentBox__comments}>
-              comments
-            </div>
-            <input
-              placeholder="댓글"
-              className={styles.post_body_section2__contentBox__comments_input}
-            />
+            <CommentsBox postId={postId} />
           </div>
         </div>
       </div>
