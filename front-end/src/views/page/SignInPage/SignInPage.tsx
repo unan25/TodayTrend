@@ -7,24 +7,25 @@ import { useNavigate } from "react-router-dom";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { signInUser } from "../../../state/_actions/user_action";
+import { signInUser } from "../../../redux/_actions/user_action";
 
 // component
 import { Form, FloatingLabel, Button } from "react-bootstrap";
 
-import Input from "../../components/Input/Input";
-
 // CSS
 import styles from "./SignInPage.module.css";
-import { RootState } from "state/store";
+import buttonStyle from "../../../module/styles/button.module.css";
+
+// State
+import { RootState } from "../../../redux/store";
+import GoogleLogin from "../../../views/components/user/SocialLoginButton/Google/GoogleLogin";
+import KakaoLogin from "../../../views/components/user/SocialLoginButton/Kakao/KakaoLogin";
 
 function SignInPage() {
   // state & dispatch
   const dispatch = useDispatch<any>();
-
-  const signInSuccess = useSelector(
-    (state: RootState) => state.user.signInSuccess
-  );
+  const UUID = useSelector((state: RootState) => state.user.UUID);
+  const role = useSelector((state: RootState) => state.user.role);
 
   // navigate
   const navigate = useNavigate();
@@ -40,47 +41,59 @@ function SignInPage() {
     SetPassword(e.target.value);
   };
 
-  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let userInfo = {
+    let account = {
       email: Email,
       password: Password,
     };
 
-    dispatch(signInUser(userInfo));
+    const response = await dispatch(signInUser(account));
   };
 
   // signIn Success
   useEffect(() => {
-    if (signInSuccess) navigate("/");
-  }, [signInSuccess]);
+    if (UUID && role === "GUEST") {
+      navigate("/signup");
+      return;
+    }
+
+    if (UUID && role) {
+      navigate("/");
+    }
+  }, [UUID, role]);
 
   return (
-    <Form className={styles.mainForm} onSubmit={submitHandler}>
-      <Form.Group className={styles.fg} controlId="SignUpForm">
-        <FloatingLabel controlId="Email" label="이메일">
-          <Form.Control
-            type="email"
-            placeholder="name@example.com"
-            value={Email}
-            onChange={emailHandler}
-          />
-        </FloatingLabel>
-        <FloatingLabel controlId="Password" label="비밀번호">
-          <Input />
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={Password}
-            onChange={passwordHandler}
-          />
-        </FloatingLabel>
-      </Form.Group>
-      <Button className={styles.submitButton} variant="primary" type="submit">
-        로그인
-      </Button>
-    </Form>
+    <div className="page-body">
+      <form className={styles.mainForm} onSubmit={submitHandler}>
+        <Form.Group className={styles.fg} controlId="SignUpForm">
+          <FloatingLabel controlId="Email" label="이메일">
+            <Form.Control
+              type="email"
+              placeholder="name@example.com"
+              value={Email}
+              onChange={emailHandler}
+            />
+          </FloatingLabel>
+          <FloatingLabel controlId="Password" label="비밀번호">
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={Password}
+              onChange={passwordHandler}
+            />
+          </FloatingLabel>
+        </Form.Group>
+        <button className={buttonStyle.submitButton} type="submit">
+          로그인
+        </button>
+      </form>
+      <div className={styles.social_login}>
+        <GoogleLogin />
+        <KakaoLogin />
+      </div>
+    </div>
   );
 }
 

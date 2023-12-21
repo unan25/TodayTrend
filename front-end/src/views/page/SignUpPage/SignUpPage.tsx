@@ -1,221 +1,199 @@
 // react
-import React, { useEffect, useState, useCallback } from "react";
-
-// axios
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 // react-router-dom
 import { useNavigate } from "react-router-dom";
 
-// redux & action
+// redux
 import { useDispatch, useSelector } from "react-redux";
-import { signUpUser } from "../../../state/_actions/user_action";
+import {
+  signInSocialUser,
+  updateUserInfo,
+} from "../../../redux/_actions/user_action";
+import { createAccount } from "../../../redux/_actions/user_action";
 
-// react-dropzone
-import { useDropzone } from "react-dropzone";
+// custom hook
+import { useUserInfoValidation } from "../../../hook/useUserInfoValidation";
+import { useAccountValidation } from "../../../hook/useAccountValidation";
 
 // style
-import styles from "./SignUpPage.module.css";
 
-// component
-import {
-  Form,
-  FloatingLabel,
-  Button,
-  Alert,
-  Row,
-  Image,
-  FormControlProps,
-} from "react-bootstrap";
-import Input from "../../components/Input/Input";
+import buttonStyle from "../../../module/styles/button.module.css";
+import formStyle from "../../../module/styles/form.module.css";
+
+// State
+import { RootState } from "redux/store";
+import AccountForm from "../../components/user/AccountForm/AccountForm";
+import UserInfoForm from "../../components/user/UserInfoForm/UserInfoForm";
+import { UserInfo, SocialUser } from "interface/UserInterface";
+import axios from "axios";
 
 function SignUpPage() {
+  const userType = useSelector((state: RootState) => state.user.userType);
+  const UUID = useSelector((state: RootState) => state.user.UUID);
+  const email = useSelector((state: RootState) => state.user.email);
   // dispatch & state
   const dispatch = useDispatch<any>();
-
-  const signUpSuccess = useSelector((state: any) => state.user.signUpSuccess);
 
   // navigate
   const navigate = useNavigate();
 
-  // form
-  const [UploadedFile, SetUploadedFile] = useState("");
-  const [Email, SetEmail] = useState("");
-  const [Password, SetPassword] = useState("");
-  const [Name, SetName] = useState("");
-  const [Lastname, SetLastname] = useState("");
+  //------------------------------------------------------------------------------
 
-  // duplication
-  const [Duplication, SetDuplication] = useState(false);
-  const [Message, SetMessage] = useState("");
+  const [signInStep, setSignInStep] = useState(true);
+  const [image, setImage] = useState<File[]>([]);
+
+  const onClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setSignInStep((prev) => !prev);
+  };
 
   //------------------------------------------------------------------------------
-  // check duplication
 
-  type Email = string;
+  const {
+    Fields: userInfoFields,
+    handleChange: userInfoHandleChange,
+    Message: userInfoMessage,
+    IsValidated: userInfoIsValidated,
+  } = useUserInfoValidation();
 
-  function checkDuplication(email: Email) {
-    const emailObj = {
-      email: email,
-    };
+  const {
+    Fields: accountFields,
+    handleChange: accountHandleChange,
+    Message: accountMessage,
+    IsValidated: accountIsValidated,
+  } = useAccountValidation();
 
-    axios.post("/api/users/check-duplication", emailObj).then((res) => {
-      SetDuplication(res.data.isDuplicated);
-      SetMessage(res.data.message);
+  const getImageUrl = async (image: File[]) => {
+    const formData = new FormData();
+
+    formData.append("image", image[0]);
+
+    const response = await axios.post("/api/images/profile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
-  }
 
-  // debouncing
-  function debounce(func: Function, delay: any) {
-    let timer: NodeJS.Timeout;
-    return function (...args: any) {
-      clearTimeout(timer);
-
-      timer = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  }
-
-  const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newEmail = e.target.value;
-
-    SetEmail(newEmail);
-
-    // Currying (method chaining)
-    debounce(checkDuplication, 1000)(newEmail);
-  };
-  //------------------------------------------------------------------------------
-
-  // event handler
-  const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    SetPassword(e.target.value);
-  };
-
-  const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    SetName(e.target.value);
-  };
-
-  const lastnameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    SetLastname(e.target.value);
+    return response.data.profileImage;
   };
 
   // sign-up
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let userInfo = {
-      email: Email,
-      password: Password,
-      lastname: Lastname,
-      name: Name,
-    };
+    // 로컬 회원가입
 
-    dispatch(signUpUser(userInfo));
-  };
-  //------------------------------------------------------------------------------\
-  // dropzone config
-  const onDrop = useCallback((acceptedFiles: any) => {
-    SetUploadedFile(acceptedFiles);
-  }, []);
+    if (userType !== "SOCIAL") {
+      try {
+        let account = {
+          email: accountFields.email,
+          password: accountFields.password,
+        };
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+        const response = await dispatch(createAccount(account));
 
-  //------------------------------------------------------------------------------\
-  // state control
-  useEffect(() => {
-    if (signUpSuccess) navigate("/");
-  }, [signUpSuccess]);
+        let imageURL: string =
+          "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
 
-  //------------------------------------------------------------------------------
+        if (image.length) {
+          imageURL = await getImageUrl(image);
+        }
 
-  function DuplicationAlert(isDuplicated: boolean, message: string) {
-    const style = isDuplicated ? styles.red : styles.green;
+        let userInfo: UserInfo = {
+          uuid: response.payload.UUID_temp,
+          profileImage: imageURL,
+          ...userInfoFields,
+        };
 
-    if (message !== "") {
-      return (
-        <>
-          <Alert className={`${styles.alertBox} ${style}`} variant="message">
-            {message}
-          </Alert>
-        </>
-      );
+        await dispatch(updateUserInfo(userInfo));
+
+        navigate("/");
+      } catch (err: any) {
+        console.error(err);
+      }
     }
-  }
 
-  //------------------------------------------------------------------------------
-  // rendering component
-  function ProfileImageUpload() {
-    return (
-      <div className={styles.dropzone}>
-        <Row className={styles.dropzone_row1}>
-          <Image src="#" alt="" className={styles.dropzone__img} />
-          <div {...getRootProps()} className={styles.dropzone__drop}>
-            <input {...getInputProps()} />
-          </div>
-        </Row>
-        <Row>
-          <input type="file" />
-        </Row>
-      </div>
-    );
-  }
+    // 소셜 회원가입
+
+    if (userType === "SOCIAL") {
+      let account: SocialUser = {
+        uuid: UUID,
+        email: email,
+      };
+
+      dispatch(signInSocialUser(account));
+
+      let imageURL: string =
+        "https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg";
+
+      if (image.length) {
+        console.log(image);
+        imageURL = await getImageUrl(image);
+      }
+
+      let userInfo: UserInfo = {
+        uuid: UUID,
+        profileImage: imageURL,
+        ...userInfoFields,
+      };
+
+      try {
+        const response = await dispatch(updateUserInfo(userInfo));
+        if (response.meta.requestStatus === "fulfilled") navigate("/");
+      } catch (err: any) {
+        console.error(err);
+      }
+    }
+  };
+
+  // useEffect
+  useEffect(() => {
+    if (userType === "SOCIAL") {
+      setSignInStep(false);
+    }
+  }, []);
 
   //------------------------------------------------------------------------------
 
   return (
-    <Form className={styles.mainForm} onSubmit={submitHandler}>
-      <form>
-        <Input placeholder="EMAIL" />
-        <Input placeholder="PW" />
+    <div className="page-body">
+      <form onSubmit={submitHandler} className={formStyle.mainForm}>
+        {signInStep && userType !== "SOCIAL" ? (
+          <AccountForm
+            fields={accountFields}
+            message={accountMessage}
+            handleChange={accountHandleChange}
+          />
+        ) : (
+          <UserInfoForm
+            fields={userInfoFields}
+            message={userInfoMessage}
+            handleChange={userInfoHandleChange}
+            image={image}
+            setFunction={setImage}
+          />
+        )}
+        {userType !== "SOCIAL" && (
+          <button
+            type="button"
+            className={buttonStyle.submitButton}
+            onClick={onClickHandler}
+            disabled={!accountIsValidated}
+          >
+            {signInStep ? "다음 단계" : "이전 단계"}
+          </button>
+        )}
+        {!signInStep && (
+          <button
+            type="submit"
+            className={buttonStyle.submitButton}
+            disabled={!userInfoIsValidated}
+          >
+            회원가입
+          </button>
+        )}
       </form>
-      <Form.Group className={styles.fg} controlId="SignUpForm">
-        <FloatingLabel controlId="Email" label="이메일">
-          {DuplicationAlert(Duplication, Message)}
-          <Form.Control
-            type="email"
-            placeholder="name@example.com"
-            value={Email}
-            onChange={emailHandler}
-            required
-          />
-        </FloatingLabel>
-        <FloatingLabel controlId="Password" label="비밀번호">
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={Password}
-            onChange={passwordHandler}
-            required
-            minLength={5}
-          />
-        </FloatingLabel>
-
-        {ProfileImageUpload()}
-
-        <FloatingLabel controlId="Lastname" label="성">
-          <Form.Control
-            type="text"
-            placeholder="Lastname"
-            value={Lastname}
-            onChange={lastnameHandler}
-            required
-          />
-        </FloatingLabel>
-        <FloatingLabel controlId="Name" label="이름">
-          <Form.Control
-            type="text"
-            placeholder="Name"
-            value={Name}
-            onChange={nameHandler}
-            required
-          />
-        </FloatingLabel>
-      </Form.Group>
-      <Button className={styles.submitButton} variant="primary" type="submit">
-        회원 가입
-      </Button>
-    </Form>
+    </div>
   );
 }
 

@@ -1,0 +1,18 @@
+.submitButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-black);
+  height: 3rem;
+  color: whitesmoke;
+  margin: 1rem 0px;
+  border: 3px solid var(--color-black);
+  border-radius: 0.7rem;
+  width: 100%;
+}
+
+.submitButton:disabled {
+  background-color: white;
+  border: 3px solid var(--color-gray);
+  color: var(--color-gray);
+}

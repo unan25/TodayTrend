@@ -1,9 +1,39 @@
 @import url("https://fonts.googleapis.com/css2?family=Lemon:wght@400&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Knewave:wght@400&display=swap");
+
 body {
-  margin: 0;
-  line-height: normal;
+  all: unset;
 }
+
+#root {
+  all: unset;
+}
+
+.page-body {
+  display: flex;
+  margin: 5rem 10rem 0rem 10rem;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 10px 20px 50px rgba(50, 50, 50, 0.4);
+  border-radius: 20px;
+  box-sizing: border-box;
+}
+
+a {
+  all: unset;
+  cursor: pointer;
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+}
+
+ul {
+  all: unset;
+  list-style-type: none;
+}
+
 :root {
   /* fonts */
   --font-knewave: Knewave;
@@ -15,9 +45,10 @@ body {
 
   /* Colors */
   --color-white: #fff;
-  --color-black: #000;
+  --color-black: rgb(60, 60, 60);
   --naver-bg: #03c75a;
   --color-gray: #7e7e7e;
+  --color-hover: rgb(200, 200, 200);
 
   /* Border radiuses */
   --br-81xl: 100px;

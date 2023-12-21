@@ -1,0 +1,42 @@
+{
+    "name": "@types/react-infinite-scroller",
+    "version": "1.2.5",
+    "description": "TypeScript definitions for react-infinite-scroller",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-infinite-scroller",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Lauri Lavanti",
+            "githubUsername": "Lapanti",
+            "url": "https://github.com/Lapanti"
+        },
+        {
+            "name": "Piotr Srebniak",
+            "githubUsername": "psrebniak",
+            "url": "https://github.com/psrebniak"
+        },
+        {
+            "name": "Brett Miller",
+            "githubUsername": "WrathZA",
+            "url": "https://github.com/WrathZA"
+        },
+        {
+            "name": "Yipeng Zhao",
+            "githubUsername": "daggerjames",
+            "url": "https://github.com/daggerjames"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/react-infinite-scroller"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/react": "*"
+    },
+    "typesPublisherContentHash": "4ec79384ae823470e5e40f4366ccbc182d34218d58cb0e7be7ac85c69014fee9",
+    "typeScriptVersion": "4.5"
+}

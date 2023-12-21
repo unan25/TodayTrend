@@ -1,20 +1,32 @@
+type Account = {
+  email: string;
+  password: string;
+  confirmPassword?: string;
+};
+
+type SocialUser = {
+  email: string;
+  UUID?: string;
+  uuid?: string;
+};
+
 type UserInfo = {
-  email: string;
-  password?: string;
-  lastname?: string;
+  uuid?: string;
   name?: string;
+  nickname?: string;
+  phone?: string;
+  gender?: string;
+  birth?: string;
+  website?: string;
+  introduction?: string;
+  profileImage?: string;
 };
 
-type SignUp = {
-  email: string;
-  password: string;
-  lastname: string;
-  name: string;
+type CurrentUser = {
+  UUID_temp?: string;
+  UUID?: string;
+  uuid?: string;
+  accessToken?: string;
 };
 
-type SignIn = {
-  email: string;
-  password: string;
-};
-
-export { SignUp, SignIn, UserInfo };
+export { Account, UserInfo, CurrentUser, SocialUser };

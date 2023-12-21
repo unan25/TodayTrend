@@ -1,0 +1,74 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: auth-service
+  profiles:
+    active: db, jwt, smtp
+
+  # MySQL
+  datasource:
+    url: ${url}
+    username: ${username_}
+    password: ${password}
+    driver-class-name: ${driver-class-name}
+
+
+  # JPA
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+  # SMTP
+  mail:
+    host: ${host}
+    port: ${port}
+    username: ${username_}
+    password: ${password}
+    properties:
+      mail.smtp:
+        debug: true # 메일 전송시 상황, 로그 확인
+        auth: true
+        enable: true
+        required: ture
+        starttls.enable: true # starttls 설정 SSL/TLS 기반의 SMTPS 기능 (보안기능 활성화)
+#        connectiontimeout: 5000 # Timeout 제한
+
+
+  # RabbitMQ
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
+
+#  # Redis
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
+
+# Eureka
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    non-secure-port-enabled: false
+    secure-port-enabled: true
+    secure-port: ${server.port}
+    hostname: auth-service
+  #    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
+
+# JWT
+jwt:
+  issuer: ${issuer}
+  secret_key: ${secret_key}

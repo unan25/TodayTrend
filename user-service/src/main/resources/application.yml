@@ -1,17 +1,20 @@
 server:
-  port: 0
+  port: 10000
+#  port: 8080
 
 spring:
   application:
     name: user-service
+  profiles:
+    active: db
 
 
   # MySQL
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/todaytrend
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${url}
+    username: ${username_}
+    password: ${password}
+    driver-class-name: ${driver-class-name}
 
   # JPA
   jpa:
@@ -32,9 +35,11 @@ spring:
 # Eureka
 eureka:
   instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    hostname: user-service
+  #    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:8888/eureka # discovery-server
+      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
