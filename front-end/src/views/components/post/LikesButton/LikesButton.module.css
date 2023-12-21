@@ -1,0 +1,61 @@
+#heart {
+  position: relative;
+  width: 1.2rem;
+  height: 1rem;
+}
+
+#heart:before,
+#heart:after {
+  position: absolute;
+  content: "";
+  left: 0.8rem;
+  top: 0;
+  width: 0.8rem;
+  height: 1.3rem;
+  background-color: var(--color-gray);
+  border-radius: 50px 50px 0 0;
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+}
+
+#heart:after {
+  left: 0;
+  transform: rotate(45deg);
+  transform-origin: 100% 100%;
+}
+
+#heart.liked:before,
+#heart.liked:after {
+  background-color: #ff3040;
+}
+
+@keyframes likes {
+  0% {
+    scale: 100%;
+  }
+  50% {
+    scale: 120%;
+  }
+  100% {
+    scale: 100%;
+  }
+}
+
+.clicked {
+  animation: likes 0.4s ease 0s;
+}
+
+.post_body_section2__contentBox__box_detail__likesBox__btn_likes {
+  cursor: pointer;
+}
+
+.post_body_section2__contentBox__box_detail__likesBox {
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+}
+
+.post_body_section2__contentBox__box_detail__likesBox__count_likes {
+  margin-left: 1.2rem;
+  cursor: pointer;
+}

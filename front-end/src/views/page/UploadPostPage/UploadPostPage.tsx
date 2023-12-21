@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 // componenet
-import TextWithHashtag from "../../components/TextWithHashtag/TextWithHashtag";
-import PostDropZone from "../../components/DropZone/PostDropZone/PostDropZone";
-import CategoryBox from "../../components/CateogoryBox/CategoryBox";
+import TextWithHashtag from "../../components/post/TextWithHashtag/TextWithHashtag";
+import PostDropZone from "../../components/common/DropZone/PostDropZone/PostDropZone";
+import CategoryBox from "../../components/category/CateogoryBox/CategoryBox";
 
 // axios
 import axios from "axios";
@@ -105,10 +105,9 @@ const CreatePostPage: React.FC = () => {
           <PostDropZone setImages={setImages} />
           <div className={styles.section2}>
             <TextWithHashtag
+              type="content"
               content={Content}
               setContent={setContent}
-              hashtag={hashTag}
-              setHashtag={setHashTag}
             />
             <CategoryBox setCategory={setCategory} />
           </div>

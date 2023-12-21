@@ -1,0 +1,79 @@
+.component {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.comment {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--color-gray);
+}
+
+.comment__section_user {
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.comment__section_user__profileImage {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 1rem;
+  border-radius: 50%;
+}
+
+.comment__seciont_content__info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.comment__section_content__info_nickname {
+  font-weight: 800;
+  margin-right: 0.5rem;
+}
+
+.comment__section_content__info_date {
+  color: var(--color-gray);
+}
+
+.comment__section_content {
+  width: 85%;
+}
+
+.comment__subCommentsCount {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  color: var(--color-gray);
+  width: 80%;
+  padding: 0.5em;
+  cursor: pointer;
+}
+
+.comment__setSubComment {
+  margin-top: 0.5rem;
+  display: flex;
+  font-weight: 800;
+  color: var(--color-gray);
+  cursor: pointer;
+}
+
+.replyMode {
+  background-color: rgba(200, 205, 250, 0.5);
+  border-radius: 1rem;
+}
+
+.box_subComments {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
