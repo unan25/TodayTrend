@@ -13,15 +13,15 @@ cloud:
 
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/todaytrend
-    username: root
-    password: 1234
+    driver-class-name: ${driver-class-name}
+    url: ${url}
+    username: ${username_}
+    password: ${password}
   application:
     name: image-service
 
   profiles:
-    active: db
+    active: db, s3
 
   jpa:
     database: mysql
@@ -33,14 +33,25 @@ spring:
 server:
   port: 12000
 
-# Eureka
+# Eureka(Local)
 eureka:
   instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-    hostname: image-service
-  #    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
+      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
+
+
+## Eureka(CI/CD)
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#    hostname: image-service
+#  #    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://3.34.129.32:8761/eureka # discovery-server

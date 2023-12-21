@@ -159,6 +159,7 @@ image-service-server/nbdist/
 image-service-server/.nb-gradle/
 image-service-server/.vscode/
 image-service/src/main/resources/application-db.yml
+image-service/src/main/resources/application-s3.yml
 
 # post-service
 post-service-server/HELP.md

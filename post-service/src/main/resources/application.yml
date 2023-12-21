@@ -5,10 +5,12 @@ spring:
   application:
     name: post-service
   datasource:
-    driver-class-name: ${driver-class-name}
     url: ${url}
     username: ${username_}
     password: ${password}
+    driver-class-name: ${driver-class-name}
+  profiles:
+    active: db
 
   jpa:
     database: mysql
@@ -33,15 +35,25 @@ logging:
 #    session:
 #      tracking-modes: cookie
 
-# Eureka
+# Eureka(Local)
 eureka:
   instance:
-    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-    hostname: post-service
-  #    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
+      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
+
+
+## Eureka(CI/CD)
+#eureka:
+#  instance:
+#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+#    hostname: post-service
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
 
