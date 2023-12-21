@@ -4,11 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserFeignDto {
-    private String profileImage;
-    private String nickname;
-
+public class ImgFeignDto {
+    private Long postId;
+    private List<String> imageUrlList;
 }

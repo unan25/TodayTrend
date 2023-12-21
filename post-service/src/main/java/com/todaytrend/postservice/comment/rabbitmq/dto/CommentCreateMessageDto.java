@@ -1,9 +1,9 @@
-package com.todaytrend.postservice.comment.rabbitmq;
+package com.todaytrend.postservice.comment.rabbitmq.dto;
 
 import lombok.Data;
 
 @Data
-public class MessageDto {
+public class CommentCreateMessageDto {
 
     private String sender;
     private String content;

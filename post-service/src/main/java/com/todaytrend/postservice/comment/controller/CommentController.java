@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/comments")
+@RequestMapping("api/post/comments")
 public class CommentController {
     private final CommentService commentService;
 
@@ -59,8 +59,9 @@ public class CommentController {
         return new ResponseEntity<>(commentService.deleteCommentByPostId(postId),HttpStatus.OK);
     }
     @PostMapping("like") // 좋아요 등록 및 삭제
-    public ResponseEntity<?> commentLike(@RequestBody RequestCommentLikeDto requestCommentLikeDto) {
-        return new ResponseEntity<>(commentService.commentLike(requestCommentLikeDto) ,HttpStatus.OK);
+    public ResponseEntity<?> commentLike(@RequestBody RequestCommentLikeDto requestCommentLikeDto) throws JsonProcessingException{
+        commentService.publishCommentLikeMessage(requestCommentLikeDto);
+        return ResponseEntity.ok("댓글 좋아요 메세지 보냄");
     }
     @GetMapping("like-cnt") // 좋아요 수 조회
     public ResponseEntity<?> getCommentLike(@RequestParam("commentId") Long commentId) {
@@ -85,10 +86,5 @@ public class CommentController {
 //                                                       @RequestParam("uuid") String uuid) {
 //        return new ResponseEntity<>(commentRepository.test(postId,page,size,uuid), HttpStatus.OK);
 //    }
-    //래빗엠큐 테스트
-    @GetMapping("message/{message}")
-    public ResponseEntity<?> testMessage(@PathVariable String message) {
-        commentService.publishTestMessage(message);
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
+
 }

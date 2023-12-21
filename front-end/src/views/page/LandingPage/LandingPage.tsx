@@ -38,8 +38,8 @@ function LandingPage() {
   const [categoryList, setCategoryList] = useState<number[]>([]); //카테고리 ID List
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  //세션스토리지에 카테고리 저장해놓기
-  // const selectedCategoryList = sessionStorage.setItem('category', categoryList);
+  // 세션스토리지에 카테고리 저장해놓기
+  sessionStorage.setItem('category', JSON.stringify(categoryList));
 
   //무한 스크롤
   const fetchPost = async ({
@@ -61,21 +61,18 @@ function LandingPage() {
       const response = await axios.post('/api/post/main', requestBody);
       refetch();
       return response.data;
-    } catch (error) {
-      console.error('포스트 리스트 못 받는 중', error);
-    }
+    } catch (error) {}
   };
   // 메인페이지 로딩 카테고리리스트 받아오기
   useEffect(() => {
+    setCategoryList(JSON.parse(sessionStorage.getItem('category') || '[]'));
     const fetchData = async () => {
       try {
         const response = await axios.get<CategoryType[]>(
           'api/post/admincategorylist'
         );
         setCategories(response.data);
-      } catch (error) {
-        console.log('카테고리 리스트 못 받는 중', error);
-      }
+      } catch (error) {}
     };
     fetchData();
   }, []);
@@ -91,8 +88,7 @@ function LandingPage() {
     toggleCategory(categoryId);
   };
   useEffect(() => {
-    console.log('선택한 탭:' + tab);
-    console.log('선택한 카테고리:' + categoryList);
+    sessionStorage.setItem('category', JSON.stringify(categoryList));
     fetchPost({
       page: 0,
       size: 6,

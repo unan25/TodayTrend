@@ -1,5 +1,6 @@
 package com.todaytrend.userservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.todaytrend.userservice.dto.*;
 import com.todaytrend.userservice.service.FollowService;
 import com.todaytrend.userservice.service.UserService;
@@ -93,7 +94,7 @@ public class UserController {
     /* ------------------------------------- Follow ------------------------------------- */
 
     @PostMapping("follow")
-    public ResponseEntity<FollowResponseDto> follow(@RequestBody FollowRequestDto followRequestDto) {
+    public ResponseEntity<FollowResponseDto> follow(@RequestBody FollowRequestDto followRequestDto) throws JsonProcessingException {
         return ResponseEntity.status(HttpStatus.OK).body(followService.follow(followRequestDto));
     }
 

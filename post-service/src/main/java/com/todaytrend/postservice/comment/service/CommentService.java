@@ -14,8 +14,10 @@ import com.todaytrend.postservice.comment.entity.CommentLike;
 import com.todaytrend.postservice.comment.entity.CommentTag;
 import com.todaytrend.postservice.comment.feignClient.UserCommentFeignClient;
 import com.todaytrend.postservice.comment.feignClient.dto.UserCommentFeignDto;
-import com.todaytrend.postservice.comment.rabbitmq.MessageDto;
-import com.todaytrend.postservice.comment.rabbitmq.Producer;
+import com.todaytrend.postservice.comment.rabbitmq.dto.CommentLikeMessageDto;
+import com.todaytrend.postservice.comment.rabbitmq.dto.CommentCreateMessageDto;
+import com.todaytrend.postservice.comment.rabbitmq.CommentProducer;
+import com.todaytrend.postservice.comment.rabbitmq.dto.CommentTagMessageDto;
 import com.todaytrend.postservice.comment.repository.CommentLikeRepository;
 import com.todaytrend.postservice.comment.repository.CommentRepository;
 import com.todaytrend.postservice.comment.repository.CommentRepositoryImpl;
@@ -36,7 +38,7 @@ public class CommentService {
     private final CommentTagRepository commentTagRepository;
      private final UserCommentFeignClient userCommentFeignClient;
      private final CommentRepositoryImpl commentRepositoryImpl;
-     private final Producer producer;
+     private final CommentProducer commentProducer;
     private final ObjectMapper objectMapper;
 
     //---------------------------댓글 검증--------------------------
@@ -62,19 +64,21 @@ public class CommentService {
     //---------------------------댓글 등록--------------------------
 
     //기본 댓글 등록
-    public ResponseCommentDto createComment(RequestCommentDto requestCommentDto) {
+    public void createComment(RequestCommentDto requestCommentDto) throws JsonProcessingException {
         Comment comment = requestCommentDto.toEntity();
         commentRepository.save(comment);
 
         //댓글 태그 등록
+        if(requestCommentDto.getUserTagList() != null){
         makeCommentTag(requestCommentDto.getUserTagList() , comment.getCommentId());
+        }
 
-        return ResponseCommentDto.builder()
-                .createAt(comment.getCreateAt())
-                .content(comment.getContent())
-                .commentId(comment.getCommentId())
-                .uuid(comment.getUuid())
-                .build();
+//        return ResponseCommentDto.builder()
+//                .createAt(comment.getCreateAt())
+//                .content(comment.getContent())
+//                .commentId(comment.getCommentId())
+//                .uuid(comment.getUuid())
+//                .build();
     }
 
     //---------------------------댓글 조회--------------------------
@@ -147,14 +151,21 @@ public class CommentService {
     // 내가 쓴 댓글 조회
     public ResponseCommentListDto findMyComment(Long postId, String uuid){
         List<ResponseCommentDto> commentList = new ArrayList<>();
-        List<Comment> comments = commentRepository.findByPostIdAndUuidAndParentIdIsNull(postId, uuid);
+        List<Comment> comments = commentRepository.findByPostIdAndUuidAndParentIdIsNullOrderByCreateAtDesc(postId, uuid);
 
         for (Comment comment : comments) {
+            UserCommentFeignDto userCommentFeignDto = userCommentFeignClient.findImageAndNickname(comment.getUuid());
+
+            String nickname = userCommentFeignDto.getNickname();
+            String profileImage = userCommentFeignDto.getProfileImage();
+
             ResponseCommentDto build = ResponseCommentDto.builder()
                     .createAt(comment.getCreateAt())
                     .content(comment.getContent())
                     .commentId(comment.getCommentId())
                     .uuid(comment.getUuid())
+                    .nickname(nickname)
+                    .profileImage(profileImage)
                     .build();
             commentList.add(build);
         }
@@ -200,7 +211,7 @@ public class CommentService {
     //---------------------------댓글 좋아요--------------------------
     // 댓글 좋아요 등록/삭제
     @Transactional
-    public ResponseCommentLikeDto commentLike(RequestCommentLikeDto requestCommentLikeDto) {
+    public ResponseCommentLikeDto commentLike(RequestCommentLikeDto requestCommentLikeDto) throws JsonProcessingException{
         Long commentId = requestCommentLikeDto.getCommentId();
         String uuid = requestCommentLikeDto.getUuid();
 
@@ -219,6 +230,15 @@ public class CommentService {
         // 좋아요 등록
         if (!isLiked) {
             commentLikeRepository.save(CommentLike.builder().uuid(uuid).commentId(commentId).build());
+
+            // 등록되면 알림 보내기
+            CommentLikeMessageDto messageDto = new CommentLikeMessageDto();
+            messageDto.setCommentId(requestCommentLikeDto.getCommentId());
+            messageDto.setSender(requestCommentLikeDto.getUuid());
+            messageDto.setReceiver(commentRepository.findByCommentId(requestCommentLikeDto.getCommentId()).getUuid());
+            messageDto.setContent(commentRepository.findByCommentId(requestCommentLikeDto.getCommentId()).getContent());
+            String likeMessage = objectMapper.writeValueAsString(messageDto);
+            commentProducer.sendNcCommentLikeMessage(likeMessage);
 
             return ResponseCommentLikeDto.builder()
                     .commentId(commentId)
@@ -248,8 +268,18 @@ public class CommentService {
     }
     //---------------------------댓글 태그--------------------------
     // 댓글 태그 등록
-    public void makeCommentTag(List<String> userTag ,Long commentId) {
+    public void makeCommentTag(List<String> userTag ,Long commentId) throws JsonProcessingException{
         for (String nickname : userTag) {
+            // 댓글 태그 알림 보내기
+            CommentTagMessageDto messageDto = CommentTagMessageDto.builder()
+                    .sender(commentRepository.findByCommentId(commentId).getUuid())
+                    .receiver(nickname)
+                    .content(commentRepository.findByCommentId(commentId).getContent())
+                    .build();
+            String message = objectMapper.writeValueAsString(messageDto);
+            commentProducer.sendNcCommentTagMessage(message);
+
+            //댓글 태그 저장
             commentTagRepository.save(CommentTag.builder()
                             .nickname(nickname)
                             .commentId(commentId)
@@ -269,36 +299,38 @@ public class CommentService {
 //        return userTagList;
 //    }
 
-    // RabbitMQ 테스트
-    public void publishTestMessage(String message) {
-        producer.sendTestMessage(message);
-    }
+    // RabbitMQ
 
-    // 댓글 등록 알림
+    // 댓글 등록 메세지 + 알림
     public void publishCreateCommentMessage(RequestCommentDto requestCommentDto) throws JsonProcessingException {
         // DTO를 json(String)으로 직렬화
         String message = objectMapper.writeValueAsString(requestCommentDto);
-        producer.sendCreateCommentMessage(message);
+        commentProducer.sendCreateCommentMessage(message);
 
         // 댓글 등록시 글작성자에게 알림
         if(requestCommentDto.getParentId() ==null) {
-        MessageDto messageDto = new MessageDto();
-        messageDto.setSender(requestCommentDto.getUuid());
-        messageDto.setPostId(requestCommentDto.getPostId());
-        messageDto.setContent(requestCommentDto.getContent());
-        String findUuidMessage = objectMapper.writeValueAsString(messageDto);
-        producer.sendFindUuidMessage(findUuidMessage);}
+        CommentCreateMessageDto commentCreateMessageDto = new CommentCreateMessageDto();
+        commentCreateMessageDto.setSender(requestCommentDto.getUuid());
+        commentCreateMessageDto.setPostId(requestCommentDto.getPostId());
+        commentCreateMessageDto.setContent(requestCommentDto.getContent());
+        String findUuidMessage = objectMapper.writeValueAsString(commentCreateMessageDto);
+        commentProducer.sendFindUuidMessage(findUuidMessage);}
 
         // 대댓글 등록시 글작성자 , 댓글작성자에게 알림
         if (requestCommentDto.getParentId() != null) {
-            MessageDto messageDto = new MessageDto();
-            messageDto.setSender(requestCommentDto.getUuid());
-            messageDto.setPostId(requestCommentDto.getPostId());
-            messageDto.setContent(requestCommentDto.getContent());
-            messageDto.setCommentWriter(commentRepository.findUuidByCommentId(requestCommentDto.getParentId()));
-            String findUuidMessage = objectMapper.writeValueAsString(messageDto);
-            producer.sendFindUuidMessage(findUuidMessage);
+            CommentCreateMessageDto commentCreateMessageDto = new CommentCreateMessageDto();
+            commentCreateMessageDto.setSender(requestCommentDto.getUuid());
+            commentCreateMessageDto.setPostId(requestCommentDto.getPostId());
+            commentCreateMessageDto.setContent(requestCommentDto.getContent());
+            commentCreateMessageDto.setCommentWriter(commentRepository.findUuidByCommentId(requestCommentDto.getParentId()));
+            String findUuidMessage = objectMapper.writeValueAsString(commentCreateMessageDto);
+            commentProducer.sendFindUuidMessage(findUuidMessage);
         }
+    }
+    // 댓글 좋아요 등록/삭제 + 알림
+    public void publishCommentLikeMessage(RequestCommentLikeDto requestCommentLikeDto) throws JsonProcessingException{
+        String message = objectMapper.writeValueAsString(requestCommentLikeDto);
+        commentProducer.sendCommentLikeMessage(message);
     }
 
 
