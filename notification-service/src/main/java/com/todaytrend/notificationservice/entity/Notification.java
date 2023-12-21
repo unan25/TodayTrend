@@ -30,5 +30,9 @@ public class Notification {
     @CreatedDate
     private LocalDateTime createAt;
 
-    private boolean read;
+    private Boolean checked;
+
+    public void check(){
+        this.checked = true;
+    }
 }

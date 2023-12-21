@@ -1,8 +1,12 @@
 package com.todaytrend.userservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todaytrend.userservice.domain.Follow;
 import com.todaytrend.userservice.dto.FollowRequestDto;
 import com.todaytrend.userservice.dto.FollowResponseDto;
+import com.todaytrend.userservice.rabbitmq.FollowMessageDto;
+import com.todaytrend.userservice.rabbitmq.UserProducer;
 import com.todaytrend.userservice.repository.FollowRepository;
 import com.todaytrend.userservice.repository.UserRepository;
 import com.todaytrend.userservice.vo.FollowUserVO;
@@ -19,8 +23,10 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final UserProducer userProducer;
+    private final ObjectMapper objectMapper;
 
-    public FollowResponseDto follow(FollowRequestDto followRequestDto) {
+    public FollowResponseDto follow(FollowRequestDto followRequestDto) throws JsonProcessingException {
 
         System.out.println(followRequestDto.getFollowerId());
         System.out.println(followRequestDto.getFollowingId());
@@ -35,6 +41,9 @@ public class FollowService {
 
                 return FollowResponseDto.unfollowed();
         }
+        String message = objectMapper.writeValueAsString(FollowMessageDto.builder().sender(followRequestDto.getFollowerId())
+                .receiver(followRequestDto.getFollowingId()).build());
+        userProducer.sendFollowMessage(message);
 
         followRepository.save(followRequestDto.toEntity());
 

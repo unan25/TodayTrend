@@ -6,18 +6,25 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class Producer {
+public class CommentProducer {
 
     //멤버 변수로 RabbiTemplate 생성
     private  final RabbitTemplate rabbitTemplate;
-
-    public void sendTestMessage(String message){
-        // 서버 내의 1. 어떤 Queue에   2. 어떤 데이터를 보낼지 설정
-        rabbitTemplate.convertAndSend("COMMENT_CREATE_QUEUE",message);
-        // 이제 이걸 서비스가 호출하게 함.
-    }
+    // 댓글 등록
     public void sendCreateCommentMessage(String message) {
         rabbitTemplate.convertAndSend("COMMENT_CREATE_QUEUE", message);
+    }
+    // 댓글 좋아요 등록/삭제
+    public void sendCommentLikeMessage(String message){
+        rabbitTemplate.convertAndSend("COMMENT_LIKE_QUEUE", message);
+    }
+    //댓글 작성자에게 알림보내기
+    public void sendNcCommentLikeMessage(String message){
+        rabbitTemplate.convertAndSend("NC_COMMENT_LIKE_QUEUE",message);
+    }
+    //댓글 태그된 사람에게 알림보내기
+    public void sendNcCommentTagMessage(String message){
+        rabbitTemplate.convertAndSend("NC_COMMENT_TAG_QUEUE" , message);
     }
     // post 서버에 글 작성자 찾기
     public void sendFindUuidMessage(String message) {

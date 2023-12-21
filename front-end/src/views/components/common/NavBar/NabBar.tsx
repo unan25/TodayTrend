@@ -16,6 +16,7 @@ import styles from './NabBar.module.css';
 import axios from 'axios';
 //
 import NotificationModal from '../NotificationModal/NotificationModal';
+import { useQuery } from 'react-query';
 
 const NavBar: React.FC = () => {
   const dispatch = useDispatch<any>();
@@ -25,7 +26,8 @@ const NavBar: React.FC = () => {
 
   const [nickname, setNickname] = useState<string>();
   const [profileImage, setProfileImage] = useState<string>();
-
+  //
+  const [notificationCount, setNotificationCount] = useState<number>(0);
   const [modal, setModal] = useState<boolean>(false);
 
   const onClickhandler = () => {
@@ -49,6 +51,18 @@ const NavBar: React.FC = () => {
     if (UUID) getNickname();
   }, [UUID]);
 
+  const { data, refetch } = useQuery<number>(
+    'notificationCount',
+    async () => {
+      const response = await axios.get(`/api/notifications/cnt?uuid=${UUID}`);
+      if (data) setNotificationCount(data);
+      return response.data;
+    },
+    {
+      enabled: !!UUID, // UUID가 있을 때만 요청을 활성화
+    }
+  );
+
   return (
     <nav className={styles.nav}>
       <div className={styles.section1}>
@@ -66,12 +80,6 @@ const NavBar: React.FC = () => {
           <Link className={styles.section2__signUpButton} to="/signup">
             회원가입
           </Link>
-          <div
-            className={styles.nav_section2__notification}
-            onClick={() => setModal(true)}
-          >
-            알림
-          </div>
           <Link className={styles.section2__signInButton} to="/signin">
             로그인
           </Link>
@@ -104,17 +112,27 @@ const NavBar: React.FC = () => {
             <span>{nickname}</span>
           </Link>
           <div
+            id={styles.notification}
             className={styles.nav_section2__notification}
-            onClick={() => setModal(true)}
+            onClick={() => {
+              setModal(true);
+            }}
           >
-            알림
+            알림 ({notificationCount})
           </div>
           <button className={styles.button_logout} onClick={onClickhandler}>
             로그아웃
           </button>
         </div>
       )}
-      {modal && <NotificationModal onClose={() => setModal(false)} />}
+      {modal && (
+        <NotificationModal
+          onClose={() => {
+            setModal(false);
+            refetch();
+          }}
+        />
+      )}
     </nav>
   );
 };

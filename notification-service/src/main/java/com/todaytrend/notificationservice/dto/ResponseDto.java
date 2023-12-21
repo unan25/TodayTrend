@@ -14,6 +14,8 @@ import java.util.List;
 @Builder
 public class ResponseDto {
 
+    private Long NotificationId;
+
     private String content;
 
     private String sender;
@@ -23,4 +25,5 @@ public class ResponseDto {
     private NotificationType type;
 
     private LocalDateTime createAt;
+
 }
