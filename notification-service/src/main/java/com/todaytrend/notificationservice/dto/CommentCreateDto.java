@@ -20,7 +20,6 @@ public class CommentCreateDto {
 
     private String postWriter;
 
-
     public Notification toEntity(String receiver) {
        return  Notification.builder()
                 .content(content)
@@ -28,6 +27,7 @@ public class CommentCreateDto {
                 .receiver(receiver)
                .createAt(LocalDateTime.now())
                 .type(NotificationType.COMMENT_CREATE)
+               .checked(false)
                 .build();
     }
 }

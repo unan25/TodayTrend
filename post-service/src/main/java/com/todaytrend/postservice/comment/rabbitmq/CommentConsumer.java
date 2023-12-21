@@ -1,9 +1,9 @@
 package com.todaytrend.postservice.comment.rabbitmq;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todaytrend.postservice.comment.dto.request.RequestCommentDto;
+import com.todaytrend.postservice.comment.dto.request.RequestCommentLikeDto;
 import com.todaytrend.postservice.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class Consumer {
+public class CommentConsumer {
 
     private final ObjectMapper objectMapper;
     private final CommentService commentService;
@@ -24,5 +24,10 @@ public class Consumer {
         RequestCommentDto dto = objectMapper.readValue(message, RequestCommentDto.class);
         // 서비스 호출
         commentService.createComment(dto);
+    }
+    @RabbitListener(queues= "COMMENT_LIKE_QUEUE")
+    public void commentLike(String message) throws JsonProcessingException{
+        RequestCommentLikeDto dto = objectMapper.readValue(message, RequestCommentLikeDto.class);
+        commentService.commentLike(dto);
     }
 }
