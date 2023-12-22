@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/builds']],
+                    extensions: [[$class: 'PathRestriction', excludedRegions: '', includedRegions: 'auth-service/.*']],
+                    userRemoteConfigs: [[url: 'https://github.com/unan25/TodayTrend.git']]
+                ])
+            }
+        }
+        stage('Gradle Build') {
+            steps {
+                dir('auth-service') {
+                    sh 'chmod +x gradlew'
+                    sh './gradlew clean build -x test'
+                }
+            }
+        }
+        stage('Build and push Docker image') {
+            steps {
+                script {
+                    dir('auth-service') {
+                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                            def app = docker.build("unan25/tt_auth", "-f Dockerfile .")
+                            app.push("latest")
+                        }
+                    }
+                }
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                dir('auth-service') {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-39-189-167.ap-northeast-2.compute.amazonaws.com "
+                            sudo docker stop \$(sudo docker ps -q) || true
+                            sudo docker rm \$(sudo docker ps -a -q) || true
+                            sudo docker rmi \$(sudo docker images -q) || true
+                            sudo docker pull unan25/tt_auth:latest
+                            sudo docker run -d -p 9000:9000 unan25/tt_auth:latest
+                        "
+                    '''
+                }
+            }
+        }
+    }
+}
