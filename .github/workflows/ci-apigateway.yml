@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - builds
+    paths:
+      - 'apigateway-server'
 
 jobs:
   build:
@@ -12,23 +14,32 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
+        
+        # 환경 설정
       - name: Set up Java
         uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
           java-version: '17'
-
+      
+        # Gradle 권한 설정
       - name: Grant execute permission for gradlew
         run: chmod +x apigateway-server/gradlew
 
+        # Gradle Build
       - name: Build with Gradle
         working-directory: apigateway-server
         run: ./gradlew clean build -x test
 
+        # Docker Build
       - name: Build Docker image
         working-directory: apigateway-server
-        run: docker build --no-cache -t unan25/tt_gateway .
+        run: docker build --no-cache -t unan25/tt_gateway -f gateway/Dockerfile .
 
+        # DockerHub Login
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+        # DockerHub push
       - name: Push Docker image
         run: docker push unan25/tt_gateway
