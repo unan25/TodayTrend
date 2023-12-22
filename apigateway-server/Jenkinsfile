@@ -29,6 +29,7 @@ pipeline {
         }
         stage('Deploy to EC2') {
             steps {
+                dir('apigateway-server') {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ec2-user@ec2-13-209-76-6.ap-northeast-2.compute.amazonaws.com "
                             docker stop $(docker ps -q) || true
