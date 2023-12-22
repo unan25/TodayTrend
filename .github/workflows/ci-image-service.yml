@@ -35,7 +35,7 @@ jobs:
         # Docker Build
       - name: Build Docker image
         working-directory: image-service
-        run: docker build --no-cache -t unan25/tt_imgae .
+        run: docker build --no-cache -t unan25/tt_image .
 
         # DockerHub Login
       - name: Log in to Docker Hub

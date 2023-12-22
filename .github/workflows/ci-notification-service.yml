@@ -29,7 +29,7 @@ jobs:
 
         # Gradle Build
       - name: Build with Gradle
-        working-directory: notification-servic
+        working-directory: notification-service
         run: ./gradlew clean build -x test
 
         # Docker Build
