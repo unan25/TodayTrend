@@ -34,7 +34,7 @@ jobs:
         # Docker Build
       - name: Build Docker image
         working-directory: apigateway-server
-        run: docker build --no-cache -t unan25/tt_gateway -f gateway/Dockerfile .
+        run: docker build --no-cache -t unan25/tt_gateway .
 
         # DockerHub Login
       - name: Log in to Docker Hub
