@@ -38,3 +38,4 @@ out/
 
 ### Aws S3###
 application-db.yml
+application-s3.yml

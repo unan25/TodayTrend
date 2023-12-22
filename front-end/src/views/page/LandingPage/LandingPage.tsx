@@ -1,26 +1,25 @@
 // react
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 // react-query
-import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery } from 'react-query';
 // react-bootstrap
-import { Nav } from "react-bootstrap";
+import { Nav } from 'react-bootstrap';
 // styles
-import styles from "./LandingPage.module.css";
+import styles from './LandingPage.module.css';
 // components
-import CategoryModal from "../../components/Category/CategoryModal/CategoryModal";
-import CategoryList from "../../components/Category/CategoryList/CategoryList";
-import PostList from "../../components/post/PostList/PostList";
+import CategoryModal from '../../components/category/MainCategory/CategoryModal/CategoryModal';
+import CategoryList from '../../components/category/MainCategory/CategoryList/CategoryList';
+import PostList from '../../components/post/PostList/PostList';
 // type
-import { CategoryType } from "interface/CategoryInterface";
+import { CategoryType } from 'interface/CategoryInterface';
 // axios
-import axios from "axios";
+import axios from 'axios';
 // router
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 // redux
-import { useSelector } from "react-redux";
-import { RootState } from "redux/store";
-// import { sessionStorage } from 'redux-persist/es/storage/session';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 
 export interface IDetailPost {
   page: number;
@@ -31,7 +30,6 @@ export interface IDetailPost {
 }
 function LandingPage() {
   const navigate = useNavigate();
-  // const location = useLocation();
   const uuid = useSelector((state: RootState) => state.user.UUID);
 
   const [categories, setCategories] = useState<CategoryType[]>([]);
@@ -40,8 +38,8 @@ function LandingPage() {
   const [categoryList, setCategoryList] = useState<number[]>([]); //카테고리 ID List
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  //세션스토리지에 카테고리 저장해놓기
-  // const selectedCategoryList = sessionStorage.setItem('category', categoryList);
+  // 세션스토리지에 카테고리 저장해놓기
+  sessionStorage.setItem('category', JSON.stringify(categoryList));
 
   //무한 스크롤
   const fetchPost = async ({
@@ -60,24 +58,21 @@ function LandingPage() {
         tab,
       };
       // axios.post를 사용하여 데이터를 body에 실어서 요청 보내기
-      const response = await axios.post("/api/post/main", requestBody);
+      const response = await axios.post('/api/post/main', requestBody);
       refetch();
       return response.data;
-    } catch (error) {
-      console.error("포스트 리스트 못 받는 중", error);
-    }
+    } catch (error) {}
   };
   // 메인페이지 로딩 카테고리리스트 받아오기
   useEffect(() => {
+    setCategoryList(JSON.parse(sessionStorage.getItem('category') || '[]'));
     const fetchData = async () => {
       try {
         const response = await axios.get<CategoryType[]>(
-          "api/post/admincategorylist"
+          'api/post/admincategorylist'
         );
         setCategories(response.data);
-      } catch (error) {
-        console.log("카테고리 리스트 못 받는 중", error);
-      }
+      } catch (error) {}
     };
     fetchData();
   }, []);
@@ -93,8 +88,7 @@ function LandingPage() {
     toggleCategory(categoryId);
   };
   useEffect(() => {
-    console.log("선택한 탭:" + tab);
-    console.log("선택한 카테고리:" + categoryList);
+    sessionStorage.setItem('category', JSON.stringify(categoryList));
     fetchPost({
       page: 0,
       size: 6,
@@ -111,7 +105,7 @@ function LandingPage() {
     setIsModalOpen(false);
   };
   const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery(
-    ["posts"],
+    ['posts'],
     ({ pageParam = 0 }) =>
       fetchPost({
         page: pageParam,

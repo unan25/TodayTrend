@@ -1,0 +1,39 @@
+.modalContainer {
+  position: fixed;
+  top: 25%;
+  left: 85%;
+  width: 25rem;
+  height: auto;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 2rem;
+  border: 2px solid #3d3775;
+  border-radius: 1rem;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.close {
+  position: fixed;
+  top: 5%;
+  left: 95%;
+}
+.notification {
+  border: 0.05rem solid var(--color-black);
+  padding: 0.5rem;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  margin: 0.1rem;
+  position: relative;
+}
+
+.profileimage {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+.content {
+  font-size: 0.8rem;
+}

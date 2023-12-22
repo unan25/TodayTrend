@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 //
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 //
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { RootState } from "redux/store";
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { RootState } from 'redux/store';
 
 //
-import { logOut } from "../../../../redux/_actions/user_action";
+import { logOut } from '../../../../redux/_actions/user_action';
 
 //
-import styles from "./NabBar.module.css";
-import axios from "axios";
+import styles from './NabBar.module.css';
+import axios from 'axios';
+//
+import NotificationModal from '../NotificationModal/NotificationModal';
+import { useQuery } from 'react-query';
 
 const NavBar: React.FC = () => {
   const dispatch = useDispatch<any>();
@@ -23,6 +26,9 @@ const NavBar: React.FC = () => {
 
   const [nickname, setNickname] = useState<string>();
   const [profileImage, setProfileImage] = useState<string>();
+  //
+  const [notificationCount, setNotificationCount] = useState<number>(0);
+  const [modal, setModal] = useState<boolean>(false);
 
   const onClickhandler = () => {
     const data = {
@@ -44,6 +50,18 @@ const NavBar: React.FC = () => {
   useEffect(() => {
     if (UUID) getNickname();
   }, [UUID]);
+
+  const { data, refetch } = useQuery<number>(
+    'notificationCount',
+    async () => {
+      const response = await axios.get(`/api/notifications/cnt?uuid=${UUID}`);
+      if (data) setNotificationCount(data);
+      return response.data;
+    },
+    {
+      enabled: !!UUID, // UUID가 있을 때만 요청을 활성화
+    }
+  );
 
   return (
     <nav className={styles.nav}>
@@ -67,7 +85,7 @@ const NavBar: React.FC = () => {
           </Link>
         </div>
       )}
-      {role === "GUEST" && (
+      {role === 'GUEST' && (
         <div className={styles.section2}>
           <Link className={styles.section2__signUpButton} to="/signup">
             회원가입
@@ -81,7 +99,7 @@ const NavBar: React.FC = () => {
         </div>
       )}
 
-      {role === "USER" && (
+      {role === 'USER' && (
         <div className={styles.section2}>
           <Link
             className={styles.nav_section_profile}
@@ -93,11 +111,27 @@ const NavBar: React.FC = () => {
             />
             <span>{nickname}</span>
           </Link>
-          <div className={styles.nav_section2__notification}>알림</div>
+          <div
+            id={styles.notification}
+            className={styles.nav_section2__notification}
+            onClick={() => {
+              setModal(true);
+            }}
+          >
+            알림 ({notificationCount})
+          </div>
           <button className={styles.button_logout} onClick={onClickhandler}>
             로그아웃
           </button>
         </div>
+      )}
+      {modal && (
+        <NotificationModal
+          onClose={() => {
+            setModal(false);
+            refetch();
+          }}
+        />
       )}
     </nav>
   );

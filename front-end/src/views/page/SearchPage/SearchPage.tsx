@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import styles from './SearchPage.module.css';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export interface userTagType {
   uuid: string;
@@ -36,10 +36,11 @@ const SearchPage: React.FC = () => {
   }, []);
 
   const onClickUserHandler = (user: userTagType) => () => {
-    sessionStorage.setItem(
-      'searchUser',
-      JSON.stringify(Array.from(new Set([user, ...searchUser])))
-    );
+    const updatedSearchUser = [
+      user,
+      ...searchUser.filter((u) => u.uuid !== user.uuid),
+    ];
+    sessionStorage.setItem('searchUser', JSON.stringify(updatedSearchUser));
     navigate(`/profile/${user.nickname}`);
   };
   const onClickHashHandler = (hashtag: string) => () => {
@@ -65,12 +66,6 @@ const SearchPage: React.FC = () => {
       setUserTag(newContent.substring(1));
     }
     setIsInput(newContent.trim() !== '');
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      // 사용자가 Enter를 눌렀을 때 실행할 로직을 여기에 추가
-    }
   };
 
   const removeUser = (user: userTagType) => (e: React.MouseEvent) => {
@@ -135,7 +130,6 @@ const SearchPage: React.FC = () => {
         type="search"
         placeholder=" @와 #으로 검색어를 입력하세요."
         onInput={onChangeHandler}
-        onKeyDown={handleKeyDown}
       />
       {!isInput && (
         <div className={styles.recentSearch}>

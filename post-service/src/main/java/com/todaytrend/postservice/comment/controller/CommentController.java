@@ -1,5 +1,7 @@
 package com.todaytrend.postservice.comment.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todaytrend.postservice.comment.dto.request.RequestCommentDto;
 import com.todaytrend.postservice.comment.dto.request.RequestCommentLikeDto;
 import com.todaytrend.postservice.comment.dto.request.RequestDeleteCommentDto;
@@ -13,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/comments")
+@RequestMapping("api/post/comments")
 public class CommentController {
     private final CommentService commentService;
-    private final CommentRepositoryImpl commentRepository;
+
 
     @GetMapping("health-check")
     public String healthCheck() {
@@ -24,8 +26,10 @@ public class CommentController {
     }
 
     @PostMapping("") // 댓글 등록
-    public ResponseEntity<?> createComment(@RequestBody RequestCommentDto requestCommentDto) {
-        return new ResponseEntity<>(commentService.createComment(requestCommentDto), HttpStatus.CREATED);
+    public ResponseEntity<?> createComment(@RequestBody RequestCommentDto requestCommentDto) throws JsonProcessingException {
+        // 메세지큐에 전달하기
+        commentService.publishCreateCommentMessage(requestCommentDto);
+        return ResponseEntity.ok("댓글 등록");
     }
 
     @GetMapping("") //부모 댓글만 조회 (좋아요순) + 내가쓰지않은로직추가 + uuid
@@ -55,8 +59,9 @@ public class CommentController {
         return new ResponseEntity<>(commentService.deleteCommentByPostId(postId),HttpStatus.OK);
     }
     @PostMapping("like") // 좋아요 등록 및 삭제
-    public ResponseEntity<?> commentLike(@RequestBody RequestCommentLikeDto requestCommentLikeDto) {
-        return new ResponseEntity<>(commentService.commentLike(requestCommentLikeDto) ,HttpStatus.OK);
+    public ResponseEntity<?> commentLike(@RequestBody RequestCommentLikeDto requestCommentLikeDto) throws JsonProcessingException{
+        commentService.publishCommentLikeMessage(requestCommentLikeDto);
+        return ResponseEntity.ok("댓글 좋아요 메세지 보냄");
     }
     @GetMapping("like-cnt") // 좋아요 수 조회
     public ResponseEntity<?> getCommentLike(@RequestParam("commentId") Long commentId) {
@@ -81,4 +86,5 @@ public class CommentController {
 //                                                       @RequestParam("uuid") String uuid) {
 //        return new ResponseEntity<>(commentRepository.test(postId,page,size,uuid), HttpStatus.OK);
 //    }
+
 }
