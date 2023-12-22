@@ -56,6 +56,12 @@ dependencies {
     // SMTP
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+    // Config-Server
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+    // Spring Cloud Starter Bootstrap
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+
 }
 
 dependencyManagement {

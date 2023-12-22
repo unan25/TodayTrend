@@ -1,25 +1,21 @@
 package com.todaytrend.authservice.controller;
 
-import com.todaytrend.authservice.config.jwt.TokenInfo;
 import com.todaytrend.authservice.domain.LocalUser;
 import com.todaytrend.authservice.domain.SocialUser;
 import com.todaytrend.authservice.domain.UserInterface;
 import com.todaytrend.authservice.dto.*;
 import com.todaytrend.authservice.service.*;
 import com.todaytrend.authservice.util.CookieUtils;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("api/auth")
@@ -33,6 +29,7 @@ public class AuthController {
     private final CookieUtils cookieUtils;
     private final EmailService emailService;
     private final UserEmailService userEmailService;
+    private final Environment env;
 
     @GetMapping("health-check")
     public String healthCheck() {
