@@ -38,9 +38,6 @@ function LandingPage() {
   const [categoryList, setCategoryList] = useState<number[]>([]); //카테고리 ID List
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  // 세션스토리지에 카테고리 저장해놓기
-  sessionStorage.setItem('category', JSON.stringify(categoryList));
-
   //무한 스크롤
   const fetchPost = async ({
     page,

@@ -55,13 +55,18 @@ const NavBar: React.FC = () => {
     'notificationCount',
     async () => {
       const response = await axios.get(`/api/notifications/cnt?uuid=${UUID}`);
-      if (data) setNotificationCount(data);
       return response.data;
     },
     {
       enabled: !!UUID, // UUID가 있을 때만 요청을 활성화
     }
   );
+
+  useEffect(() => {
+    if (data !== undefined) {
+      setNotificationCount(data);
+    }
+  }, [data]);
 
   return (
     <nav className={styles.nav}>
