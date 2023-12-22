@@ -35,7 +35,7 @@ pipeline {
             steps {
                 dir('apigateway-server') {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no ec2-user@13.209.76.6 "
+                        ssh 13.209.76.6 "
                             sudo docker stop \$(docker ps -q) || true
                             sudo docker rm \$(docker ps -a -q) || true
                             sudo docker rmi \$(docker images -q) || true
