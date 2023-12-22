@@ -40,24 +40,24 @@ logging:
 #    session:
 #      tracking-modes: cookie
 
-# Eureka(Local)
-eureka:
-  instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
-
-## Eureka(CI/CD)
+## Eureka(Local)
 #eureka:
 #  instance:
-#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-#    hostname: post-service
+#    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 #  client:
 #    register-with-eureka: true
 #    fetch-registry: true
 #    service-url:
-#      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
+#      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
+
+# Eureka(CI/CD)
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    hostname: post-service
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
 

@@ -1,11 +1,11 @@
-name: CI for apigateway-server
+name: CI for auth-service
 
 on:
   push:
     branches:
       - builds
     paths:
-      - 'apigateway-server/**'
+      - 'auth-service/**'
 
 jobs:
   build:
@@ -25,17 +25,17 @@ jobs:
       
         # Gradle Settings
       - name: Grant execute permission for gradlew
-        run: chmod +x apigateway-server/gradlew
+        run: chmod +x auth-service/gradlew
 
         # Gradle Build
       - name: Build with Gradle
-        working-directory: apigateway-server
+        working-directory: auth-service
         run: ./gradlew clean build -x test
 
         # Docker Build
       - name: Build Docker image
-        working-directory: apigateway-server
-        run: docker build --no-cache -t unan25/tt_gateway .
+        working-directory: auth-service
+        run: docker build --no-cache -t unan25/tt_auth .
 
         # DockerHub Login
       - name: Log in to Docker Hub
@@ -43,4 +43,4 @@ jobs:
 
         # DockerHub push
       - name: Push Docker image
-        run: docker push unan25/tt_gateway
+        run: docker push unan25/tt_auth
