@@ -13,8 +13,9 @@ pipeline {
         }
         stage('Gradle Build') {
             steps {
-                dir('apigateway-server')
-                sh './gradlew clean build -x test'
+                dir('apigateway-server') {
+                    sh './gradlew clean build -x test'
+                }
             }
         }
         stage('Build and push Docker image') {
