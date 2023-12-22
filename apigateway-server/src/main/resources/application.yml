@@ -15,7 +15,7 @@ spring:
       routes:
         - id: user-service
 #          uri: lb://USER-SERVICE
-          uri: http://3.38.107.1.10000/
+          uri: http://3.38.107.1:10000/
           predicates:
             - Path=/api/users/**
 
@@ -28,19 +28,19 @@ spring:
 
         - id: post-service
 #          uri: lb://POST-SERVICE
-          uri: http://13.125.79.9/11000/
+          uri: http://13.125.79.9:11000/
           predicates:
             - Path=/api/post/**
 
         - id: image-service
 #          uri: lb://IMAGE-SERVICE
-          uri: http://3.38.93.126/12000/
+          uri: http://3.38.93.126:12000/
           predicates:
             - Path=/api/images/**
 
         - id: notification-service
 #          uri: lb://NOTIFICATION-SERVICE
-          uri: http://3.38.104.206/13000
+          uri: http://3.38.104.206:13000
           predicates:
             - Path=/api/notifications/**
 
