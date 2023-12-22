@@ -31,7 +31,7 @@ public class AuthController {
 
     @GetMapping("health-check")
     public String healthCheck() {
-        return "Auth-service is available. TEST 용";
+        return "Auth-service is available.";
     }
 
     // 회원가입, 회원 가입 시 uuid, userType body에 반환
