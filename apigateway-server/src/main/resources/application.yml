@@ -20,8 +20,6 @@ spring:
 
         - id: auth-service
 #          uri: lb://AUTH-SERVICE
-#           해당 인스턴스 퍼블릭 IP
-          # todo: 로드밸런싱 고민
           uri: http://3.39.189.167:9000/
           predicates:
             - Path=/api/auth/**
