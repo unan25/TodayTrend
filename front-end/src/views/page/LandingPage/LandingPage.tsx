@@ -8,8 +8,8 @@ import { Nav } from 'react-bootstrap';
 // styles
 import styles from './LandingPage.module.css';
 // components
-import CategoryModal from '../../components/category/CategoryModal/CategoryModal';
-import CategoryList from '../../components/category/CategoryList/CategoryList';
+import CategoryModal from '../../components/category/MainCategory/CategoryModal/CategoryModal';
+import CategoryList from '../../components/category/MainCategory/CategoryList/CategoryList';
 import PostList from '../../components/post/PostList/PostList';
 // type
 import { CategoryType } from 'interface/CategoryInterface';
