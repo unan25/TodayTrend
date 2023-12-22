@@ -5,7 +5,7 @@ on:
     branches:
       - builds
     paths:
-      - 'apigateway-server'
+      - 'apigateway-server/**'
 
 jobs:
   build:
