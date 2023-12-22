@@ -22,9 +22,11 @@ pipeline {
         stage('Build and push Docker image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                        def app = docker.build("unan25/tt_gateway")
-                        app.push("latest")
+                    dir('apigateway-server') {
+                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                            def app = docker.build("unan25/tt_gateway", "-f Dockerfile .")
+                            app.push("latest")
+                        }
                     }
                 }
             }
@@ -34,9 +36,9 @@ pipeline {
                 dir('apigateway-server') {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ec2-user@ec2-13-209-76-6.ap-northeast-2.compute.amazonaws.com "
-                            sudo docker stop $(docker ps -q) || true
-                            sudo docker rm $(docker ps -a -q) || true
-                            sudo docker rmi $(docker images -q) || true
+                            sudo docker stop \$(docker ps -q) || true
+                            sudo docker rm \$(docker ps -a -q) || true
+                            sudo docker rmi \$(docker images -q) || true
                             sudo docker pull unan25/tt_gateway:latest
                             sudo docker run -d -p 8000:8000 unan25/tt_gateway:latest
                         "
