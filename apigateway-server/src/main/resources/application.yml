@@ -14,55 +14,56 @@ spring:
       #        - name: CustomTokenExpirationFilter
       routes:
         - id: user-service
-          uri: lb://USER-SERVICE
-          #        uri: http://3.38.107.1.10000/
+#          uri: lb://USER-SERVICE
+          uri: http://3.38.107.1.10000/
           predicates:
             - Path=/api/users/**
 
         - id: auth-service
-          uri: lb://AUTH-SERVICE
-          # 해당 인스턴스 퍼블릭 IP
-          #        uri: http://3.39.189.167:9000/
+#          uri: lb://AUTH-SERVICE
+#           해당 인스턴스 퍼블릭 IP
+          uri: http://3.39.189.167:9000/
           predicates:
             - Path=/api/auth/**
 
         - id: post-service
-          uri: lb://POST-SERVICE
-          #        uri: http://13.125.79.9/11000/
+#          uri: lb://POST-SERVICE
+          uri: http://13.125.79.9/11000/
           predicates:
             - Path=/api/post/**
 
         - id: image-service
-          uri: lb://IMAGE-SERVICE
-          #        uri: http://3.38.93.126/12000/
+#          uri: lb://IMAGE-SERVICE
+          uri: http://3.38.93.126/12000/
           predicates:
             - Path=/api/images/**
 
         - id: notification-service
-          uri: lb://NOTIFICATION-SERVICE
+#          uri: lb://NOTIFICATION-SERVICE
+          uri: http://3.38.104.206/13000
           predicates:
             - Path=/api/notifications/**
 
-# Eureka
-eureka:
-  instance:
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
-
-# Eureka (CI/CD)
+## Eureka
 #eureka:
 #  instance:
-#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-#    hostname: apigateway-server
+#    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 #  client:
 #    register-with-eureka: true
 #    fetch-registry: true
 #    service-url:
-#      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
+#      defaultZone: http://127.0.0.1:8761/eureka # discovery-server
+
+## Eureka (CI/CD)
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    hostname: apigateway-server
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://3.34.129.32:8761/eureka # discovery-server
 
 # JWT
 jwt:
