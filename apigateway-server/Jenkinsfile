@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/builds']],
+                    extensions: [[$class: 'PathRestriction', excludedRegions: '', includedRegions: 'apigateway-server/.*']],
+                    userRemoteConfigs: [[url: 'https://github.com/unan25/TodayTrend.git']]
+                ])
+            }
+        }
+        stage('Gradle Build') {
+            steps {
+                dir('apigateway-server')
+                sh './gradlew clean build -x test'
+            }
+        }
+        stage('Build and push Docker image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                        def app = docker.build("unan25/tt_gateway")
+                        app.push("latest")
+                    }
+                }
+            }
+        }
+        stage('Deploy to EC2') {
+            steps {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ec2-user@ec2-13-209-76-6.ap-northeast-2.compute.amazonaws.com "
+                            docker stop $(docker ps -q) || true
+                            docker rm $(docker ps -a -q) || true
+                            docker rmi $(docker images -q) || true
+                            docker pull unan25/tt_gateway:latest
+                            docker run -d -p 8000:8000 unan25/tt_gateway:latest
+                        "
+                    '''
+                }
+            }
+        }
+}
