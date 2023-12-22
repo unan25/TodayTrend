@@ -14,6 +14,7 @@ pipeline {
         stage('Gradle Build') {
             steps {
                 dir('apigateway-server') {
+                    sh 'chmod +x gradlew'
                     sh './gradlew clean build -x test'
                 }
             }
@@ -33,11 +34,11 @@ pipeline {
                 dir('apigateway-server') {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ec2-user@ec2-13-209-76-6.ap-northeast-2.compute.amazonaws.com "
-                            docker stop $(docker ps -q) || true
-                            docker rm $(docker ps -a -q) || true
-                            docker rmi $(docker images -q) || true
-                            docker pull unan25/tt_gateway:latest
-                            docker run -d -p 8000:8000 unan25/tt_gateway:latest
+                            sudo docker stop $(docker ps -q) || true
+                            sudo docker rm $(docker ps -a -q) || true
+                            sudo docker rmi $(docker images -q) || true
+                            sudo docker pull unan25/tt_gateway:latest
+                            sudo docker run -d -p 8000:8000 unan25/tt_gateway:latest
                         "
                     '''
                 }
