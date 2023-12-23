@@ -34,15 +34,15 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 dir('apigateway-server') {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-34-4-13.ap-northeast-2.compute.amazonaws.com "
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-34-4-13.ap-northeast-2.compute.amazonaws.com '
                             sudo docker stop \$(sudo docker ps -q) || true
                             sudo docker rm \$(sudo docker ps -a -q) || true
                             sudo docker rmi \$(sudo docker images -q) || true
                             sudo docker pull unan25/tt_gateway:latest
                             sudo docker run -d -p 8000:8000 unan25/tt_gateway:latest
-                        "
-                    '''
+                        '
+                    """
                 }
             }
         }
