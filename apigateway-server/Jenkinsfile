@@ -35,7 +35,7 @@ pipeline {
             steps {
                 dir('apigateway-server') {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-34-4-13.ap-northeast-2.compute.amazonaws.com '
+                        ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-209-76-6.ap-northeast-2.compute.amazonaws.com '
                             sudo docker stop \$(sudo docker ps -q) || true
                             sudo docker rm \$(sudo docker ps -a -q) || true
                             sudo docker rmi \$(sudo docker images -q) || true
