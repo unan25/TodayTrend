@@ -11,6 +11,7 @@ import com.todaytrend.postservice.post.feign.img.RequestImageListDto;
 import com.todaytrend.postservice.post.feign.user.UserFeignClient;
 import com.todaytrend.postservice.post.feign.user.UserFeignDto;
 import com.todaytrend.postservice.post.repository.*;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,10 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,11 +37,10 @@ public class PostServiceImpl implements PostService {
     private final UserFeignClient userFeignClient;
     private final ImgFeignClient imgFeignClient;
 
-
-//    todo : 1. image 서버에 postid보내면 해당 포스트 img들 받아오기
-//    todo : 2. image 서버에 List<Long> postId 보내면 첫번째 img list형태로 받아오기
+    public static final String CIRCUIT_BREAKER_NAME = "customCircuitBreaker";
 
 //--------------------------- 포스트 생성 --------------------------------
+
     @Override
     public ResponseCreatedPostDto makePost(ResponseMakePostDto responseMakePostDto) {
         String userUuid = responseMakePostDto.getUuid();
@@ -121,9 +119,9 @@ public class PostServiceImpl implements PostService {
 
         Post post = postRepo.findById(postId).orElseThrow(()->new RuntimeException("post가 없음"));
 
-        UserFeignDto imgAndNickname = userFeignClient.findImgAndNickname(post.getUserUuid());
+        UserFeignDto imgAndNickname = userFeign(post.getUserUuid());
 //        ImgFeignDto imgFeignDto = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder().postIdList(List.of(post.getPostId())).build());
-        ImgFeignDto imgFeignDto = imgFeignClient.getImageByPostId(postId);
+        ImgFeignDto imgFeignDto = imageFeign(postId);
 
         return ResponsePostDetailDto.builder()
                 .postId(post.getPostId())
@@ -207,8 +205,8 @@ public class PostServiceImpl implements PostService {
             makePostUserTag(requestUpdatePostDto.getUserTagList(),postId);
             makeCategory(requestUpdatePostDto.getCategoryIdList(),postId);
 
-            UserFeignDto imgAndNickname = userFeignClient.findImgAndNickname(post.getUserUuid());
-            ImgFeignDto imgFeignDto = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder().postIdList(List.of(post.getPostId())).build());
+            UserFeignDto imgAndNickname = userFeign(post.getUserUuid());
+            ImgFeignDto imgFeignDto = imagesFeign(RequestImageListDto.builder().postIdList(List.of(post.getPostId())).build());
 
             return ResponsePostDetailDto.builder()
                     .postId(post.getPostId())
@@ -277,7 +275,7 @@ public class PostServiceImpl implements PostService {
 
 //-----------------  main 최신 + 카테고리 --------------------------
     @Override
-    public ResponseTabDto postListCategory(/*List<Long> categoryIds*/ RequestMainDto requestMainDto) {
+    public ResponseTabDto postListCategory(RequestMainDto requestMainDto) {
         Integer page = requestMainDto.getPage();
         Integer size = requestMainDto.getSize();
         Integer tab = requestMainDto.getTab();
@@ -291,7 +289,7 @@ public class PostServiceImpl implements PostService {
                 if(!categoryIds.isEmpty()){
                     Page<Long> pageResult = categoryRepo.findPostIdByAdminCategoryIdIn(categoryIds, pageRequest);
 
-                    ImgFeignDto imgResult = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                    ImgFeignDto imgResult = imagesFeign(RequestImageListDto.builder()
                             .postIdList(pageResult.getContent())
                             .build());
 
@@ -306,7 +304,7 @@ public class PostServiceImpl implements PostService {
                 }else {
                     Page<Long> pageResult = postRepo.findPostIdBy(pageRequest);
 
-                    ImgFeignDto imgResult = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                    ImgFeignDto imgResult = imagesFeign(RequestImageListDto.builder()
                             .postIdList(pageResult.getContent())
                             .build());
 
@@ -320,11 +318,10 @@ public class PostServiceImpl implements PostService {
                 }
             }
             case 1 -> {//좋아요
-//                postLikeRepo.findPostIdBy(pageRequest).getTotalPages();
-//                    page
+
                 Page<Long> pageResult = postLikeRepo.findPostIdBy(pageRequest);
 
-                ImgFeignDto imgResult = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                ImgFeignDto imgResult = imagesFeign(RequestImageListDto.builder()
                         .postIdList(pageResult.getContent())
                         .build());
 
@@ -342,7 +339,7 @@ public class PostServiceImpl implements PostService {
 
                 Page<Long> pageResult = postRepo.findPostIdByUserUuidIn(null, pageRequest);
 
-                ImgFeignDto imgResult = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+                ImgFeignDto imgResult = imagesFeign(RequestImageListDto.builder()
                         .postIdList(pageResult.getContent())
                         .build());
 
@@ -358,9 +355,6 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        /*return new ResponseTabDto(postIdList(categoryIds).stream().filter(Objects::nonNull)
-                .map(id -> new ResponsePostDto(id,null))
-                .toList());*/
        return null;
     }
 
@@ -379,7 +373,7 @@ public class PostServiceImpl implements PostService {
                 Normalizer.normalize(resultDto.getHashtag(), Normalizer.Form.NFD)
                 , PageRequest.of(resultDto.getPage(), resultDto.getSize()));
 
-        ImgFeignDto imgFeignDto = imgFeignClient.getImagesByPostIdList(RequestImageListDto.builder()
+        ImgFeignDto imgFeignDto = imagesFeign(RequestImageListDto.builder()
                         .postIdList(postIdByHashtag.getContent())
                 .build());
 
@@ -396,4 +390,33 @@ public class PostServiceImpl implements PostService {
                 .totalPage(postIdByHashtag.getTotalPages())
                 .build();
     }
+
+//    ------------------------------
+
+//    ---------------------------OpenFeign----------------
+
+    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "userFeignError")
+    public UserFeignDto userFeign(String uuid){
+        return userFeignClient.findImgAndNickname(uuid);
+    }
+
+    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "imgFeignError")
+    public ImgFeignDto imagesFeign(RequestImageListDto requestImageListDto){
+        return imgFeignClient.getImagesByPostIdList(requestImageListDto);
+    }
+
+    @CircuitBreaker(name = CIRCUIT_BREAKER_NAME, fallbackMethod = "imgFeignError")
+    public ImgFeignDto imageFeign(Long postId){
+        return imgFeignClient.getImageByPostId(postId);
+    }
+
+    public ImgFeignDto imgFeignError(Throwable t){
+        return new ImgFeignDto();
+    }
+
+    public UserFeignDto userFeignError(Throwable t){
+        return new UserFeignDto();
+    }
+
 }
+
