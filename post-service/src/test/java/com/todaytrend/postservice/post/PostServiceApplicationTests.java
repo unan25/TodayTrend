@@ -9,6 +9,7 @@ import com.todaytrend.postservice.post.entity.HashTag;
 import com.todaytrend.postservice.post.feign.user.UserFeignClient;
 import com.todaytrend.postservice.post.repository.*;
 import com.todaytrend.postservice.post.service.PostService;
+import com.todaytrend.postservice.post.service.PostServiceImpl;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class PostServiceApplicationTests {
     @Autowired
     EntityManager em;
     @Autowired
-    PostService postService;
+    PostServiceImpl postService;
     @Autowired
     PostRepository postRepository;
     @Autowired
@@ -80,7 +81,9 @@ class PostServiceApplicationTests {
 
     @Test
     void fegin_test() {
-        System.out.println(feignClient.findImgAndNickname("user2"));
+        System.out.println("---------------------------------------");
+        System.out.println(postService.imageFeign(3l));
+
     }
 
     @Test
