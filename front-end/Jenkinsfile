@@ -1,5 +1,9 @@
 pipeline {
     agent any
+
+    tools {
+        nodejs "NodeJS 20.9.0"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -18,7 +22,7 @@ pipeline {
                     dir('front-end') {
                     // 프로젝트 빌드 스크립트 실행
                     sh 'npm install'
-                    sh 'npm run build'
+                    sh 'CI=false npm run build'
                     }
                 }
             }
