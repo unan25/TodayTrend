@@ -22,10 +22,11 @@ pipeline {
             steps {
                 script {
                     dir('front-end') {
-                    sh 'chmod +w .'
-                    sh 'npm install -g webpack'
-                    sh 'CI=false npm install'
-                    sh 'CI=false npm run build'
+                        // npm 설정 변경
+                        sh 'echo "yes" > .npmrc'
+                        sh 'CI=false npm install -D webpack-cli'
+                        sh 'CI=false npm install'
+                        sh 'CI=false npm run build'
                     }
                 }
             }
