@@ -13,7 +13,7 @@ RUN apk update && apk add nginx
 RUN rm -rf /etc/nginx/conf.d
 
 # Jenkins 작업 디렉토리에서 경로 수정
-COPY TodayTrend/front-end/conf/conf.d/default.conf /etc/nginx/conf.d
+COPY ./TodayTrend/front-end/conf/conf.d/default.conf /etc/nginx/conf.d
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
 EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
