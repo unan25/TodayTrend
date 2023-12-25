@@ -1,16 +1,15 @@
-# 가져올 이미지를 정의
-FROM node:20.9.0
-# 경로 설정하기
-WORKDIR /app
-# package.json 워킹 디렉토리에 복사 (.은 설정한 워킹 디렉토리를 뜻함)
-COPY package.json .
-# 명령어 실행 (의존성 설치)
-RUN npm install
-# 현재 디렉토리의 모든 파일을 도커 컨테이너의 워킹 디렉토리에 복사한다.
-COPY . .
+# step 1 빌드를 하기 위한 과정
+FROM node:20-alpine AS build
+COPY    ./package* /usr/src/app/
+WORKDIR /usr/src/app
+RUN     npm install
+COPY . /usr/src/app
+RUN npm run build
 
-# 3000번 포트 노출
+# step 2 실행 스테이지를 위한 과정
+FROM nginx:stable-alpine
+RUN rm -rf /etc/nginx/conf.d
+COPY conf /etc/nginx
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
 EXPOSE 3000
-
-# npm start 스크립트 실행
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
