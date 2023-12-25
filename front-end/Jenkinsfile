@@ -25,9 +25,9 @@ pipeline {
                         // npm 설정 변경
                         sh 'echo "yes" > .npmrc'
                         sh 'npm config set yes true'
-                        sh 'CI=false npm install -D webpack-cli'
-                        sh 'CI=false npm install --no-optional'
-                        sh 'CI=false npm run build --no-optional'
+                        sh 'CI=false npm install -D webpack-cli --no-fund --no-optional'
+                        sh 'CI=false npm install --no-fund --no-optional'
+                        sh 'CI=false npm run build --no-fund --no-optional'
                     }
                 }
             }
@@ -45,7 +45,7 @@ pipeline {
             }
         }
     }
-    
+
         stage('Deploy to EC2') {
             steps {
                 dir('front-end') {
