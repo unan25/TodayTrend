@@ -17,16 +17,17 @@ pipeline {
             }
         }
 
-        // 프로젝트 빌드 스크립트 실행
+         // 프로젝트 빌드 스크립트 실행
         stage('Build') {
             steps {
                 script {
                     dir('front-end') {
                         // npm 설정 변경
                         sh 'echo "yes" > .npmrc'
+                        sh 'npm config set yes true'
                         sh 'CI=false npm install -D webpack-cli'
-                        sh 'CI=false npm install'
-                        sh 'CI=false npm run build'
+                        sh 'CI=false npm install --no-optional'
+                        sh 'CI=false npm run build --no-optional'
                     }
                 }
             }
@@ -44,6 +45,7 @@ pipeline {
             }
         }
     }
+    
         stage('Deploy to EC2') {
             steps {
                 dir('front-end') {
