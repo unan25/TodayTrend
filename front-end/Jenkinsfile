@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS 20.9.0"
+        nodejs "NodeJS 20.9.0"1. 
     }
 
     stages {
@@ -16,22 +16,6 @@ pipeline {
                 ])
             }
         }
-
-        //  // 프로젝트 빌드 스크립트 실행
-        // stage('Build') {
-        //     steps {
-        //         script {
-        //             dir('front-end') {
-        //                 // npm 설정 변경
-        //                 sh 'echo "yes" > .npmrc'
-        //                 sh 'npm config set yes true'
-        //                 sh 'CI=false npm install -D webpack-cli --no-fund --no-optional --yes'
-        //                 sh 'CI=false npm install --no-fund --no-optional --yes'
-        //                 sh 'CI=false npm run build --no-fund --no-optional --yes'
-        //             }
-        //         }
-        //     }
-        // }
 
         stage('Build and push Docker image') {
             steps {
