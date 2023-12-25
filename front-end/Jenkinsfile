@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/builds']],
+                    extensions: [[$class: 'PathRestriction', excludedRegions: '', includedRegions: 'front-end/.*']],
+                    userRemoteConfigs: [[url: 'https://github.com/unan25/TodayTrend.git']]
+                ])
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    dir('front-end') {
+                    // 프로젝트 빌드 스크립트 실행
+                    sh 'npm install'
+                    sh 'npm run build'
+                    }
+                }
+            }
+        }
+
+        stage('Build and push Docker image') {
+            steps {
+                script {
+                    dir('front-end') {
+                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                            def app = docker.build("unan25/tt_front", "-f Dockerfile .")
+                            app.push("latest")
+                    }
+                }
+            }
+        }
+    }
+        stage('Deploy to EC2') {
+            steps {
+                dir('front-end') {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-36-130-134.ap-northeast-2.compute.amazonaws.com '
+                            sudo docker stop \$(sudo docker ps -q) || true
+                            sudo docker rm \$(sudo docker ps -a -q) || true
+                            sudo docker rmi \$(sudo docker images -q) || true
+                            sudo docker pull unan25/tt_front:latest
+                            sudo docker run -d -p 3000:3000 unan25/tt_front:latest
+                        '
+                    """
+                }
+            }
+        }
+}
