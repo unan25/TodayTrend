@@ -4,6 +4,7 @@ pipeline {
     tools {
         nodejs "NodeJS 20.9.0"
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -22,7 +23,8 @@ pipeline {
                 script {
                     dir('front-end') {
                     sh 'chmod +w .'
-                    sh 'npm install'
+                    sh 'npm install -g webpack'
+                    sh 'CI=false npm install'
                     sh 'CI=false npm run build'
                     }
                 }
