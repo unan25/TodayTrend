@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS 20.9.0"1. 
+        nodejs "NodeJS 20.9.0"
     }
 
     stages {
@@ -24,11 +24,11 @@ pipeline {
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
                             def app = docker.build("unan25/tt_front", "-f Dockerfile .")
                             app.push("latest")
+                        }
                     }
                 }
             }
         }
-    }
 
         stage('Deploy to EC2') {
             steps {
