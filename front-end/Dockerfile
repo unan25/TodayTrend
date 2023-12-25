@@ -1,27 +1,14 @@
-# step 1 빌드를 하기 위한 과정
-FROM node:20-alpine AS build
+# 1. node 이미지 사용
+FROM    node:20-alpine
+
+# 2. 패키지 우선 복사
+COPY    ./package* /usr/src/app/
 WORKDIR /usr/src/app
-COPY ./package* ./
-RUN npm install
-COPY . ./
-RUN npm run build
+RUN     npm install
 
-# step 2 실행 스테이지를 위한 과정
-FROM nginx:stable-alpine
-# 엔진엑스 설치
-RUN apk update && apk add nginx 
-RUN rm -rf /etc/nginx/conf.d
+# 3. 소스 복사
+COPY . /usr/src/app
 
-# Nginx 설정 직접 작성
-RUN echo "server {" > /etc/nginx/conf.d/default.conf \
-    && echo "    listen 3000;" >> /etc/nginx/conf.d/default.conf \
-    && echo "    location / {" >> /etc/nginx/conf.d/default.conf \
-    && echo "        root   /usr/share/nginx/html;" >> /etc/nginx/conf.d/default.conf \
-    && echo "        index  index.html index.htm;" >> /etc/nginx/conf.d/default.conf \
-    && echo "        try_files \$uri \$uri/ /index.html;" >> /etc/nginx/conf.d/default.conf \
-    && echo "    }" >> /etc/nginx/conf.d/default.conf \
-    && echo "}" >> /etc/nginx/conf.d/default.conf
-
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+# 4. WEB 서버 실행 (Listen 포트 정의)
 EXPOSE 3000
-CMD ["nginx", "-g", "daemon off;"]
+CMD    npm start
