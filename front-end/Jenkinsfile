@@ -15,13 +15,13 @@ pipeline {
                 ])
             }
         }
-        
+
         // 프로젝트 빌드 스크립트 실행
         stage('Build') {
             steps {
                 script {
                     dir('front-end') {
-                    sh 'chomd +w .'
+                    sh 'chmod +w .'
                     sh 'npm install'
                     sh 'CI=false npm run build'
                     }
