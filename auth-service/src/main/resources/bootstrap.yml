@@ -1,0 +1,5 @@
+spring:
+  cloud:
+    config:
+      uri: http://3.38.210.249:8888
+      name: db, jwt, smtp, rabbit

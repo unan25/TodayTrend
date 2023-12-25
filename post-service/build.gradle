@@ -53,6 +53,12 @@ dependencies {
     // RabbitMQ
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
+    // Config-Server
+    implementation 'org.springframework.cloud:spring-cloud-starter-config:4.0.4'
+
+    // Spring Cloud Starter Bootstrap
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:4.0.4'
+
 }
 
 dependencyManagement {

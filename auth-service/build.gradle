@@ -62,6 +62,9 @@ dependencies {
     // Spring Cloud Starter Bootstrap
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
+    // JASYPT
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
 }
 
 dependencyManagement {

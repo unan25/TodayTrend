@@ -96,20 +96,6 @@ public class AuthController {
     }
 
 
-//    @PostMapping("refresh")
-//    public ResponseEntity<Void> refreshAccessToken(@CookieValue("refresh_token") String refreshToken, HttpServletResponse response) {
-//        log.info("refreshAccessToken 컨트롤러 리프레시 토큰 : " + refreshToken);
-//        UserInterface user = tokenService.refreshAccessToken(refreshToken);
-//        cookieUtils.setTokenCookies(user, response);
-////        TokenInfo newAccessToken = tokenService.refreshAccessToken(user);
-////        Cookie newAccessTokenCookie = cookieUtils.createCookie("access_token", newAccessToken.getToken(), newAccessToken.getExpiresIn());
-//
-////        response.addCookie(newAccessTokenCookie);
-//        // 204를 반환하여 엑세스 토큰의 재발급 성공적 알림
-//        log.info("컨트롤러 : 토큰 재발급 완료");
-//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-//    }
-
     // 회원 탈퇴 (회원 상태 변경 -> false)
     // 필요 Param : uuid, password
     @PostMapping("deactivate")

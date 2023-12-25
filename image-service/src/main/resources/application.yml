@@ -1,27 +1,6 @@
-cloud:
-  aws:
-    s3:
-      bucket: ${bucket}
-    credentials:
-      access-key: ${access-key}
-      secret-key: ${secret-key}
-    region:
-      static: ${region}
-      auto: false
-    stack:
-      auto: false
-
 spring:
-  datasource:
-    driver-class-name: ${driver-class-name}
-    url: ${url}
-    username: ${username_}
-    password: ${password}
   application:
     name: image-service
-
-  profiles:
-    active: db, s3
 
   jpa:
     database: mysql

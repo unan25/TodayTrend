@@ -37,6 +37,12 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // Config-Server
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
+    // Spring Cloud Starter Bootstrap
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 }
 
 dependencyManagement {

@@ -4,13 +4,6 @@ server:
 spring:
   application:
     name: post-service
-  datasource:
-    url: ${url}
-    username: ${username_}
-    password: ${password}
-    driver-class-name: ${driver-class-name}
-  profiles:
-    active: db
 
   jpa:
     database: mysql
@@ -22,11 +15,7 @@ spring:
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 100
-  rabbitmq:
-    host: localhost
-    username: guest
-    password: guest
-    port: 5672
+
 
 logging:
   level:

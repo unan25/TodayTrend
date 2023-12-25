@@ -1,20 +1,9 @@
 server:
   port: 10000
-#  port: 8080
 
 spring:
   application:
     name: user-service
-  profiles:
-    active: db
-
-
-  # MySQL
-  datasource:
-    url: ${url}
-    username: ${username_}
-    password: ${password}
-    driver-class-name: ${driver-class-name}
 
   # JPA
   jpa:
@@ -25,12 +14,6 @@ spring:
         format_sql: true
     show-sql: true
 
-  # RabbitMQ
-  rabbitmq:
-    host: localhost
-    username: guest
-    password: guest
-    port: 5672
 
 ## Eureka(Local)
 #eureka:

@@ -1,46 +1,46 @@
-name: CI for post-service
-
-on:
-  push:
-    branches:
-      - builds
-    paths:
-      - 'post-service/**'
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    
-    steps:
-        # worklflows Settings (워크플로우에서 작업할 소스 코드 환경 복사)
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        
-        # Settings
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-      
-        # Gradle Settings
-      - name: Grant execute permission for gradlew
-        run: chmod +x post-service/gradlew
-
-        # Gradle Build
-      - name: Build with Gradle
-        working-directory: post-service
-        run: ./gradlew clean build -x test
-
-        # Docker Build
-      - name: Build Docker image
-        working-directory: post-service
-        run: docker build --no-cache -t unan25/tt_post .
-
-        # DockerHub Login
-      - name: Log in to Docker Hub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-
-        # DockerHub push
-      - name: Push Docker image
-        run: docker push unan25/tt_post
+#name: CI for post-service
+#
+#on:
+#  push:
+#    branches:
+#      - builds
+#    paths:
+#      - 'post-service/**'
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#        # worklflows Settings (워크플로우에서 작업할 소스 코드 환경 복사)
+#      - name: Checkout Repository
+#        uses: actions/checkout@v3
+#
+#        # Settings
+#      - name: Set up Java
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: 'zulu'
+#          java-version: '17'
+#
+#        # Gradle Settings
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x post-service/gradlew
+#
+#        # Gradle Build
+#      - name: Build with Gradle
+#        working-directory: post-service
+#        run: ./gradlew clean build -x test
+#
+#        # Docker Build
+#      - name: Build Docker image
+#        working-directory: post-service
+#        run: docker build --no-cache -t unan25/tt_post .
+#
+#        # DockerHub Login
+#      - name: Log in to Docker Hub
+#        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+#
+#        # DockerHub push
+#      - name: Push Docker image
+#        run: docker push unan25/tt_post
