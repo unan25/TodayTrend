@@ -4,6 +4,7 @@ import com.todaytrend.postservice.post.dto.CRUD.selectedCategoryListDto;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
@@ -11,7 +12,7 @@ import java.util.List;
 //@RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResponseTabDto {
+public class ResponseTabDto implements Serializable {
     private List<ResponsePostDto> data;
     private Integer totalPage;
     private Integer page;

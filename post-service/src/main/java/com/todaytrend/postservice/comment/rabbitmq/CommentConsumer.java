@@ -15,8 +15,6 @@ public class CommentConsumer {
 
     private final ObjectMapper objectMapper;
     private final CommentService commentService;
-
-
     @RabbitListener(queues = "COMMENT_CREATE_QUEUE")
     public void createComment(String message) throws JsonProcessingException {
         // objectMapper 로  String(json) --> dto(객체)

@@ -14,10 +14,6 @@ public class CommentProducer {
     public void sendCreateCommentMessage(String message) {
         rabbitTemplate.convertAndSend("COMMENT_CREATE_QUEUE", message);
     }
-    // 댓글 좋아요 등록/삭제
-    public void sendCommentLikeMessage(String message){
-        rabbitTemplate.convertAndSend("COMMENT_LIKE_QUEUE", message);
-    }
     //댓글 작성자에게 알림보내기
     public void sendNcCommentLikeMessage(String message){
         rabbitTemplate.convertAndSend("NC_COMMENT_LIKE_QUEUE",message);

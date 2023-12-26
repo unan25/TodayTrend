@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 //
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams ,useNavigate} from "react-router-dom";
 
 //
 import axios from "axios";
@@ -50,6 +50,8 @@ const PostDetailPage: React.FC = () => {
   const [commentsCount, setCommentsCount] = useState<number>(0);
 
   const { postId } = useParams();
+
+  const navigate = useNavigate();
 
   /* ================================================================ */
 
@@ -125,6 +127,21 @@ const PostDetailPage: React.FC = () => {
       console.error(err);
     }
   };
+  
+  // ----------------------------추가------------------------------
+
+  const deletePost = async () => {
+    try{
+        const response = await axios.delete(`/api/post?postId=${postId}`);
+        navigate(-1);
+    }catch(e){
+      console.error(e);
+    }
+  };
+
+  const editPost = () => {
+    navigate(`/edit-post/${postId}`,{state:postDetail});
+  };
 
   /* ================================================================ */
   // effecnt
@@ -192,6 +209,7 @@ const PostDetailPage: React.FC = () => {
                 className={
                   styles.post_body_section2_header__buttonBox__button_update
                 }
+                onClick={editPost}
               >
                 수정
               </button>
@@ -199,6 +217,7 @@ const PostDetailPage: React.FC = () => {
                 className={
                   styles.post_body_section2_header__buttonBox__button_delete
                 }
+                onClick={deletePost}
               >
                 삭제
               </button>

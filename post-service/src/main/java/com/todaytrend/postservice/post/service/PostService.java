@@ -1,5 +1,6 @@
 package com.todaytrend.postservice.post.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.todaytrend.postservice.post.dto.*;
 import com.todaytrend.postservice.post.dto.CRUD.*;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
@@ -8,15 +9,15 @@ import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import java.util.List;
 
 public interface PostService {
-    ResponseCreatedPostDto makePost(ResponseMakePostDto responseMakePostDto);
+    ResponseCreatedPostDto makePost(ResponseMakePostDto responseMakePostDto) throws JsonProcessingException;
 
     ResponseDto removePost(Long postId);
 
     ResponsePostDetailDto findPost(Long postId);
 
-    boolean clickLike(RequestCheckLikedDto requestCheckLikedDto);
+    boolean clickLike(RequestCheckLikedDto requestCheckLikedDto) throws JsonProcessingException;
 
-    ResponsePostDetailDto updatePost(RequestUpdatePostDto requestUpdatePostDto);
+    ResponsePostDetailDto updatePost(RequestUpdatePostDto requestUpdatePostDto) throws JsonProcessingException;
 
     ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestCheckLikedDto);
 

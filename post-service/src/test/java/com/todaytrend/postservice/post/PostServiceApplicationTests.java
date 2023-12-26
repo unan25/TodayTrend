@@ -1,5 +1,6 @@
 package com.todaytrend.postservice.post;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.todaytrend.postservice.post.dto.CRUD.RequestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponsePostDetailDto;
@@ -9,6 +10,7 @@ import com.todaytrend.postservice.post.entity.HashTag;
 import com.todaytrend.postservice.post.feign.user.UserFeignClient;
 import com.todaytrend.postservice.post.repository.*;
 import com.todaytrend.postservice.post.service.PostService;
+import com.todaytrend.postservice.post.service.PostServiceImpl;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,7 @@ class PostServiceApplicationTests {
     @Autowired
     EntityManager em;
     @Autowired
-    PostService postService;
+    PostServiceImpl postService;
     @Autowired
     PostRepository postRepository;
     @Autowired
@@ -80,11 +82,13 @@ class PostServiceApplicationTests {
 
     @Test
     void fegin_test() {
-        System.out.println(feignClient.findImgAndNickname("user2"));
+        System.out.println("---------------------------------------");
+        System.out.println(postService.imageFeign(3l));
+
     }
 
     @Test
-    void 게시물_생성_찾기_수정_삭제() {
+    void 게시물_생성_찾기_수정_삭제() throws JsonProcessingException {
 
         ResponseCreatedPostDto responseCreatedPostDto = postService.makePost(new ResponseMakePostDto("uuid100", "@uuid1 #스트릿"
                 , List.of("스트릿"), List.of("uuid1"), List.of(1L, 3L)));
@@ -125,7 +129,7 @@ class PostServiceApplicationTests {
     }
 
     @Test
-    void 좋아요(){
+    void 좋아요() throws JsonProcessingException {
 
         assertThat(postService.clickLike(RequestCheckLikedDto.builder()
                         .postId(1L)

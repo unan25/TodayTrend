@@ -19,6 +19,7 @@ import SideBar from "./views/components/common/Sidebar/SideBar";
 import NavBar from "./views/components/common/NavBar/NabBar";
 import PostDetailPage from "./views/page/PostDetailPage/PostDetailPage";
 import UserInfoUpdatePage from "./views/page/UserInfoUpdatePage/UserInfoUpdatePage";
+import EditPostPage from "./views/page/EditPostPage/EditPostPage";
 
 function App(): JSX.Element {
   return (
@@ -38,6 +39,7 @@ function App(): JSX.Element {
           element={<UserInfoUpdatePage />}
         />
         <Route path="/change-password" element={<ChangePwPage />} />
+        <Route path="/edit-post/:postId" element={<EditPostPage />} />
       </Routes>
       <SideBar />
     </div>
