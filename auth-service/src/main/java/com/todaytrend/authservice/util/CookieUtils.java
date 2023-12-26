@@ -19,7 +19,7 @@ public class CookieUtils {
 
     private final TokenProvider tokenProvider;
 
-    // 쿠키 생성
+    // 쿠키 생성 12
     public Cookie createCookie(String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);

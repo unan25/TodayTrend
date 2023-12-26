@@ -63,10 +63,10 @@ eureka:
     service-url:
       defaultZone: http://3.34.129.32:8761/eureka # discovery-server
 
-# JWT
-jwt:
-  issuer: ${issuer}
-  secret_key: ${secret_key}
+## JWT
+#jwt:
+#  issuer: ${issuer}
+#  secret_key: ${secret_key}
 
 logging:
   level:

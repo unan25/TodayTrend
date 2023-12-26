@@ -2,8 +2,8 @@ package com.todaytrend.postservice.post.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.todaytrend.postservice.post.dto.*;
 import com.todaytrend.postservice.post.dto.CRUD.*;
+import com.todaytrend.postservice.post.dto.*;
 import com.todaytrend.postservice.post.dto.main.ResponsePostDto;
 import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
 import com.todaytrend.postservice.post.entity.*;
@@ -26,15 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.Normalizer;
-<<<<<<< Updated upstream
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
->>>>>>> Stashed changes
+
 
 @Service
 @Transactional
@@ -311,16 +306,11 @@ public class PostServiceImpl implements PostService {
 
 //-----------------  main 최신 + 카테고리 --------------------------
     @Override
-<<<<<<< Updated upstream
-    public ResponseTabDto postListCategory(RequestMainDto requestMainDto) {
-        String uuid = requestMainDto.getUuid();
-=======
     @Cacheable(value = "mainPostCache" ,key = "'tab:' + #requestMainDto.tab + '-page:' + " +
             "#requestMainDto.page + '-size:' + #requestMainDto.size + '-categories:' + " +
             "#requestMainDto.categoryList.hashCode()")
-
-    public ResponseTabDto postListCategory(/*List<Long> categoryIds*/ RequestMainDto requestMainDto) {
->>>>>>> Stashed changes
+    public ResponseTabDto postListCategory(RequestMainDto requestMainDto) {
+        String uuid = requestMainDto.getUuid();
         Integer page = requestMainDto.getPage();
         Integer size = requestMainDto.getSize();
         Integer tab = requestMainDto.getTab();

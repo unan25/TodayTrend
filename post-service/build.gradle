@@ -59,6 +59,7 @@ dependencies {
     // Spring Cloud Starter Bootstrap
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:4.0.4'
 
+    // resilience4j
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.1.5'
     implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-aop:3.1.5'
