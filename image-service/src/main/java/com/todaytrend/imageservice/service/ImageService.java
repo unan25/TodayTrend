@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -71,7 +73,8 @@ public class ImageService {
         List<Image> images = imageRepository.findImagesByPostId(postId);
         imageRepository.deleteImageByPostId(postId);
         for (Image image : images) {
-            String key = image.getImageUrl().split(".com/")[1]; //.com/ 이후의 파일명 반환
+            String decodeUrl = decodeUrl(image.getImageUrl());
+            String key = decodeUrl.split(".com/")[1];
             amazonS3.deleteObject(bucket,key);
         }
     return "게시물 이미지 삭제 완료";
@@ -142,31 +145,11 @@ public class ImageService {
     //프로필 이미지 삭제
     public ResponseProfileImageDto deleteProfileImage(String imageUrl) throws IOException {
         // 원래 이미지 삭제
-        String key = imageUrl.split(".com/")[1]; //.com/ 이후의 파일명 반환
+        String decodeUrl = decodeUrl(imageUrl);
+        String key = decodeUrl.split(".com/")[1];
         amazonS3.deleteObject(bucket,key);
         return ResponseProfileImageDto.builder()
-                .profileImage("기본 이미지 반환")
-                .build();
-    }
-
-    // 무한스크롤 테스트용
-    public ResponseImageListDto test(RequestQueryDto dto) {
-        int size = dto.getSize();
-        int page = dto.getPage();
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Image> imagePage = imageRepository.findAll(pageable);
-        List<ResponseImageDto> data = imagePage.getContent().stream()
-                .map(image -> ResponseImageDto.builder()
-                        .postId(image.getPostId())
-                        .imageUrl(image.getImageUrl())
-                        .build())
-                .collect(Collectors.toList());
-
-        return ResponseImageListDto.builder()
-                .page(page)
-                .nextPage(page+1)
-                .totalPage(imagePage.getTotalPages())
-                .data(data)
+                .profileImage("https://todaytrend.s3.ap-northeast-2.amazonaws.com/profile/04dbd59a-c0e5-459c-bb2a-3b672e28c373TT_Default_Profile.jpg")
                 .build();
     }
 
@@ -175,9 +158,19 @@ public class ImageService {
         List<Image> images = imageRepository.findImagesByPostId(postId);
         List<S3Object> imageList = new ArrayList<>();
         for (Image image : images) {
-            String key = image.getImageUrl().split(".com/")[1]; //.com/ 이후의 파일명 반환
+            String decodeUrl = decodeUrl(image.getImageUrl());
+            String key = decodeUrl.split(".com/")[1];
             imageList.add(amazonS3.getObject(bucket, key));
         }
         return imageList;
+    }
+
+    // s3 url 키로 반환
+    private static String decodeUrl(String url) {
+        try {
+            return URLDecoder.decode(url,"UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("URL 디코딩 중 오류 발생, e");
+        }
     }
 }

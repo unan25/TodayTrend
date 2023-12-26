@@ -24,6 +24,6 @@ public class ResponseDto {
     @Enumerated(EnumType.STRING)
     private NotificationType type;
 
-    private LocalDateTime createAt;
+    private String createdBefore;
 
 }

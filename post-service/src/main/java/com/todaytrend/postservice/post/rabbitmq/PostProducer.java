@@ -16,4 +16,10 @@ public class PostProducer {
     public void sendNcCommentCreateMessage(String message) {
         rabbitTemplate.convertAndSend("NC_COMMENT_CREATE_QUEUE", message);
     }
+    public void sendNcPostLikeMessage(String message){
+        rabbitTemplate.convertAndSend("NC_POST_LIKE_QUEUE", message);
+    }
+    public void sendNcPostTagMessage(String message) {
+        rabbitTemplate.convertAndSend("NC_POST_TAG_QUEUE", message);
+    }
 }
