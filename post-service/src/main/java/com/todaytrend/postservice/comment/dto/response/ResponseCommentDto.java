@@ -4,12 +4,13 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
-public class ResponseCommentDto {
+public class ResponseCommentDto implements Serializable {
 
     private Long commentId;
     private String content;

@@ -53,10 +53,16 @@ dependencies {
     // RabbitMQ
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
 
+<<<<<<< Updated upstream
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.1.5'
     implementation 'io.github.resilience4j:resilience4j-spring-boot3:2.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-aop:3.1.5'
     implementation 'io.github.resilience4j:resilience4j-all:2.1.0'
+=======
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.redisson:redisson-hibernate-53:3.19.0'
+>>>>>>> Stashed changes
 
 }
 
