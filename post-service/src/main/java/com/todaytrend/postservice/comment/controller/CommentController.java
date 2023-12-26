@@ -23,10 +23,10 @@ public class CommentController {
     }
 
     @PostMapping("") // 댓글 등록
-    public HttpStatus createComment(@RequestBody RequestCommentDto requestCommentDto) throws JsonProcessingException {
+    public ResponseEntity<?> createComment(@RequestBody RequestCommentDto requestCommentDto) throws JsonProcessingException {
         // 메세지큐에 전달하기
         commentService.publishCreateCommentMessage(requestCommentDto);
-        return HttpStatus.CREATED;
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("") //부모 댓글만 조회 (좋아요순) + 내가쓰지않은로직추가 + uuid
