@@ -28,7 +28,7 @@ public class ExceptionPathManager {
                 "/api/images/**",
                 "/api/users/uuid/**",
                 "/api/auth/health-check",
-                "/api/users/health-check"
+                "/api/users/health-check",
                 "/3.38.107.1:10000/**"
                 ));
     }
