@@ -132,9 +132,9 @@ const NavBar: React.FC = () => {
       )}
       {modal && (
         <NotificationModal
+          refetch={refetch}
           onClose={() => {
             setModal(false);
-            refetch();
           }}
         />
       )}

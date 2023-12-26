@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface NotificationModalProps {
   onClose: () => void;
+  refetch: () => void;
 }
 interface NotificationType {
   notificationId: number;
@@ -15,58 +16,62 @@ interface NotificationType {
   senderImage: string;
   content?: string;
   type: string;
-  createAt: string;
+  createdBefore: string;
 }
-//     POST_LIKE,
-//     POST_TAG,
-//     COMMENT_LIKE,
-//     COMMENT_CREATE,
-//     COMMENT_TAG,
-//     FOLLOW
+
 const renderNotificationContent = (nc: NotificationType) => {
   switch (nc.type) {
     case 'POST_LIKE':
       return (
-        <span className={styles.content}>
+        <div className={styles.content}>
           {nc.sender}님이 회원님의 게시물을 좋아합니다:{nc.content}
-        </span>
+          <div className={styles.created}>{nc.createdBefore}</div>
+        </div>
       );
     case 'POST_TAG':
       return (
-        <span className={styles.content}>
+        <div className={styles.content}>
           {nc.sender}님이 게시물에서 회원님을 언급했습니다:{nc.content}
-        </span>
+          <div className={styles.created}>{nc.createdBefore}</div>
+        </div>
       );
     case 'COMMENT_LIKE':
       return (
-        <span className={styles.content}>
+        <div className={styles.content}>
           {nc.sender}님이 회원님의 댓글을 좋아합니다:{nc.content}
-        </span>
+          <div className={styles.created}>{nc.createdBefore}</div>
+        </div>
       );
     case 'COMMENT_CREATE':
       return (
-        <span className={styles.content}>
+        <div className={styles.content}>
           {nc.sender}님이 회원님의 게시물에 댓글을 남겼습니다:{nc.content}
-        </span>
+          <div className={styles.created}>{nc.createdBefore}</div>
+        </div>
       );
     case 'COMMENT_TAG':
       return (
-        <span className={styles.content}>
+        <div className={styles.content}>
           {nc.sender}님이 댓글에서 회원님을 언급했습니다:{nc.content}
-        </span>
+          <div className={styles.created}>{nc.createdBefore}</div>
+        </div>
       );
     case 'FOLLOW':
       return (
-        <span className={styles.content}>
+        <div className={styles.content}>
           {nc.sender}님이 회원님을 팔로우하기 시작했습니다.{nc.content}
-        </span>
+          <div className={styles.created}>{nc.createdBefore}</div>
+        </div>
       );
     default:
       return null;
   }
 };
 
-const NotificationModal: React.FC<NotificationModalProps> = ({ onClose }) => {
+const NotificationModal: React.FC<NotificationModalProps> = ({
+  onClose,
+  refetch,
+}) => {
   const [notification, setNotification] = useState<NotificationType[]>();
 
   const uuid = useSelector((state: RootState) => state.user.UUID);
@@ -83,8 +88,10 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ onClose }) => {
   });
 
   const handleModalClose = () => {
-    if (notification) {
-      checkedNotification();
+    if (notification && notification.length > 0) {
+      checkedNotification().then(() => {
+        refetch();
+      });
     }
     onClose();
   };

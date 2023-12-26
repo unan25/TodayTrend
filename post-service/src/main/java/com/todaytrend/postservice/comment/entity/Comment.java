@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class Comment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;

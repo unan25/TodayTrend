@@ -39,4 +39,5 @@ public interface PostRepository extends JpaRepository<Post,Long>{
     @Query(value = "SELECT Post FROM Post p WHERE p.postId = :postId")
     Post findByPostId(@Param("postId") Long postId);
 
+    Post findPostByPostId(Long postId);
 }

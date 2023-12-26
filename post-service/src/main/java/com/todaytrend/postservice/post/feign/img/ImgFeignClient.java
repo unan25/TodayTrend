@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "image-service", url = "localhost:8000/api/images")
+@FeignClient(name = "image-service")
 public interface ImgFeignClient {
-    @PostMapping("postList")
+    @PostMapping("api/images/postList")
     ImgFeignDto getImagesByPostIdList(@RequestBody RequestImageListDto dto);
 
-    @GetMapping("{postId}")
+    @GetMapping("api/images/{postId}")
     ImgFeignDto getImageByPostId(@PathVariable Long postId);
 }

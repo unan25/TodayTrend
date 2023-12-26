@@ -36,9 +36,9 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
     private final CommentTagRepository commentTagRepository;
-     private final UserCommentFeignClient userCommentFeignClient;
-     private final CommentRepositoryImpl commentRepositoryImpl;
-     private final CommentProducer commentProducer;
+    private final UserCommentFeignClient userCommentFeignClient;
+    private final CommentRepositoryImpl commentRepositoryImpl;
+    private final CommentProducer commentProducer;
     private final ObjectMapper objectMapper;
 
     //---------------------------댓글 검증--------------------------
@@ -72,24 +72,14 @@ public class CommentService {
         if(requestCommentDto.getUserTagList() != null){
         makeCommentTag(requestCommentDto.getUserTagList() , comment.getCommentId());
         }
-
-//        return ResponseCommentDto.builder()
-//                .createAt(comment.getCreateAt())
-//                .content(comment.getContent())
-//                .commentId(comment.getCommentId())
-//                .uuid(comment.getUuid())
-//                .build();
     }
 
     //---------------------------댓글 조회--------------------------
 
     // postId로 부모 댓글만 조회 /페이징 처리
     public ResponseCommentListDto findParentCommentByPostId(Long postId, int page, int size, String uuid) {
-//        PageRequest pageRequest = PageRequest.of(page,size);
-//        Page<Comment> commentPage = commentRepository.findCommentsByPostIdAndParentIdIsNullAndUuidNot(postId, uuid,pageRequest);
-//        List<Comment> comments = commentPage.getContent();
         List<Comment> comments = commentRepositoryImpl.findParentComments(postId,page,size,uuid);
-
+        boolean hasNext = (comments.size() == size) ;
         List<ResponseCommentDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
 //             유저 프로필 이미지랑 닉네임 얻어 오는 feign 실행
@@ -107,14 +97,14 @@ public class CommentService {
                     .build();
             commentList.add(build);
         }
+
         return ResponseCommentListDto.builder()
                 .commentList(commentList)
+                .hasNext(hasNext)
                 .build();
     }
     // commentId로 대댓글 조회
     public ResponseCommentListDto findCommentByCommentId(Long commentId, int page, int size) {
-//        List<Comment> comments = commentRepository.findByParentId(commentId);
-
         List<Comment> comments = commentRepositoryImpl.findReplyComments(commentId, page, size);
         List<ResponseCommentDto> commentList = new ArrayList<>();
         for (Comment comment : comments) {
@@ -286,19 +276,6 @@ public class CommentService {
                     .build());
         }
     }
-//    // 댓글 태그 조회
-//    public List<String> getCommentTag(Long commentId) {
-//        List<String> uuidList = commentTagRepository.findByUuidCommentId(commentId);
-//        List<String> userTagList = new ArrayList<>();
-//
-//        for (String uuid : uuidList) {
-//            // uuid를 nickname으로 변환하는 feign
-//            String nickname = uuid;
-//            userTagList.add(nickname);
-//        }
-//        return userTagList;
-//    }
-
     // RabbitMQ
 
     // 댓글 등록 메세지 + 알림
@@ -327,11 +304,5 @@ public class CommentService {
             commentProducer.sendFindUuidMessage(findUuidMessage);
         }
     }
-    // 댓글 좋아요 등록/삭제 + 알림
-    public void publishCommentLikeMessage(RequestCommentLikeDto requestCommentLikeDto) throws JsonProcessingException{
-        String message = objectMapper.writeValueAsString(requestCommentLikeDto);
-        commentProducer.sendCommentLikeMessage(message);
-    }
-
 
 }

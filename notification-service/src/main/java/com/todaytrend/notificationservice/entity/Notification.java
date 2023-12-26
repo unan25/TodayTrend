@@ -28,11 +28,5 @@ public class Notification {
     private NotificationType type;
 
     @CreatedDate
-    private LocalDateTime createAt;
-
-    private Boolean checked;
-
-    public void check(){
-        this.checked = true;
-    }
+    private LocalDateTime createdAt;
 }

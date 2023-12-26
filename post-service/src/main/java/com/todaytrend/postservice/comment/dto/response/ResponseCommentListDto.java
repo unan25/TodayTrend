@@ -11,4 +11,5 @@ import java.util.List;
 public class ResponseCommentListDto {
 
     private List<ResponseCommentDto> commentList;
+    private boolean hasNext; //to do
 }
