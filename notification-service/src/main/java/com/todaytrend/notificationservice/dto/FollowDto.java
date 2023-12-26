@@ -17,9 +17,8 @@ public class FollowDto {
         return  Notification.builder()
                 .sender(sender)
                 .receiver(receiver)
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .type(NotificationType.FOLLOW)
-                .checked(false)
                 .build();
     }
 }

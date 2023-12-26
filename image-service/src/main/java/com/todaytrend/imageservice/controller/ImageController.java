@@ -58,16 +58,6 @@ public class ImageController {
         return new ResponseEntity<>(imageService.findImageByPostIdList(postIdList) , HttpStatus.OK);
     }
 
-    // 테스트용
-    @GetMapping("test")
-    public ResponseEntity<?> test(@ModelAttribute RequestQueryDto dto) {
-        return new ResponseEntity<>(imageService.test(dto), HttpStatus.OK);
-    }
-    @PostMapping("test1")
-    public ResponseEntity<?> test1(@RequestBody RequestQueryDto dto) {
-        return new ResponseEntity<>(imageService.test(dto), HttpStatus.OK);
-    }
-
     //프로필 이미지 등록
     @PostMapping("profile")
     public ResponseEntity<?> createProfileImage(@RequestPart MultipartFile image) throws IOException{

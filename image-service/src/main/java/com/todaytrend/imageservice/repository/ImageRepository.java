@@ -14,6 +14,4 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     void deleteImageByPostId(Long postId);
 
     Image findFirstByPostId(Long postId);
-
-    Page<Image> findAll(Pageable pageable);
 }

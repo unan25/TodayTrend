@@ -25,9 +25,8 @@ public class CommentCreateDto {
                 .content(content)
                 .sender(sender)
                 .receiver(receiver)
-               .createAt(LocalDateTime.now())
+               .createdAt(LocalDateTime.now())
                 .type(NotificationType.COMMENT_CREATE)
-               .checked(false)
                 .build();
     }
 }

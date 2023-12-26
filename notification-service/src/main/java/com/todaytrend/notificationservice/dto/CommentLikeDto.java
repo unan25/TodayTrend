@@ -18,9 +18,8 @@ public class CommentLikeDto {
                 .sender(sender)
                 .receiver(receiver)
                 .content(content)
-                .createAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .type(NotificationType.COMMENT_LIKE)
-                .checked(false)
                 .build();
     }
 }

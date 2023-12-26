@@ -1,5 +1,6 @@
 package com.todaytrend.postservice.post.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.todaytrend.postservice.post.dto.CRUD.RequestUpdatePostDto;
 import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
@@ -32,14 +33,14 @@ public class PostController {
 //  info : post 생성 (insert)
 //  api : Post api/post @RequestBody
     @PostMapping("")
-    public ResponseEntity<?> makePost(@RequestBody ResponseMakePostDto responseMakePostDto){
+    public ResponseEntity<?> makePost(@RequestBody ResponseMakePostDto responseMakePostDto) throws JsonProcessingException {
         return new ResponseEntity(postService.makePost(responseMakePostDto), HttpStatus.OK);
     }
 
 //  info : post 수정 (update)
 //  api : Put api/post @RequestBody
     @PutMapping("")
-    public ResponseEntity<?> updatePost(@RequestBody RequestUpdatePostDto requestPostDto){
+    public ResponseEntity<?> updatePost(@RequestBody RequestUpdatePostDto requestPostDto) throws JsonProcessingException {
         return new ResponseEntity(postService.updatePost(requestPostDto), HttpStatus.OK);
     }
 
@@ -74,7 +75,7 @@ public class PostController {
 //    info : post 좋아요 클릭 (insert/delete)
 //  api : Put api/post/like @RequestBody
     @PutMapping("like")
-    public ResponseEntity<?> clickLike(@RequestBody RequestCheckLikedDto requestCheckLikedDto){
+    public ResponseEntity<?> clickLike(@RequestBody RequestCheckLikedDto requestCheckLikedDto) throws JsonProcessingException {
         return new ResponseEntity(postService.clickLike(requestCheckLikedDto), HttpStatus.OK);
     }
 

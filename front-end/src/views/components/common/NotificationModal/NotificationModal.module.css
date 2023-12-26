@@ -37,3 +37,6 @@
 .content {
   font-size: 0.8rem;
 }
+.created {
+  color: var(--color-gray);
+}

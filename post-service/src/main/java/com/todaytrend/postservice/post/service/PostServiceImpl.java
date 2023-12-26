@@ -1,5 +1,7 @@
 package com.todaytrend.postservice.post.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.todaytrend.postservice.post.dto.*;
 import com.todaytrend.postservice.post.dto.CRUD.*;
 import com.todaytrend.postservice.post.dto.main.ResponsePostDto;
@@ -11,6 +13,9 @@ import com.todaytrend.postservice.post.feign.img.RequestImageListDto;
 import com.todaytrend.postservice.post.feign.user.FollowUserVO;
 import com.todaytrend.postservice.post.feign.user.UserFeignClient;
 import com.todaytrend.postservice.post.feign.user.UserFeignDto;
+import com.todaytrend.postservice.post.rabbitmq.PostLikeMessageDto;
+import com.todaytrend.postservice.post.rabbitmq.PostProducer;
+import com.todaytrend.postservice.post.rabbitmq.PostTagMessageDto;
 import com.todaytrend.postservice.post.repository.*;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +42,15 @@ public class PostServiceImpl implements PostService {
     private final AdminCategoryRepository adminCategoryRepo;
     private final UserFeignClient userFeignClient;
     private final ImgFeignClient imgFeignClient;
+    private final ObjectMapper objectMapper;
+    private final PostProducer postProducer;
 
     public static final String CIRCUIT_BREAKER_NAME = "customCircuitBreaker";
 
 //--------------------------- 포스트 생성 --------------------------------
 
     @Override
-    public ResponseCreatedPostDto makePost(ResponseMakePostDto responseMakePostDto) {
+    public ResponseCreatedPostDto makePost(ResponseMakePostDto responseMakePostDto) throws JsonProcessingException {
         String userUuid = responseMakePostDto.getUuid();
 
 //        1. post생성
@@ -80,8 +87,18 @@ public class PostServiceImpl implements PostService {
     }
 
     //PostUserTag insert
-    private void makePostUserTag(List<String> checkUserTag, Long postId){
+    private void makePostUserTag(List<String> checkUserTag, Long postId) throws JsonProcessingException {
         for (String nickName :checkUserTag){
+            // 게시물 태그 알림 보내기
+
+            PostTagMessageDto messageDto = PostTagMessageDto.builder()
+                    .sender(postRepo.findPostByPostId(postId).getUserUuid())
+                    .receiver(nickName)
+                    .content(postRepo.findPostByPostId(postId).getContent())
+                    .build();
+            String message = objectMapper.writeValueAsString(messageDto);
+            postProducer.sendNcPostTagMessage(message);
+
             postUserTagRepo.save(PostUserTag.builder()
                     .postId(postId)
                     .nickname(nickName)
@@ -147,7 +164,7 @@ public class PostServiceImpl implements PostService {
 
 //-------------------------------포스트 좋아요 누르기------------------------------------
     @Override
-    public boolean clickLike(RequestCheckLikedDto requestCheckLikedDto) {
+    public boolean clickLike(RequestCheckLikedDto requestCheckLikedDto) throws JsonProcessingException {
 
         String userUuid = requestCheckLikedDto.getUuid();
         Long postId = requestCheckLikedDto.getPostId();
@@ -157,6 +174,14 @@ public class PostServiceImpl implements PostService {
             postLikeRepo.countByPostId(postId);
             return false;
         }else{
+            PostLikeMessageDto messageDto = PostLikeMessageDto.builder()
+                    .sender(userUuid)
+                    .receiver(postRepo.findPostByPostId(postId).getUserUuid())
+                    .content(postRepo.findPostByPostId(postId).getContent())
+                    .build();
+            String message = objectMapper.writeValueAsString(messageDto);
+            postProducer.sendNcPostLikeMessage(message);
+
             postLikeRepo.save(PostLike.builder().userUuid(userUuid).postId(postId).build());
             postLikeRepo.countByPostId(postId);
             return true;
@@ -191,7 +216,7 @@ public class PostServiceImpl implements PostService {
     //----------------------------포스트 업데이트------------------------------------
     @Override
     @Transactional
-    public ResponsePostDetailDto updatePost(RequestUpdatePostDto requestUpdatePostDto) {
+    public ResponsePostDetailDto updatePost(RequestUpdatePostDto requestUpdatePostDto) throws JsonProcessingException {
 
         Long postId = requestUpdatePostDto.getPostId();
 

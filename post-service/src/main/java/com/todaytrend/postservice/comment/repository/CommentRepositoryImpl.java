@@ -35,8 +35,8 @@ public class CommentRepositoryImpl {
                 )
                 .orderBy(commentLike.commentLikeId.count().multiply(2).add(replyComment.commentId.count().multiply(1)).desc())
                 .distinct() // 중복 제거
-                .limit(size)
-                .offset((long) page * size)
+//                .limit(size)
+//                .offset((long) page * size)
                 .fetch();
 
         return result;
@@ -55,8 +55,8 @@ public class CommentRepositoryImpl {
                 )
                 .orderBy(commentLike.commentLikeId.count().desc())
                 .distinct() // 중복 제거
-                .limit(size)
-                .offset((long) page * size)
+//                .limit(size)
+//                .offset((long) page * size)
                 .fetch();
 
         return result;

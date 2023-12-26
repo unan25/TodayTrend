@@ -7,7 +7,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class CommentTagDto {
+public class PostTagDto {
     private String sender;
     private String receiver;
     private String content;
@@ -18,7 +18,7 @@ public class CommentTagDto {
                 .receiver(uuid)
                 .content(content)
                 .createdAt(LocalDateTime.now())
-                .type(NotificationType.COMMENT_TAG)
+                .type(NotificationType.POST_TAG)
                 .build();
     }
 }
