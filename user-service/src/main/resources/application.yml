@@ -15,7 +15,7 @@ spring:
     show-sql: true
 
 
-## Eureka(Local)
+# Eureka(Local)
 #eureka:
 #  instance:
 #    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
