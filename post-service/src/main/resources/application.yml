@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: post-service
+          name: post-service
   datasource:
     url: ${url}
     username: ${username_}
@@ -11,17 +11,29 @@ spring:
     driver-class-name: ${driver-class-name}
   profiles:
     active: db
+  data:
+    # redis
+    redis:
+      host: ${spring.data.redis.host}
+      port: ${spring.data.redis.port}
 
   jpa:
     database: mysql
     hibernate:
       ddl-auto: update
+
     properties:
       hibernate:
         show_sql: true
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 100
+
+        # hibernate caching strategy with redisson
+        cache:
+          use_second_level_cache: true
+          region.factory_class: org.redisson.hibernate.RedissonRegionFactory
+
   rabbitmq:
     host: localhost
     username: guest
@@ -31,9 +43,12 @@ spring:
 logging:
   level:
     org:
+      springframework:
+        cache: debug
       hibernate:
         sql: debug #logger를 통해 하이버네이트 실행 SQL을 남김(권장)
         type: trace #SQL 실행 파라미터(?로 처리되던거!)를 로그로 남김(외부라이브러리)
+
 
 #server:
 #  servlet:

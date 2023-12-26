@@ -24,6 +24,7 @@ import com.todaytrend.postservice.comment.repository.CommentRepositoryImpl;
 import com.todaytrend.postservice.comment.repository.CommentTagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -77,6 +78,8 @@ public class CommentService {
     //---------------------------댓글 조회--------------------------
 
     // postId로 부모 댓글만 조회 /페이징 처리
+    @Cacheable(value = "parentCommentCache", key = "'parentCommentId: ' + #postId + #page + #uuid" +
+            " + #size")
     public ResponseCommentListDto findParentCommentByPostId(Long postId, int page, int size, String uuid) {
         List<Comment> comments = commentRepositoryImpl.findParentComments(postId,page,size,uuid);
         boolean hasNext = (comments.size() == size) ;
@@ -104,6 +107,8 @@ public class CommentService {
                 .build();
     }
     // commentId로 대댓글 조회
+    @Cacheable(value = "childCommentCache", key = "'childCommentId: ' + #commentId + #page +  " +
+            "#size")
     public ResponseCommentListDto findCommentByCommentId(Long commentId, int page, int size) {
         List<Comment> comments = commentRepositoryImpl.findReplyComments(commentId, page, size);
         List<ResponseCommentDto> commentList = new ArrayList<>();
@@ -139,6 +144,7 @@ public class CommentService {
     }
 
     // 내가 쓴 댓글 조회
+    @Cacheable(value = "myCommentsCache", key = "'myPostId: ' + #postId + #uuid")
     public ResponseCommentListDto findMyComment(Long postId, String uuid){
         List<ResponseCommentDto> commentList = new ArrayList<>();
         List<Comment> comments = commentRepository.findByPostIdAndUuidAndParentIdIsNullOrderByCreateAtDesc(postId, uuid);
@@ -239,6 +245,7 @@ public class CommentService {
         throw new IllegalStateException("좋아요 등록/삭제 에러 발생");
     }
     //댓글 좋아요 수 조회  return Integer
+    @Cacheable(value = "likesCountCache", key = "'commentIdCache: ' + #commentId")
     public Long getLikeCount(Long commentId) {
        return commentLikeRepository.countByCommentId(commentId);
     }

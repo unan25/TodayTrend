@@ -1,15 +1,15 @@
-#spring:
-#  # MySQL
-#  datasource:
-#    url: jdbc:mysql://127.0.0.1:3306/todaytrend
-#    username_: root
-#    password: 1234
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-
 spring:
   # MySQL
   datasource:
-    url: jdbc:mysql://tt-db.cw9yypk0ao3r.ap-northeast-2.rds.amazonaws.com:3306/todaytrend
-    username_: admin
-    password: todaytrend
+    url: jdbc:mysql://127.0.0.1:3306/todaytrend
+    username_: root
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+#spring:
+#  # MySQL
+#  datasource:
+#    url: jdbc:mysql://tt-db.cw9yypk0ao3r.ap-northeast-2.rds.amazonaws.com:3306/todaytrend
+#    username_: admin
+#    password: todaytrend
+#    driver-class-name: com.mysql.cj.jdbc.Driver
