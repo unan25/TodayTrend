@@ -8,8 +8,8 @@ spring:
   data:
     # redis
     redis:
-      host: ${spring.data.redis.host}
-      port: ${spring.data.redis.port}
+      host: 13.125.196.107
+      port: 6379
 
   jpa:
     database: mysql
