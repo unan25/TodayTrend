@@ -19,15 +19,22 @@ import com.todaytrend.postservice.post.rabbitmq.PostTagMessageDto;
 import com.todaytrend.postservice.post.repository.*;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.Normalizer;
+<<<<<<< Updated upstream
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+=======
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+>>>>>>> Stashed changes
 
 @Service
 @Transactional
@@ -304,8 +311,16 @@ public class PostServiceImpl implements PostService {
 
 //-----------------  main 최신 + 카테고리 --------------------------
     @Override
+<<<<<<< Updated upstream
     public ResponseTabDto postListCategory(RequestMainDto requestMainDto) {
         String uuid = requestMainDto.getUuid();
+=======
+    @Cacheable(value = "mainPostCache" ,key = "'tab:' + #requestMainDto.tab + '-page:' + " +
+            "#requestMainDto.page + '-size:' + #requestMainDto.size + '-categories:' + " +
+            "#requestMainDto.categoryList.hashCode()")
+
+    public ResponseTabDto postListCategory(/*List<Long> categoryIds*/ RequestMainDto requestMainDto) {
+>>>>>>> Stashed changes
         Integer page = requestMainDto.getPage();
         Integer size = requestMainDto.getSize();
         Integer tab = requestMainDto.getTab();
