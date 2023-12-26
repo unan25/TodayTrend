@@ -45,6 +45,8 @@ logging:
 #    session:
 #      tracking-modes: cookie
 
+##Eureka (Local)
+
 ## Eureka(Local)
 #eureka:
 #  instance:
