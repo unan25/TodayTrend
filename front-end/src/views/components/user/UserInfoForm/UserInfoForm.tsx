@@ -38,8 +38,11 @@ const UserInfoForm: React.FC<Props> = ({
       const response = await axios.get(
         `/api/users/checkNickname?nickname=${fields.nickname}`
       );
-    } catch (err) {
+
+      console.log(response);
+    } catch (err: any) {
       console.error(err);
+      if (err.response.status === 409) console.log(err.response.data);
     }
   };
 

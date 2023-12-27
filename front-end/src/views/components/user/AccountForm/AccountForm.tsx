@@ -26,6 +26,7 @@ type Props = {
 
 const AccountForm: React.FC<Props> = ({ fields, message, handleChange }) => {
   const [toggle, setToggle] = useState(true);
+  const [duplicationMessage, setDuplicationMessage] = useState<string>();
 
   const onClickHandler = (e: React.MouseEvent<HTMLImageElement>) => {
     setToggle((prev) => !prev);
@@ -34,12 +35,13 @@ const AccountForm: React.FC<Props> = ({ fields, message, handleChange }) => {
   const checkDuplication = async () => {
     try {
       const response = await axios.get(
-        `/api/auth/checkEamil?email=${fields.email}`
+        `/api/auth/checkEmail?email=${fields.email}`
       );
 
       console.log(response);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      if (err.response.status === 409) console.log(err.response.data);
     }
   };
 
@@ -70,7 +72,6 @@ const AccountForm: React.FC<Props> = ({ fields, message, handleChange }) => {
           onChange={handleChange("password")!}
         />
       </div>
-
       <OnChangeInput
         type="password"
         placeholder="비밀번호 확인"
