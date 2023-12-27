@@ -14,7 +14,8 @@ import commentIcon from '../../../images/comment/comments.png';
 import CommentsBox from '../../../views/components/comments/CommentsBox/CommentsBox';
 
 //
-import { renderContentWithLinks } from '../../../module/functions/renderContentWithTag/renderContentWithLinks';
+import { renderContentWithLinks } from "../../../module/functions/renderContentWithTag/renderContentWithLinks";
+import Reccomendation from "../../../views/components/post/Reccomendation/Reccomendation";
 
 type PostDetail = {
   postId: number;
@@ -127,7 +128,7 @@ const PostDetailPage: React.FC = () => {
       console.error(err);
     }
   };
-
+  
   // ----------------------------추가------------------------------
 
   const deletePost = async () => {
@@ -137,7 +138,7 @@ const PostDetailPage: React.FC = () => {
         axios.delete(`/api/images/${postId}`),
         axios.delete(`/api/post/comments/${postId}`),
       ]);
-      navigate(-1);
+        if (response1.status === 200) navigate(`/profile/${postDetail.nickName}`);
     } catch (e) {
       console.error(e);
     }
@@ -148,7 +149,7 @@ const PostDetailPage: React.FC = () => {
   };
 
   /* ================================================================ */
-  // effecnt
+  // effect
 
   useEffect(() => {
     getPostDetails();
@@ -174,6 +175,7 @@ const PostDetailPage: React.FC = () => {
           </Link>
         </div>
       </div>
+      {/* ------------------ body ------------------ */}
       <div className={styles.post_body}>
         <div className={styles.post_body_section1}>
           <img
@@ -185,7 +187,7 @@ const PostDetailPage: React.FC = () => {
             <button
               onClick={() => setCurrentImage((prev) => Math.max(0, prev - 1))}
             >
-              이전
+              {`<`}
             </button>
             <div
               className={styles.post_body_section1__image_controller__iconBox}
@@ -199,7 +201,7 @@ const PostDetailPage: React.FC = () => {
                 )
               }
             >
-              다음
+              {`>`}
             </button>
           </div>
         </div>
@@ -265,6 +267,9 @@ const PostDetailPage: React.FC = () => {
             <CommentsBox postId={postId} />
           </div>
         </div>
+      </div>
+      <div className={styles.post_footer}>
+        <Reccomendation postId={postDetail.postId} />
       </div>
     </div>
   );
