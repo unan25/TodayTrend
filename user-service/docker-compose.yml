@@ -1,6 +1,0 @@
-version: '3'
-services:
-  tt_user:
-    image: "unan25/tt_user:latest"
-    ports:
-      - "10000:10000"
