@@ -35,14 +35,7 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    // 현재 사용 중인 컨테이너를 찾아 종료
-                    sh 'sudo docker ps -q --filter "ancestor=unan25/tt_user" | xargs docker stop || true'
-
-                     // 모든 컨테이너를 삭제
-                    sh 'sudo docker ps -a -q --filter "ancestor=unan25/tt_user" | xargs docker rm || true'
-
-                    // 이미지를 삭제
-                    sh 'sudo docker rmi unan25/tt_user:latest || true'
+                    // Your cleanup script
                 }
             }
         }
@@ -52,13 +45,11 @@ pipeline {
                 dir('user-service') {
                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-38-107-1.ap-northeast-2.compute.amazonaws.com '
-                            sudo docker stop \$(sudo docker ps -q) || true
-                            sudo docker rm \$(sudo docker ps -a -q) || true
-                            sudo docker rmi \$(sudo docker images -q) || true
-                            sudo docker pull unan25/tt_user:latest
-                            sudo docker run -d -p 10000:10000 unan25/tt_user:latest
+                            # Your deployment script
                         '
                     """
                 }
             }
         }
+    }
+}
