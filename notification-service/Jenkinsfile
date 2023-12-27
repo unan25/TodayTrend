@@ -31,6 +31,17 @@ pipeline {
                 }
             }
         }
+
+        stage('Clean Up') {
+            steps {
+                script {
+                    sh 'sudo docker ps -q --filter "ancestor=unan25/tt_noti" | xargs docker stop || true'
+                    sh 'sudo docker ps -a -q --filter "ancestor=unan25/tt_noti" | xargs docker rm || true'
+                    sh 'sudo docker rmi unan25/tt_noti:latest || true'
+                }
+            }
+        }
+
         stage('Deploy to EC2') {
             steps {
                 dir('notification-service') {
