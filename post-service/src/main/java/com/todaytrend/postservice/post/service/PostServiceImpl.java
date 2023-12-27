@@ -26,15 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.Normalizer;
-<<<<<<< Updated upstream
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
->>>>>>> Stashed changes
+
 
 @Service
 @Transactional
@@ -255,10 +250,7 @@ public class PostServiceImpl implements PostService {
 
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
     @Override
-    public ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestCheckLikedDto) {
-
-        String uuid = requestCheckLikedDto.getUuid();
-        Long postId = requestCheckLikedDto.getPostId();
+    public ResponseDetailPostsDto detailPostsList(Long postId) {
 
         String title1 = "@Nickname 님의 게시물";
         String title2 = "@Nickname 님의 게시물과 비슷한 게시물";
@@ -311,16 +303,11 @@ public class PostServiceImpl implements PostService {
 
 //-----------------  main 최신 + 카테고리 --------------------------
     @Override
-<<<<<<< Updated upstream
-    public ResponseTabDto postListCategory(RequestMainDto requestMainDto) {
-        String uuid = requestMainDto.getUuid();
-=======
     @Cacheable(value = "mainPostCache" ,key = "'tab:' + #requestMainDto.tab + '-page:' + " +
             "#requestMainDto.page + '-size:' + #requestMainDto.size + '-categories:' + " +
             "#requestMainDto.categoryList.hashCode()")
-
-    public ResponseTabDto postListCategory(/*List<Long> categoryIds*/ RequestMainDto requestMainDto) {
->>>>>>> Stashed changes
+    public ResponseTabDto postListCategory(RequestMainDto requestMainDto) {
+        String uuid = requestMainDto.getUuid();
         Integer page = requestMainDto.getPage();
         Integer size = requestMainDto.getSize();
         Integer tab = requestMainDto.getTab();

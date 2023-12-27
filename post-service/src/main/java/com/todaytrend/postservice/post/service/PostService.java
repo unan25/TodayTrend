@@ -19,7 +19,7 @@ public interface PostService {
 
     ResponsePostDetailDto updatePost(RequestUpdatePostDto requestUpdatePostDto) throws JsonProcessingException;
 
-    ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestCheckLikedDto);
+    ResponseDetailPostsDto detailPostsList(Long postId);
 
     //AdminCategoryList제공
     List<selectedCategoryListDto> findAdminCategoryList();
