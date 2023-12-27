@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     // 전체 경로를 명시
-                    sh "scp -o StrictHostKeyChecking=no -P ${EC2_PORT} docker-compose.yml ${EC2_HOST}:/var/lib/jenkins/workspace/TT_User/user-service/docker-compose.yml"
+                    sh "scp -o StrictHostKeyChecking=no -P ${EC2_PORT} ${WORKSPACE}/user-service/docker-compose.yml ubuntu@ec2-3-38-107-1.ap-northeast-2.compute.amazonaws.com:/var/lib/jenkins/workspace/TT_User/user-service/docker-compose.yml"
                 }
             }
         }
