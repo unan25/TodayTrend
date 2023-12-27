@@ -43,13 +43,12 @@ pipeline {
         stage('Copy Docker Compose File') {
             steps {
                 script {
-                    dir('user-service') {
-                        // 전체 경로를 명시
-                        sh "scp -o StrictHostKeyChecking=no -P ${EC2_PORT} docker-compose.yml ${EC2_HOST}:/user-service/docker-compose.yml"
-                    }
+                    // 전체 경로를 명시
+                    sh "scp -o StrictHostKeyChecking=no -P ${EC2_PORT} docker-compose.yml ${EC2_HOST}:/var/lib/jenkins/workspace/TT_User/user-service/docker-compose.yml"
                 }
             }
         }
+
         stage('Rolling Update') {
             steps {
                 script {
