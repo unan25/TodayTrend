@@ -11,6 +11,7 @@ pipeline {
                 ])
             }
         }
+        
         stage('Gradle Build') {
             steps {
                 dir('user-service') {
@@ -19,6 +20,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build and push Docker image') {
             steps {
                 script {
@@ -35,7 +37,14 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    // Your cleanup script
+                     // 현재 사용 중인 컨테이너를 찾아 종료
+                    sh 'sudo docker ps -q --filter "ancestor=unan25/tt_user" | xargs docker stop || true'
+
+                     // 모든 컨테이너를 삭제
+                    sh 'sudo docker ps -a -q --filter "ancestor=unan25/tt_user" | xargs docker rm || true'
+
+                    // 이미지를 삭제
+                    sh 'sudo docker rmi unan25/tt_user:latest || true'
                 }
             }
         }
