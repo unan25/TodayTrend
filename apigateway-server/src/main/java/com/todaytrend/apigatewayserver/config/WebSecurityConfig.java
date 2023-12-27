@@ -1,5 +1,6 @@
 package com.todaytrend.apigatewayserver.config;
 
+import com.todaytrend.apigatewayserver.config.customexceprion.JwtAuthenticationEntryPoint;
 import com.todaytrend.apigatewayserver.config.exceptionpath.ExceptionPathManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +28,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityWebFilterChain
     springSecurityFilterChain(ServerHttpSecurity http, ExceptionPathManager exceptionPathManager
-                              ,ServerAuthenticationConverter cookieServerAuthenticationConverter
-                              ,ReactiveAuthenticationManager authenticationManager) {
+            , ServerAuthenticationConverter cookieServerAuthenticationConverter
+            , ReactiveAuthenticationManager authenticationManager
+            , JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
 
         AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(authenticationManager);
         authenticationWebFilter.setServerAuthenticationConverter(cookieServerAuthenticationConverter);
@@ -57,14 +59,11 @@ public class WebSecurityConfig {
                         .logoutUrl("/api/auth/logout")
                         .logoutSuccessHandler(logoutSuccessHandler()))
                 .exceptionHandling(
-                        exceptionHandlingSpec -> exceptionHandlingSpec.authenticationEntryPoint((exchange, ex) -> Mono.fromRunnable(() -> {
-                                    log.error("SecurityWebFilterChain 401 ", exchange.getRequest().getURI(), ex);
-                                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                                }))
-                        .accessDeniedHandler((exchange, denied) -> Mono.fromRunnable(() -> {
-                            log.info("SecurityWebFilterChain 403 ", exchange.getRequest().getURI(), denied);
-                            exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-                        })));
+                        exceptionHandlingSpec -> exceptionHandlingSpec.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler((exchange, denied) -> Mono.fromRunnable(() -> {
+                                    log.info("SecurityWebFilterChain 403 ", exchange.getRequest().getURI(), denied);
+                                    exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                                })));
         return http.build();
     }
 

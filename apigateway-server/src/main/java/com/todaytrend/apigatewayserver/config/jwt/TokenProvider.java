@@ -1,9 +1,6 @@
 package com.todaytrend.apigatewayserver.config.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -47,9 +44,12 @@ public class TokenProvider {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(jwtProperties.getSecretKey()).parseClaimsJws(token);
             return claims.getBody().getExpiration().after(new Date()) && claims.getBody().getIssuer().equals(jwtProperties.getIssuer());
+        } catch (ExpiredJwtException e) {
+            return false;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+
     }
 
     public Mono<Claims> extractMonoAllClaims(String token) {
