@@ -43,9 +43,8 @@ pipeline {
         stage('Copy Docker Compose File') {
             steps {
                 script {
-                    dir('user-service') {
-                        sh "scp -o StrictHostKeyChecking=no -P ${EC2_PORT} user-service/docker-compose.yml ${EC2_HOST}:/user-service/docker-compose.yml"
-                    }
+                    // 복사할 파일 경로를 Jenkins workspace에서 찾도록 수정
+                    sh "scp -o StrictHostKeyChecking=no -P ${EC2_PORT} ${WORKSPACE}/user-service/docker-compose.yml ${EC2_HOST}:/user-service/docker-compose.yml"
                 }
             }
         }
@@ -54,8 +53,10 @@ pipeline {
                 script {
                     sh """
                         ssh -o StrictHostKeyChecking=no ${EC2_HOST} -p ${EC2_PORT} '
-                            docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
-                            docker-compose -f /user-service/docker-compose.yml up -d
+                            cd /user-service
+                            docker-compose down
+                            docker-compose pull
+                            docker-compose up -d
                         '
                     """
                 }
