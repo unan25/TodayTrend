@@ -1,5 +1,13 @@
 pipeline {
     agent any
+        environment {
+            SERVICE_NAME = 'tt_user'
+            DOCKER_REPO = 'unan25'
+            DOCKER_IMAGE = "${DOCKER_REPO}/${SERVICE_NAME}"
+            DOCKER_TAG = 'latest'
+            EC2_HOST = 'ubuntu@ec2-3-38-107-1.ap-northeast-2.compute.amazonaws.com'
+            EC2_PORT = '22'
+        }
     stages {
         stage('Checkout') {
             steps {
@@ -24,23 +32,30 @@ pipeline {
                 script {
                     dir('user-service') {
                         docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                            def app = docker.build("unan25/tt_user", "-f Dockerfile .")
-                            app.push("latest")
+                            def app = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "-f Dockerfile .")
+                            app.push(DOCKER_TAG)
                         }
                     }
                 }
             }
         }
-        stage('Deploy to EC2') {
+
+        stage('Copy Docker Compose File') {
             steps {
-                dir('user-service') {
+                script {
+                    dir('user-service') {
+                        sh "scp -o StrictHostKeyChecking=no -P ${EC2_PORT} user-service/docker-compose.yml ${EC2_HOST}:/user-service/docker-compose.yml"
+                    }
+                }
+            }
+        }
+        stage('Rolling Update') {
+            steps {
+                script {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-38-107-1.ap-northeast-2.compute.amazonaws.com '
-                            sudo docker stop \$(sudo docker ps -q) || true
-                            sudo docker rm \$(sudo docker ps -a -q) || true
-                            sudo docker rmi \$(sudo docker images -q) || true
-                            sudo docker pull unan25/tt_user:latest
-                            sudo docker run -d -p 10000:10000 unan25/tt_user:latest
+                        ssh -o StrictHostKeyChecking=no ${EC2_HOST} -p ${EC2_PORT} '
+                            docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
+                            docker-compose -f /user-service/docker-compose.yml up -d
                         '
                     """
                 }
