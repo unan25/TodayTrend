@@ -16,6 +16,7 @@ const FollowButton: React.FC<Props> = ({ from, to, updataCount }) => {
 
   // 팔로우 상태 체크
   const [isfollowing, setIsFollowing] = useState<boolean>(true);
+
   const checkFollow = async () => {
     try {
       const followTo = {
@@ -33,6 +34,7 @@ const FollowButton: React.FC<Props> = ({ from, to, updataCount }) => {
 
   // 팔로우 요청
   const [followed, setFollowed] = useState<string>();
+
   const followHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     try {
       if (!from) {
@@ -56,7 +58,7 @@ const FollowButton: React.FC<Props> = ({ from, to, updataCount }) => {
   useEffect(() => {
     checkFollow();
     if (updataCount) updataCount();
-  }, [followed]);
+  }, [followed, to]);
 
   return (
     <button
