@@ -47,11 +47,15 @@ pipeline {
         stage('Deploy to EC2') {
             steps {
                 dir('user-service') {
-                    sh """
+                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@ec2-3-38-107-1.ap-northeast-2.compute.amazonaws.com '
-                            # Your deployment script
-                        '
-                    """
+                        sudo docker stop \$(sudo docker ps -q) || true
+                        sudo docker rm \$(sudo docker ps -a -q) || true
+                        sudo docker rmi \$(sudo docker images -q) || true
+                        sudo docker pull unan25/tt_user:latest
+                        sudo docker run -d -p 10000:10000 unan25/tt_user:latest
+                            '
+                        """
                 }
             }
         }
