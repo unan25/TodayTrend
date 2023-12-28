@@ -104,7 +104,6 @@ function UserInfoUpdatePage() {
           placeholder="소개글"
           onChange={setField("introduction")}
         />
-      
           <div className={userInfoButtonStyle.userinfo_page_body_form}>
             <button type="button" className={userInfoButtonStyle.userinfo_button} onClick={passwordChange}>패스워드 변경</button>
             <button type="submit" className={userInfoButtonStyle.userinfo_button}>프로필 수정</button>
