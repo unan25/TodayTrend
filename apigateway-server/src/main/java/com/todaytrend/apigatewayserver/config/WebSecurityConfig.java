@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                         .pathMatchers("/api/auth/change-password").hasRole("USER")
                         .pathMatchers("/api/users/updateProfile").hasRole("USER")
                         .pathMatchers("/api/post").hasRole("USER")
-                        .pathMatchers("/api/post/like").hasRole("USER")
+                        .pathMatchers("/api/post/like").hasAuthority("USER")
                         .pathMatchers("/api/post/liked").hasRole("USER")
                         .pathMatchers("/api/post",POST, PUT, DELETE).hasRole("USER")
                         .pathMatchers("/api/post/likeposts").hasRole("USER")
