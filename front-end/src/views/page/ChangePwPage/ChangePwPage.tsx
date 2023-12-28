@@ -38,10 +38,7 @@ const ChangePassword: React.FC = () => {
     try {
       console.log(currentPassword);
 
-      const response = await axios.put(`api/auth/change-password?uuid=${uuid}
-                                            &currentPassword=${currentPassword}
-                                            &newPassword=${newPassword}
-                                            &confirmPassword=${confirmPassword}`);
+      const response = await axios.put(`api/auth/change-password?uuid=${uuid}&currentPassword=${currentPassword}&newPassword=${newPassword}&confirmPassword=${confirmPassword}`);
 
       setMessage(response.data);
       console.log("비밀번호 변경 완료.");
