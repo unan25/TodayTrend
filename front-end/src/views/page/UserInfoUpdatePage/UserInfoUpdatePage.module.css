@@ -1,0 +1,40 @@
+.userinfo_form{
+    margin-top: 10px;
+}
+
+/* 스타일을 적용할 버튼들의 부모 요소에 대한 스타일링 */
+.userinfo_page_body_form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+    gap: 100px; /* 버튼 사이의 간격 조절 */
+  }
+  
+  /* 공통 버튼 스타일링 */
+  .userinfo_button {
+    padding: 10px 15px; /* 내부 여백 설정 */
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-black);
+    color: white;
+    border-radius: 0.5rem;
+    border: none; /* 테두리 제거 */
+    cursor: pointer; /* 커서 스타일 설정 */
+    margin-bottom: 1rem;
+    width: 40%;
+  }
+  
+  /* 마우스 호버 시 배경색 변경 */
+  .userinfo_button:hover {
+    filter: brightness(90%);
+  }
+  
+  /* 클릭 시 배경색 변경 */
+  .userinfo_button:active {
+    filter: brightness(80%);
+  }
+
+  .hiddendiv{
+    width: 10em;
+  }

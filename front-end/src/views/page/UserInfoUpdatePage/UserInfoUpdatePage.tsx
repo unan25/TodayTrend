@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 // router-dom
-import { useParams } from "react-router-dom";
+import { useParams , useNavigate} from "react-router-dom";
 
 // axios
 import axios from "axios";
@@ -19,11 +19,12 @@ import { useUserInfoValidation } from "../../../hook/useUserInfoValidation";
 // styles
 import styles from "./UserInfoUpdatePage.module.css";
 import buttonStyle from "../../../module/styles/button.module.css";
+import userInfoButtonStyle from "./UserInfoUpdatePage.module.css";
 
 function UserInfoUpdatePage() {
   // parma
   const { nickname } = useParams();
-
+  const navigate = useNavigate();
   // state
   const UUID: string = useSelector((state: RootState) => state.user.UUID);
 
@@ -75,9 +76,14 @@ function UserInfoUpdatePage() {
     console.log(fields);
   }, [fields]);
 
+  const passwordChange = () =>{
+    navigate('/change-password');
+  };
+
   return (
     <div className="page-body">
-      <form onSubmit={updateUserInfo}>
+      <div className={userInfoButtonStyle.hiddendiv}></div>
+      <form className= {userInfoButtonStyle.userinfo_from} onSubmit={updateUserInfo}>
         <OnChangeInput
           value={fields.name}
           placeholder="이름"
@@ -98,8 +104,12 @@ function UserInfoUpdatePage() {
           placeholder="소개글"
           onChange={setField("introduction")}
         />
-        <button className={buttonStyle.submitButton}>프로필 수정</button>
-      </form>
+      
+          <div className={userInfoButtonStyle.userinfo_page_body_form}>
+            <button type="button" className={userInfoButtonStyle.userinfo_button} onClick={passwordChange}>패스워드 변경</button>
+            <button type="submit" className={userInfoButtonStyle.userinfo_button}>프로필 수정</button>
+          </div>
+        </form>
     </div>
   );
 }
