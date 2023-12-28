@@ -12,6 +12,7 @@ public class PostLikeDto {
     private String sender;
     private String receiver;
     private String content;
+    private Long postId;
 
     public Notification toEntity() {
         return  Notification.builder()
@@ -20,6 +21,7 @@ public class PostLikeDto {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .type(NotificationType.POST_LIKE)
+                .postId(postId)
                 .build();
     }
 }

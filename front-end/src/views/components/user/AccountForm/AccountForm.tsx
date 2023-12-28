@@ -13,64 +13,67 @@ import styles from "./AccountForm.module.css";
 import { Account } from "interface/UserInterface";
 
 // img
-import show from "../../../../images/input/show.png";
-import hide from "../../../../images/input/hide.png";
+
 import { debounce } from "../../../../module/functions/debounce";
 import axios from "axios";
 
 type Props = {
   fields: Account;
-  message: string;
+  message: string | undefined;
   handleChange: (field: string) => void;
 };
 
 const AccountForm: React.FC<Props> = ({ fields, message, handleChange }) => {
-  const [toggle, setToggle] = useState(true);
-
-  const onClickHandler = (e: React.MouseEvent<HTMLImageElement>) => {
-    setToggle((prev) => !prev);
-  };
+  const [duplicationMessage, setDuplicationMessage] = useState<
+    string | undefined
+  >();
+  const [isDuplicated, setIsDuplicated] = useState<boolean | undefined>();
 
   const checkDuplication = async () => {
     try {
       const response = await axios.get(
-        `/api/auth/checkEamil?email=${fields.email}`
+        `/api/auth/checkEmail?email=${fields.email}`
       );
 
-      console.log(response);
-    } catch (err) {
+      setDuplicationMessage(response.data);
+      setIsDuplicated(false);
+    } catch (err: any) {
       console.error(err);
+      if (err.response.status === 409) {
+        setDuplicationMessage(err.response.data);
+        setIsDuplicated(true);
+      }
     }
   };
 
   useEffect(() => {
-    debounce(checkDuplication, 2000)();
+    if (fields.email !== "") {
+      debounce(checkDuplication, 0)(fields.email);
+      console.log(fields.email);
+    }
   }, [fields.email]);
 
   return (
-    <div className={formStyle.signup_form}>
-      <OnChangeInput
-        type="email"
-        placeholder="이메일"
-        value={fields.email}
-        required={true}
-        onChange={handleChange("email")!}
-      />
-      <div className={styles.password_container}>
-        <img
-          className={styles.passwordToggle}
-          src={toggle ? show : hide}
-          onClick={onClickHandler}
-        />
+    <div className={formStyle.signup_form_account}>
+      <div className={formStyle.signup_email}>
+        {duplicationMessage && (
+          <AlertBox isError={isDuplicated} message={duplicationMessage} />
+        )}
         <OnChangeInput
-          type={toggle ? "password" : "text"}
-          placeholder="비밀번호"
-          value={fields.password}
+          type="email"
+          placeholder="이메일"
+          value={fields.email}
           required={true}
-          onChange={handleChange("password")!}
+          onChange={handleChange("email")!}
         />
       </div>
-
+      <OnChangeInput
+        type="password"
+        placeholder="비밀번호"
+        value={fields.password}
+        required={true}
+        onChange={handleChange("password")!}
+      />
       <OnChangeInput
         type="password"
         placeholder="비밀번호 확인"

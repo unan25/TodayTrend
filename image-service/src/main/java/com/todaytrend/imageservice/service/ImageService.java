@@ -1,6 +1,7 @@
 package com.todaytrend.imageservice.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.todaytrend.imageservice.dto.request.RequestQueryDto;
@@ -75,7 +76,9 @@ public class ImageService {
         for (Image image : images) {
             String decodeUrl = decodeUrl(image.getImageUrl());
             String key = decodeUrl.split(".com/")[1];
-            amazonS3.deleteObject(bucket,key);
+            System.out.println("decodeUrl = " + decodeUrl);
+            System.out.println("key = " + key);
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket,key));
         }
     return "게시물 이미지 삭제 완료";
     }

@@ -5,6 +5,7 @@ import com.todaytrend.postservice.post.dto.*;
 import com.todaytrend.postservice.post.dto.CRUD.*;
 import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.dto.main.ResponseTabDto;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface PostService {
 
     ResponsePostDetailDto updatePost(RequestUpdatePostDto requestUpdatePostDto) throws JsonProcessingException;
 
-    ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestCheckLikedDto);
+    ResponseDetailPostsDto detailPostsList(Long postId);
 
     //AdminCategoryList제공
     List<selectedCategoryListDto> findAdminCategoryList();
@@ -45,4 +46,7 @@ public interface PostService {
 
     ResponseTabDto findhashTagList(RequestHashTagResultDto requestDto);
 
+    ResponseUserPostDto userPostList(RequestUserPostDto requestUserPostDto);
+
+    Long userPostCnt(String uuid);
 }

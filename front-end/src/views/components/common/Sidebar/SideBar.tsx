@@ -9,11 +9,14 @@ const Sidebar: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
+
   return (
     <div
       className={
         isOpen ? styles.sidebar : `${styles.sidebar} ${styles.sidebar_closed}`
       }
+      onMouseEnter={toggleSidebar}
+      onMouseLeave={toggleSidebar}
     >
       <ul>
         <button className={styles.button} onClick={toggleSidebar}>

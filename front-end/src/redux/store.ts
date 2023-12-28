@@ -1,12 +1,12 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import localStorage from "redux-persist/es/storage";
+import sessionStorage from "redux-persist/es/storage";
 import UserReducer from "./_reducers/user_reducer";
 import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 
 const userPersistConfig = {
   key: "user",
-  storage: localStorage,
+  storage: sessionStorage,
   whitelist: ["UUID", "userType", "role"],
 };
 

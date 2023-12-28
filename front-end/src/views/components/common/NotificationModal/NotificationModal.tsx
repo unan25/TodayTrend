@@ -17,6 +17,8 @@ interface NotificationType {
   content?: string;
   type: string;
   createdBefore: string;
+  postId?: number;
+  postImage?: string;
 }
 
 const renderNotificationContent = (nc: NotificationType) => {
@@ -99,16 +101,29 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
   return (
     <div className={styles.modalContainer}>
       <button className={styles.close} onClick={handleModalClose}>
-        X
+        전체삭제
       </button>
       {notification?.map((nc: NotificationType) => (
         <div key={nc.notificationId} className={styles.notification}>
           <img
             src={nc.senderImage}
-            className={styles.profileimage}
-            onClick={() => navigate(`/profile/${nc.sender}`)}
+            className={styles.profileImage}
+            onClick={() => {
+              navigate(`/profile/${nc.sender}`);
+              onClose();
+            }}
           ></img>
           {renderNotificationContent(nc)}
+          {nc.postId && (
+            <img
+              src={nc.postImage}
+              className={styles.postImage}
+              onClick={() => {
+                navigate(`/post/${nc.postId}`);
+                onClose();
+              }}
+            />
+          )}
         </div>
       ))}
     </div>

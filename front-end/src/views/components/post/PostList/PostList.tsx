@@ -1,10 +1,10 @@
-import React from "react";
-import InfiniteScroll from "react-infinite-scroller";
-import PostImage from "../PostImage/PostImage";
-import styles from "./PostList.module.css";
+import React from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import PostImage from '../PostImage/PostImage';
+import styles from './PostList.module.css';
 
 interface PostListProps {
-  data: { pages: { data: { postId: number; imageUrl: string }[] }[] };
+  data?: { pages?: { data?: { postId: number; imageUrl: string }[] }[] };
   fetchNextPage: () => void;
   hasNextPage?: boolean;
   navigate: (path: string) => void;
@@ -17,11 +17,11 @@ const PostList: React.FC<PostListProps> = ({
   navigate,
 }) => {
   const renderData = (data: {
-    pages: { data: { postId: number; imageUrl: string }[] }[];
+    pages?: { data?: { postId: number; imageUrl: string }[] }[];
   }) => {
-    return data.pages.map((page, pageIndex) => (
+    return data?.pages?.map((page, pageIndex) => (
       <React.Fragment key={pageIndex}>
-        {page.data.map((post) => (
+        {page?.data?.map((post) => (
           <PostImage
             key={post.postId}
             postId={post.postId}
@@ -39,7 +39,7 @@ const PostList: React.FC<PostListProps> = ({
         loadMore={fetchNextPage}
         className={styles.postList}
       >
-        {data !== undefined ? renderData(data) : <div></div>}
+        {data ? renderData(data) : <div>현재 게시물이 없습니다.</div>}
       </InfiniteScroll>
     </>
   );

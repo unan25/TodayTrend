@@ -175,23 +175,23 @@ public class CommentService {
     // commentId로 선택한 댓글 삭제
     @Transactional
     public String deleteCommentByCommentId(RequestDeleteCommentDto requestDeleteCommentDto) {
-        String userUuid = requestDeleteCommentDto.getUserUuid();
+        String uuid = requestDeleteCommentDto.getUuid();
         Long commentId = requestDeleteCommentDto.getCommentId();
         Comment comment = commentRepository.findByCommentId(commentId);
 
         // 1. 내가 쓴 댓글이고 , 대댓글이 아니고, 대댓글이 없으면 찐 삭제
-        if(isMyComment(comment, userUuid) && !isReplyComment(comment) && !hasReplyComments(comment)) {
+        if(isMyComment(comment, uuid) && !isReplyComment(comment) && !hasReplyComments(comment)) {
             commentRepository.delete(comment);
             return "commentId =" +commentId + "삭제 완료";
         }
         // 2. 내가 쓴 댓글이고, 대댓글이 아니고, 대댓글이 있으면 댓글 수정
-        if (isMyComment(comment, userUuid) && !isReplyComment(comment) && hasReplyComments(comment)) {
+        if (isMyComment(comment, uuid) && !isReplyComment(comment) && hasReplyComments(comment)) {
             comment.updateContent("삭제된 댓글입니다.");
 
             return "commentId =" +commentId + "내용 수정 완료";
         }
         // 3. 내가 쓴 댓글이고, 대댓글이면 찐 삭제
-        if(isMyComment(comment,userUuid) && isReplyComment(comment)) {
+        if(isMyComment(comment,uuid) && isReplyComment(comment)) {
             commentRepository.delete(comment);
             return "commentId =" +commentId + "삭제 완료";
         }

@@ -3,6 +3,8 @@ package com.todaytrend.notificationservice.service;
 import com.todaytrend.notificationservice.dto.RequestDto;
 import com.todaytrend.notificationservice.dto.ResponseDto;
 import com.todaytrend.notificationservice.entity.Notification;
+import com.todaytrend.notificationservice.feignclient.ImgFeignClient;
+import com.todaytrend.notificationservice.feignclient.ImgFeignDto;
 import com.todaytrend.notificationservice.feignclient.UserFeignClient;
 import com.todaytrend.notificationservice.feignclient.UserFeignDto;
 import com.todaytrend.notificationservice.repository.NotificationRepository;
@@ -22,6 +24,7 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserFeignClient userFeignClient;
+    private final ImgFeignClient imgFeignClient;
 
 
     public List<ResponseDto> findNotifications(String uuid){
@@ -29,6 +32,11 @@ public class NotificationService {
         List<Notification> notifications = notificationRepository.findByReceiver(uuid);
         for (Notification nc : notifications) {
             UserFeignDto sender = userFeignClient.findImageAndNickname(nc.getSender());
+            String postImage = null;
+            if(nc.getPostId() != null) {
+                ImgFeignDto imgFeignDto = imgFeignClient.getImageByPostId(nc.getPostId());
+                postImage = imgFeignDto.getImageUrlList().get(0);
+            }
             data.add(ResponseDto.builder()
                     .NotificationId(nc.getNotificationId())
                     .sender(sender.getNickname())
@@ -36,6 +44,8 @@ public class NotificationService {
                     .content(nc.getContent())
                     .type(nc.getType())
                     .createdBefore(createdBefore(nc.getCreatedAt()))
+                    .postId(nc.getPostId())
+                    .postImage(postImage)
                     .build());
         }
         return data;

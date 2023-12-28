@@ -98,7 +98,24 @@
 
 .profile_postList {
   display: flex;
-  justify-content: center;
   border: 1px dotted black;
   width: 100%;
+}
+
+
+.profile_section2__buttonBox__button2:hover{
+  background-color: #7D7E83;
+  color: white;
+  font-weight: 600;
+}
+
+.profile_section2__countBox__followCount:hover{
+  background-color: #7D7E83;
+  color: white;
+  font-weight: 600;
+}
+.profile_section2__countBox__followingCount:hover{
+  background-color: #7D7E83;
+  color: white;
+  font-weight: 600;
 }

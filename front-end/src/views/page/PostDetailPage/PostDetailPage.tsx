@@ -1,20 +1,21 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 //
-import { Link, useParams ,useNavigate} from "react-router-dom";
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 //
-import axios from "axios";
-import LikesButton from "../../components/post/LikesButton/LikesButton";
+import axios from 'axios';
+import LikesButton from '../../components/post/LikesButton/LikesButton';
 
 //
-import styles from "./PostDetailPage.module.css";
-import commentIcon from "../../../images/comment/comments.png";
+import styles from './PostDetailPage.module.css';
+import commentIcon from '../../../images/comment/comments.png';
 
 // component
-import CommentsBox from "../../../views/components/comments/CommentsBox/CommentsBox";
+import CommentsBox from '../../../views/components/comments/CommentsBox/CommentsBox';
 
 //
 import { renderContentWithLinks } from "../../../module/functions/renderContentWithTag/renderContentWithLinks";
+import Reccomendation from "../../../views/components/post/Reccomendation/Reccomendation";
 
 type PostDetail = {
   postId: number;
@@ -35,11 +36,11 @@ const PostDetailPage: React.FC = () => {
   // state
   const [postDetail, setPostDetail] = useState<PostDetail>({
     postId: 0,
-    postUserUUID: "",
-    profileImage: "",
-    nickName: "",
-    content: "",
-    createdAt: "",
+    postUserUUID: '',
+    profileImage: '',
+    nickName: '',
+    content: '',
+    createdAt: '',
     postImgs: [],
   });
 
@@ -66,7 +67,7 @@ const PostDetailPage: React.FC = () => {
           onClick={() => setCurrentImage(i)}
           className={`${
             styles.post_body_section1__image_controller__iconBox__icon
-          } ${currentImage === i ? styles.checked : ""}`}
+          } ${currentImage === i ? styles.checked : ''}`}
         ></div>
       );
     }
@@ -118,7 +119,7 @@ const PostDetailPage: React.FC = () => {
     try {
       const params = { postId: postId };
 
-      const response = await axios.get("/api/post/comments/cnt", {
+      const response = await axios.get('/api/post/comments/cnt', {
         params: params,
       });
 
@@ -131,20 +132,24 @@ const PostDetailPage: React.FC = () => {
   // ----------------------------추가------------------------------
 
   const deletePost = async () => {
-    try{
-        const response = await axios.delete(`/api/post?postId=${postId}`);
-        navigate(-1);
-    }catch(e){
+    try {
+      const [response1, response2, response3] = await Promise.all([
+        axios.delete(`/api/post?postId=${postId}`),
+        axios.delete(`/api/images/${postId}`),
+        axios.delete(`/api/post/comments/${postId}`),
+      ]);
+        if (response1.status === 200) navigate(`/profile/${postDetail.nickName}`);
+    } catch (e) {
       console.error(e);
     }
   };
 
   const editPost = () => {
-    navigate(`/edit-post/${postId}`,{state:postDetail});
+    navigate(`/edit-post/${postId}`, { state: postDetail });
   };
 
   /* ================================================================ */
-  // effecnt
+  // effect
 
   useEffect(() => {
     getPostDetails();
@@ -170,6 +175,7 @@ const PostDetailPage: React.FC = () => {
           </Link>
         </div>
       </div>
+      {/* ------------------ body ------------------ */}
       <div className={styles.post_body}>
         <div className={styles.post_body_section1}>
           <img
@@ -181,7 +187,7 @@ const PostDetailPage: React.FC = () => {
             <button
               onClick={() => setCurrentImage((prev) => Math.max(0, prev - 1))}
             >
-              이전
+              {`<`}
             </button>
             <div
               className={styles.post_body_section1__image_controller__iconBox}
@@ -195,7 +201,7 @@ const PostDetailPage: React.FC = () => {
                 )
               }
             >
-              다음
+              {`>`}
             </button>
           </div>
         </div>
@@ -258,9 +264,12 @@ const PostDetailPage: React.FC = () => {
                 <LikesButton type="post" />
               </div>
             </div>
-            <CommentsBox postId={postId} />
+            <CommentsBox postId={postId} reCount={getCommentsCount} />
           </div>
         </div>
+      </div>
+      <div className={styles.post_footer}>
+        <Reccomendation postId={postDetail.postId} />
       </div>
     </div>
   );

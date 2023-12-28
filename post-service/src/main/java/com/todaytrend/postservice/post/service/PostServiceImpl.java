@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,6 +98,7 @@ public class PostServiceImpl implements PostService {
                     .sender(postRepo.findPostByPostId(postId).getUserUuid())
                     .receiver(nickName)
                     .content(postRepo.findPostByPostId(postId).getContent())
+                    .postId(postId)
                     .build();
             String message = objectMapper.writeValueAsString(messageDto);
             postProducer.sendNcPostTagMessage(message);
@@ -180,6 +182,7 @@ public class PostServiceImpl implements PostService {
                     .sender(userUuid)
                     .receiver(postRepo.findPostByPostId(postId).getUserUuid())
                     .content(postRepo.findPostByPostId(postId).getContent())
+                    .postId(postId)
                     .build();
             String message = objectMapper.writeValueAsString(messageDto);
             postProducer.sendNcPostLikeMessage(message);
@@ -250,43 +253,49 @@ public class PostServiceImpl implements PostService {
 
 //    ----------- // 게시물 상세 보기 하단 게시글 리스트--------------------
     @Override
-    public ResponseDetailPostsDto detailPostsList(RequestCheckLikedDto requestCheckLikedDto) {
-
-        String uuid = requestCheckLikedDto.getUuid();
-        Long postId = requestCheckLikedDto.getPostId();
+    public ResponseDetailPostsDto detailPostsList(Long postId) {
 
         String title1 = "@Nickname 님의 게시물";
         String title2 = "@Nickname 님의 게시물과 비슷한 게시물";
 
-        Post post = postRepo.findByPostId(postId);
+        String uuid = postRepo.findUserUuidByPostId(postId).get(0);
 
-        List<Long> postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId).get(0));
-        List<Long> postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(
-                categoryRepo.findAdminCategoryIdByPostId(post.getPostId()),
-                PageRequest.of(0,6)).getContent();
+        List<Long> categoryList = categoryRepo.findAdminCategoryIdByPostId(postId);
+
+        List<Long> postIds = categoryRepo.findPostIdByAdminCategoryIdIn(categoryList,
+                PageRequest.ofSize(6)).toList();
+
+        List<Post> reccomendationByUser = postRepo.findAllByUserUuid(uuid);
+        List<Post> reccomendationByCategory = postRepo.findAllByPostIds(postIds);
 
         List<ResponsePostDto> postList1 = new ArrayList<>();
         List<ResponsePostDto> postList2 = new ArrayList<>();
 
-        String userPostImgUrl = imageFeign(postId).getImageUrlList().get(0);
+        reccomendationByUser.forEach(post -> {
+           postList1.add(ResponsePostDto
+                   .builder()
+                   .postId(post.getPostId())
+                   .imageUrl(imgFeignClient
+                           .getImageByPostId(post.getPostId())
+                           .getImageUrlList().stream().findFirst().orElse(null))
+                   .build());
+        });
 
-        postIdList1.stream().filter(Objects::nonNull)
-                .forEach(id -> postList1.add(new ResponsePostDto(id,userPostImgUrl)));
-        postIdList2.stream().filter(Objects::nonNull)
-                .forEach(id -> postList2.add(new ResponsePostDto(id,imageFeign(id).getImageUrlList().get(0))));
-
-        List<selectedCategoryListDto> categoryList = new ArrayList<>();
-        for (AdminCategory adminCategory : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))) {
-            categoryList.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(), adminCategory.getAdminCategoryName()));
-        }
+        reccomendationByCategory.forEach(post -> {
+            postList2.add(ResponsePostDto
+                    .builder()
+                    .postId(post.getPostId())
+                    .imageUrl(imgFeignClient
+                            .getImageByPostId(post.getPostId())
+                            .getImageUrlList().stream().findFirst().orElse(null))
+                    .build());
+        });
 
         return ResponseDetailPostsDto.builder()
                 .title1(title1)
                 .title2(title2)
                 .postList1(postList1)
                 .postList2(postList2)
-                .categoryList(categoryList)
-                .postUuid(post.getUserUuid())
                 .build();
     }
 
@@ -462,5 +471,35 @@ public class PostServiceImpl implements PostService {
         return List.of(new FollowUserVO());
     }
 
+ // --------------------- 유저 페이지 게시물 리스트 --------------------------
+    @Override
+    public ResponseUserPostDto userPostList(RequestUserPostDto requestUserPostDto) {
+        String userUuid = requestUserPostDto.getUuid();
+        int page = requestUserPostDto.getPage();
+        int size = requestUserPostDto.getSize();
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Long> postIdList = postRepo.findPostIdByUserUuidOrderByCreatedAtDesc(userUuid, pageRequest);
+        ImgFeignDto imgFeignDto = imagesFeign(RequestImageListDto.builder()
+                .postIdList(postIdList.getContent())
+                .build());
+
+        return ResponseUserPostDto.builder()
+                .data(imgFeignDto.getData().stream()
+                        .filter(Objects::nonNull)
+                        .map(c->ResponsePostDto.builder()
+                                .postId(c.getPostId())
+                                .imageUrl(c.getImageUrl())
+                                .build()
+                        ).toList()
+                )
+                .totalPage(postIdList.getTotalPages())
+                .page(page)
+                .build();
+    }
+
+    @Override
+    public Long userPostCnt(String uuid) {
+      return postRepo.countByUserUuid(uuid);
+    }
 }
 

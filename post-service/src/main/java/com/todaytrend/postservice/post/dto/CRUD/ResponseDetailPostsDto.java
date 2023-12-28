@@ -17,6 +17,4 @@ public class ResponseDetailPostsDto {
     private String title2;
     private List<ResponsePostDto> postList1;
     private List<ResponsePostDto> postList2;
-    private List<selectedCategoryListDto> categoryList;
-    private String postUuid;
 }

@@ -1,10 +1,10 @@
-import React, { ReactComponentElement, useEffect, useState } from 'react';
-import styles from './PostImage.module.css';
+import React, { ReactComponentElement, useEffect, useState } from "react";
+import styles from "./PostImage.module.css";
 
 interface PostProps {
   postId: number;
   imageUrl: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const PostImage: React.FC<PostProps> = ({ postId, imageUrl, onClick }) => (
