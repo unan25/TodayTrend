@@ -96,7 +96,7 @@ const ProfilePage: React.FC = () => {
     <div className="page-body">
       <div className={styles.profile_header}>
         <div>{userInfo.nickname}</div>
-        <div>메뉴</div>
+        <div></div>
       </div>
       <div className={styles.profile_body}>
         <div className={styles.profile_section1}>
