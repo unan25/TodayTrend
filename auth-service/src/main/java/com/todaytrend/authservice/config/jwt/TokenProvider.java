@@ -24,7 +24,7 @@ public class TokenProvider {
         String token = makeToken(new Date(now.getTime() + expiredAt.toMillis()), userInterface);
 
         // 쿠키의 만료 시간을 2시간으로 설정
-        int cookieExpiresIn = (int) Duration.ofHours(2).getSeconds();
+        int cookieExpiresIn = (int) Duration.ofMinutes(1).getSeconds();
 
         return new TokenInfo(token, cookieExpiresIn);
     }

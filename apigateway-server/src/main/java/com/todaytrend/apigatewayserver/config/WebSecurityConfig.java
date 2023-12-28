@@ -1,6 +1,5 @@
 package com.todaytrend.apigatewayserver.config;
 
-import com.todaytrend.apigatewayserver.config.customexceprion.CustomAuthenticationEntryPoint;
 import com.todaytrend.apigatewayserver.config.exceptionpath.ExceptionPathManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +23,6 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 @Slf4j
 public class WebSecurityConfig {
-
-    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
 //    @Bean
 //    public SecurityWebFilterChain
@@ -97,22 +94,25 @@ public class WebSecurityConfig {
                 .addFilterAt(webFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .exceptionHandling(
                         exceptionHandlingSpec -> exceptionHandlingSpec
-                                .authenticationEntryPoint((authenticationEntryPoint))
+                                .authenticationEntryPoint((exchange, ex) -> Mono.fromRunnable(() -> {
+                                    log.error("SecurityWebFilterChain 401 ", exchange.getRequest().getURI(), ex);
+                                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                                }))
                                 .accessDeniedHandler((exchange, denied) -> Mono.fromRunnable(() -> {
-                            log.error("SecurityWebFilterChain 401 {}", exchange.getRequest().getURI(), denied);
-                            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                        })));
+                                    log.error("SecurityWebFilterChain 403 {}", exchange.getRequest().getURI(), denied);
+                                    exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+                                })));
 
         return http.build();
     }
 
     // 인증 객체 컨버터와 인증 객체 매니저를 이용한 필터를 구성하는 내부 메서드
     private static AuthenticationWebFilter getAuthenticationWebFilter(ServerAuthenticationConverter converter, ReactiveAuthenticationManager manager) {
-        // 인증 객체 매니저를 이용해 필터를 만든다.
-        // 인증 객체 컨버터를 필터에 등록한다.
+        // 인증 객체 매니저를 이용하여 필터 생성
+        // 인증 객체 컨버터를 필터 등록
         AuthenticationWebFilter webFilter = new AuthenticationWebFilter(manager);
         webFilter.setServerAuthenticationConverter(converter);
-        // 필터에 의해 인증이 실패했을때 어떻게 처리할건지 설정
+        // 필터에 의해 인증이 실패했을 때 어떻게 처리할건지 설정
         webFilter.setAuthenticationFailureHandler(
                 (exchange, exception) -> Mono.fromRunnable(() -> {
                     log.error("SecurityWebFilterChain 401 {}", exchange.getExchange().getRequest().getURI(), exception);
@@ -128,12 +128,7 @@ public class WebSecurityConfig {
             ServerHttpResponse response = exchange.getExchange().getResponse();
             response.setStatusCode(HttpStatus.OK);
             log.info("logoutSuccessHandler 실행");
-            response.getHeaders().add("Set-Cookie", "access_token=; Max-Age=0; Path=/;"); // 쿠키 삭제
-            log.info("access_token 삭제");
-            response.getHeaders().add("Set-Cookie", "refresh_token=; Max-Age=0; Path=/;"); // 쿠키 삭제
-            log.info("refresh_token 삭제");
             return response.setComplete();
         };
     }
-
 }
