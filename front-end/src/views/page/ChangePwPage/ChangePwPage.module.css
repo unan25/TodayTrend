@@ -1,0 +1,59 @@
+/* 스타일을 적용할 div */
+.change_pw_top{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 5rem;
+}
+.change_pw_div {
+    width: 100%;
+    max-width: 400px; /* 폼의 최대 너비를 조절할 수 있습니다. */
+    margin: auto; /* 가운데 정렬을 위한 margin 설정 */
+    padding: 20px; /* 안쪽 여백을 조절할 수 있습니다. */
+    border: 1px solid #ccc; /* 테두리를 추가할 수 있습니다. */
+    border-radius: 8px; /* 둥근 테두리를 추가할 수 있습니다. */
+    display: flex;
+    justify-content: center;
+  }
+
+  .change_pw_form {
+    display: flex;
+    justify-self: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* 폼 내부의 레이블과 입력 필드 스타일링 */
+  .change_pw_label {
+    display: flex; /* 레이블을 블록 수준 요소로 표시하여 위아래로 정렬 */
+    font-weight: 1000;
+    margin-bottom: 8px; /* 레이블 아래 여백 조절 */
+  }
+  
+  .change_pw_input {
+    width: 100%; /* 입력 필드를 부모 요소에 가득 채우도록 설정 */
+    padding: 8px; /* 입력 필드 내부 여백 조절 */
+    margin-bottom: 12px; /* 입력 필드 아래 여백 조절 */
+    box-sizing: border-box; /* 내용과 여백이 테두리를 포함하도록 설정 */
+  }
+  
+  /* 버튼 스타일링 */
+  .change_pw_button[type="submit"] {
+    font-weight: 1000;
+    background-color: #3C3875; /* 배경색 설정 */
+    color: white; /* 글자색 설정 */
+    padding: 10px 15px; /* 내부 여백 설정 */
+    border: none; /* 테두리 제거 */
+    border-radius: 4px; /* 둥근 테두리 설정 */
+    cursor: pointer; /* 커서 스타일 설정 */
+  }
+  
+  /* 메시지 스타일링 */
+  .change_pwp {
+    margin-top: 12px; /* 메시지 위 여백 조절 */
+    font-weight: 1000;
+    color: black; /* 성공 메시지 색상 설정 */
+  }
+  
+  

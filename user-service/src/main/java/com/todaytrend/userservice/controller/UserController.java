@@ -72,14 +72,13 @@ public class UserController {
     
     // 프로필 수정 (이름, 닉네임, 웹 링크, 소개, 프로필 이미지)
     @PutMapping("updateProfile")
-    public ResponseEntity<?> updateUserProfile(@RequestParam String uuid, @RequestParam(required = false) String name,
-                                  @RequestParam(required = false) String nickname,
-                                  @RequestParam(required = false) String website,
-                                  @RequestParam(required = false) String introduction,
-                                  @RequestParam(required = false) String profileImage) {
-        userService.updateUserProfile(uuid, name, nickname, website, introduction, profileImage);
-        log.info("프로필 수정 완료");
-        return ResponseEntity.status(HttpStatus.OK).body("프로필 수정 완료");
+    public ResponseEntity<?> updateUserProfile(@RequestBody RequestUpdateUserinfoDto requestUpdateUserinfoDto) {
+        try {
+            userService.updateUserProfile(requestUpdateUserinfoDto);
+            return ResponseEntity.ok("프로필 수정 완료");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 프로필 이미지 삭제 (기본 이미지로 변경)

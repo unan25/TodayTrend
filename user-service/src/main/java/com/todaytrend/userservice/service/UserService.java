@@ -68,7 +68,14 @@ public class UserService {
     }
 
     // 프로필 변경 (프로필 이미지, 이름, 닉네임, 자기소개, 링크)
-    public void updateUserProfile(String uuid, String name, String nickname, String introduction, String website, String profileImage) {
+    public void updateUserProfile(RequestUpdateUserinfoDto requestUpdateUserinfoDto) {
+        String uuid = requestUpdateUserinfoDto.getUuid();
+        String name = requestUpdateUserinfoDto.getName();
+        String nickname = requestUpdateUserinfoDto.getNickname();
+        String introduction = requestUpdateUserinfoDto.getIntroduction();
+        String website = requestUpdateUserinfoDto.getWebsite();
+        String profileImage = requestUpdateUserinfoDto.getProfileImage();
+
         User user = userRepository.findByUuid(uuid)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다. uuid : " + uuid));
 
@@ -76,6 +83,7 @@ public class UserService {
         if (!user.getNickname().equals(nickname) && isNicknameDuplicated(nickname)) {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다. userService.updateUserProfile");
         }
+
         user.updateUserInfo(name, nickname, website, introduction, profileImage);
 
         userRepository.save(user);

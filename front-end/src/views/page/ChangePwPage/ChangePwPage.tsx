@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "redux/store";
 
 // CSS
-import "./ChangePwPage.module.css";
+import styles from "./ChangePwPage.module.css";
 
 const ChangePassword: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -50,36 +50,39 @@ const ChangePassword: React.FC = () => {
 
   //------------------------------------------------------------------------------
   return (
+    <div className={styles.change_pw_top}>
+        <div className={styles.change_pw_div}>
+  <form className={styles.change_pw_form} onSubmit={handleSubmit}>
     <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>현재 비밀번호</label>
-          <input
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>새로운 비밀번호</label>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>새로운 비밀번호 확인</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
-        <input type="submit" value="비밀번호 변경" />
-      </form>
-      <p>{message}</p>
+      <label className={styles.change_pw_label}>현재 비밀번호</label>
+      <input className={styles.change_pw_input}
+        type="password"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+      />
     </div>
+    <div>
+      <label className={styles.change_pw_label}>새로운 비밀번호</label>
+      <input className={styles.change_pw_input}
+        type="password"
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+      />
+    </div>
+    <div>
+      <label className={styles.change_pw_label}>새로운 비밀번호 확인</label>
+      <input className={styles.change_pw_input}
+        type="password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+      />
+    </div>
+    <input className={styles.change_pw_button} type="submit" value="비밀번호 변경" />
+  </form>
+  <p className={styles.change_pwp}>{message}</p>
+</div>
+    </div>
+
   );
 };
 
