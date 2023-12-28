@@ -65,14 +65,18 @@ public class CommentService {
     //---------------------------댓글 등록--------------------------
 
     //기본 댓글 등록
-    public void createComment(RequestCommentDto requestCommentDto) throws JsonProcessingException {
+    public String createComment(RequestCommentDto requestCommentDto) throws JsonProcessingException {
         Comment comment = requestCommentDto.toEntity();
         commentRepository.save(comment);
+
+        // 댓글 등록 알림보내기
+        publishCreateCommentMessage(requestCommentDto);
 
         //댓글 태그 등록
         if(requestCommentDto.getUserTagList() != null){
         makeCommentTag(requestCommentDto.getUserTagList() , comment.getCommentId());
         }
+        return "댓글 등록";
     }
 
     //---------------------------댓글 조회--------------------------
@@ -175,23 +179,23 @@ public class CommentService {
     // commentId로 선택한 댓글 삭제
     @Transactional
     public String deleteCommentByCommentId(RequestDeleteCommentDto requestDeleteCommentDto) {
-        String userUuid = requestDeleteCommentDto.getUserUuid();
+        String uuid = requestDeleteCommentDto.getUuid(); //삭제 요청하는 uuid
         Long commentId = requestDeleteCommentDto.getCommentId();
         Comment comment = commentRepository.findByCommentId(commentId);
 
         // 1. 내가 쓴 댓글이고 , 대댓글이 아니고, 대댓글이 없으면 찐 삭제
-        if(isMyComment(comment, userUuid) && !isReplyComment(comment) && !hasReplyComments(comment)) {
+        if(isMyComment(comment, uuid) && !isReplyComment(comment) && !hasReplyComments(comment)) {
             commentRepository.delete(comment);
             return "commentId =" +commentId + "삭제 완료";
         }
         // 2. 내가 쓴 댓글이고, 대댓글이 아니고, 대댓글이 있으면 댓글 수정
-        if (isMyComment(comment, userUuid) && !isReplyComment(comment) && hasReplyComments(comment)) {
+        if (isMyComment(comment, uuid) && !isReplyComment(comment) && hasReplyComments(comment)) {
             comment.updateContent("삭제된 댓글입니다.");
 
             return "commentId =" +commentId + "내용 수정 완료";
         }
         // 3. 내가 쓴 댓글이고, 대댓글이면 찐 삭제
-        if(isMyComment(comment,userUuid) && isReplyComment(comment)) {
+        if(isMyComment(comment,uuid) && isReplyComment(comment)) {
             commentRepository.delete(comment);
             return "commentId =" +commentId + "삭제 완료";
         }
@@ -201,6 +205,11 @@ public class CommentService {
     //postId로 조회한 모든 댓글 삭제
     @Transactional
     public String deleteCommentByPostId(Long postId) {
+        List<Comment> comments = commentRepository.findAllByPostId(postId);
+        for (Comment comment : comments) {
+            commentLikeRepository.deleteAllByCommentId(comment.getCommentId());
+            commentTagRepository.deleteAllByCommentId(comment.getCommentId());
+        }
         commentRepository.deleteAllByPostId(postId);
         return postId +"인 댓글 삭제 완료.";
     }
@@ -289,7 +298,6 @@ public class CommentService {
     public void publishCreateCommentMessage(RequestCommentDto requestCommentDto) throws JsonProcessingException {
         // DTO를 json(String)으로 직렬화
         String message = objectMapper.writeValueAsString(requestCommentDto);
-        commentProducer.sendCreateCommentMessage(message);
 
         // 댓글 등록시 글작성자에게 알림
         if(requestCommentDto.getParentId() ==null) {

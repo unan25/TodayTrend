@@ -27,7 +27,7 @@
   position: relative;
 }
 .dropDownItem:hover {
-  background-color: #f0f0f0; /* 호버 시 배경색을 회색(#f0f0f0)으로 변경 */
+  background-color: #f0f0f0;
 }
 
 .profileimage {
@@ -55,12 +55,14 @@
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+  width: auto;
 }
 
 .recentSearchBox {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+  width: auto;
 }
 
 .searchTitle {

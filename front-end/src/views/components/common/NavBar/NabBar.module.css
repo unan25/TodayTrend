@@ -45,3 +45,26 @@
   cursor: pointer;
   position: relative;
 }
+
+@keyframes notificationAnimation {
+  0% {
+    color: red;
+    font-size: 1rem;
+  }
+  50% {
+    color: black;
+    font-size: 1.1rem;
+  }
+  100% {
+    color: red;
+    font-size: 1rem;
+  }
+}
+
+.nav_section2__notification_animation {
+  animation: notificationAnimation 2s infinite;
+}
+
+#modal-container {
+  z-index: 1000;
+}

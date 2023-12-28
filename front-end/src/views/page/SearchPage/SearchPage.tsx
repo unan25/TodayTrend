@@ -128,7 +128,7 @@ const SearchPage: React.FC = () => {
       <input
         className={styles.input}
         type="search"
-        placeholder=" @와 #으로 검색어를 입력하세요."
+        placeholder=" @유저와 #해시태그로 검색어를 입력하세요."
         onInput={onChangeHandler}
       />
       {!isInput && (

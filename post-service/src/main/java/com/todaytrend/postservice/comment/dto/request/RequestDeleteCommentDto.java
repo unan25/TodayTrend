@@ -6,8 +6,7 @@ import lombok.Data;
 public class RequestDeleteCommentDto {
 
     private Long commentId;
-
-    private String userUuid;
+    private String uuid;
 
 
 }

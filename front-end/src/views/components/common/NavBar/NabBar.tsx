@@ -123,9 +123,13 @@ const NavBar: React.FC = () => {
           </Link>
           <div
             id={styles.notification}
-            className={styles.nav_section2__notification}
+            className={`${styles.nav_section2__notification} ${
+              notificationCount > 0
+                ? styles.nav_section2__notification_animation
+                : ''
+            }`}
             onClick={() => {
-              setModal(true);
+              setModal(!modal);
             }}
           >
             알림 ({notificationCount})

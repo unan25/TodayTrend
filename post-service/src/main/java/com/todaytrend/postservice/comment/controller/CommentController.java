@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
     private final CommentService commentService;
 
-
     @GetMapping("health-check")
     public String healthCheck() {
         return "Comment-service: Hello!!";
@@ -24,9 +23,7 @@ public class CommentController {
 
     @PostMapping("") // 댓글 등록
     public ResponseEntity<?> createComment(@RequestBody RequestCommentDto requestCommentDto) throws JsonProcessingException {
-        // 메세지큐에 전달하기
-        commentService.publishCreateCommentMessage(requestCommentDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+         return new ResponseEntity<>(commentService.createComment(requestCommentDto), HttpStatus.CREATED);
     }
 
     @GetMapping("") //부모 댓글만 조회 (좋아요순) + 내가쓰지않은로직추가 + uuid
