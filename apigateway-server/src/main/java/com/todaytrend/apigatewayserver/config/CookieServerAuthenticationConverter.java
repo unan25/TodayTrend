@@ -44,7 +44,7 @@ public class CookieServerAuthenticationConverter implements ServerAuthentication
                                     String uuid = tuple.getT2();
                                     log.info("Convert uuid : " + uuid);
                                     UserDetails userDetails =
-                                            new UserDetailsImpl(uuid, role,
+                                            new UserDetailsImpl(role, uuid,
                                                     Collections.singleton(new SimpleGrantedAuthority(role)));
                                     return Mono.just(new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities()));
                                 });

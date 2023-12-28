@@ -3,4 +3,3 @@ Dockerfile
 .git
 .gitignore
 .dockerignore
-.env
