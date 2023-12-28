@@ -26,4 +26,7 @@ public class ResponseDto {
 
     private String createdBefore;
 
+    private Long postId;
+    private String postImage;
+
 }

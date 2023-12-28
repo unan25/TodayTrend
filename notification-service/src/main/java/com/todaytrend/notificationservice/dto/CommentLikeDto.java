@@ -13,6 +13,7 @@ public class CommentLikeDto {
     private String sender;
     private String receiver;
     private String content;
+    private Long postId;
     public Notification toEntity() {
         return  Notification.builder()
                 .sender(sender)
@@ -20,6 +21,7 @@ public class CommentLikeDto {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .type(NotificationType.COMMENT_LIKE)
+                .postId(postId)
                 .build();
     }
 }

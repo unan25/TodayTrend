@@ -6,6 +6,8 @@ import com.todaytrend.postservice.post.dto.CRUD.ResponseMakePostDto;
 import com.todaytrend.postservice.post.dto.RequestCheckLikedDto;
 import com.todaytrend.postservice.post.dto.RequestHashTagResultDto;
 import com.todaytrend.postservice.post.dto.RequestMainDto;
+import com.todaytrend.postservice.post.dto.RequestUserPostDto;
+import com.todaytrend.postservice.post.dto.main.RequestTabDto;
 import com.todaytrend.postservice.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -124,5 +126,16 @@ public class PostController {
     @PostMapping("/search")
     public ResponseEntity<?> hahTagSearchList(@RequestBody RequestHashTagResultDto requestDto){
         return new ResponseEntity<>(postService.findhashTagList(requestDto),HttpStatus.OK);
+    }
+
+    // 유저 페이지 게시물 리스트
+    @GetMapping("user")
+    public ResponseEntity<?> userPostList(RequestUserPostDto requestUserPostDto) {
+        return new ResponseEntity<>(postService.userPostList(requestUserPostDto),HttpStatus.OK);
+    }
+
+    @GetMapping("user-cnt")
+    public ResponseEntity<?> userPostCnt(String uuid) {
+        return new ResponseEntity<>(postService.userPostCnt(uuid),HttpStatus.OK);
     }
 }
