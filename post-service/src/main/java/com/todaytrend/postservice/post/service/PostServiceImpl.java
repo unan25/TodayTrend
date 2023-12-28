@@ -258,35 +258,44 @@ public class PostServiceImpl implements PostService {
         String title1 = "@Nickname 님의 게시물";
         String title2 = "@Nickname 님의 게시물과 비슷한 게시물";
 
-        Post post = postRepo.findByPostId(postId);
+        String uuid = postRepo.findUserUuidByPostId(postId).get(0);
 
-        List<Long> postIdList1 = postRepo.findPostIdByUserUuid(postRepo.findUserUuidByPostId(postId).get(0));
-        List<Long> postIdList2 = categoryRepo.findPostIdByAdminCategoryIdIn(
-                categoryRepo.findAdminCategoryIdByPostId(post.getPostId()),
-                PageRequest.of(0,6)).getContent();
+        List<Long> categoryList = categoryRepo.findAdminCategoryIdByPostId(postId);
+
+        List<Long> postIds = categoryRepo.findPostIdByAdminCategoryIdIn(categoryList,
+                PageRequest.ofSize(6)).toList();
+
+        List<Post> reccomendationByUser = postRepo.findAllByUserUuid(uuid);
+        List<Post> reccomendationByCategory = postRepo.findAllByPostIds(postIds);
 
         List<ResponsePostDto> postList1 = new ArrayList<>();
         List<ResponsePostDto> postList2 = new ArrayList<>();
 
-        String userPostImgUrl = imageFeign(postId).getImageUrlList().get(0);
+        reccomendationByUser.forEach(post -> {
+           postList1.add(ResponsePostDto
+                   .builder()
+                   .postId(post.getPostId())
+                   .imageUrl(imgFeignClient
+                           .getImageByPostId(post.getPostId())
+                           .getImageUrlList().stream().findFirst().orElse(null))
+                   .build());
+        });
 
-        postIdList1.stream().filter(Objects::nonNull)
-                .forEach(id -> postList1.add(new ResponsePostDto(id,userPostImgUrl)));
-        postIdList2.stream().filter(Objects::nonNull)
-                .forEach(id -> postList2.add(new ResponsePostDto(id,imageFeign(id).getImageUrlList().get(0))));
-
-        List<selectedCategoryListDto> categoryList = new ArrayList<>();
-        for (AdminCategory adminCategory : adminCategoryRepo.findAllByAdminCategoryIdIn(categoryRepo.findAdminCategoryIdByPostId(postId))) {
-            categoryList.add(new selectedCategoryListDto(adminCategory.getAdminCategoryId(), adminCategory.getAdminCategoryName()));
-        }
+        reccomendationByCategory.forEach(post -> {
+            postList2.add(ResponsePostDto
+                    .builder()
+                    .postId(post.getPostId())
+                    .imageUrl(imgFeignClient
+                            .getImageByPostId(post.getPostId())
+                            .getImageUrlList().stream().findFirst().orElse(null))
+                    .build());
+        });
 
         return ResponseDetailPostsDto.builder()
                 .title1(title1)
                 .title2(title2)
                 .postList1(postList1)
                 .postList2(postList2)
-                .categoryList(categoryList)
-                .postUuid(post.getUserUuid())
                 .build();
     }
 

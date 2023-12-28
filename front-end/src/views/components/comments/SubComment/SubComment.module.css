@@ -47,3 +47,11 @@
 .comment__section_content {
   width: 85%;
 }
+
+.comment__button_delete {
+  margin-top: 0.5rem;
+  display: flex;
+  font-weight: 800;
+  color: var(--color-gray);
+  cursor: pointer;
+}

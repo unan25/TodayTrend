@@ -264,7 +264,7 @@ const PostDetailPage: React.FC = () => {
                 <LikesButton type="post" />
               </div>
             </div>
-            <CommentsBox postId={postId} />
+            <CommentsBox postId={postId} reCount={getCommentsCount} />
           </div>
         </div>
       </div>
