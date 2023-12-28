@@ -26,50 +26,6 @@ import static jakarta.ws.rs.HttpMethod.*;
 @Slf4j
 public class WebSecurityConfig {
 
-//    @Bean
-//    public SecurityWebFilterChain
-//    springSecurityFilterChain(ServerHttpSecurity http, ExceptionPathManager exceptionPathManager
-//                              ,ServerAuthenticationConverter cookieServerAuthenticationConverter
-//                              ,ReactiveAuthenticationManager authenticationManager) {
-//
-//        AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(authenticationManager);
-//        authenticationWebFilter.setServerAuthenticationConverter(cookieServerAuthenticationConverter);
-//
-//        authenticationWebFilter.setRequiresAuthenticationMatcher(serverWebExchange -> {
-//            String path = serverWebExchange.getRequest().getPath().value();
-//            if (exceptionPathManager.getExceptionPaths().contains(path)) {
-//                return ServerWebExchangeMatcher.MatchResult.notMatch();
-//            }
-//            return ServerWebExchangeMatcher.MatchResult.match();
-//        });
-//        log.info("시큐티리 적용");
-//        http
-//                .authorizeExchange(exchanges ->
-//                        exchanges
-//                                .pathMatchers(exceptionPathManager.getExceptionPaths().toArray(new String[0])).permitAll()
-//                                .pathMatchers("/img/**", "/css/**", "/js/**", "/ts/**").permitAll()
-//                                .pathMatchers("/api/**").hasAuthority("USER")
-//                                .anyExchange().permitAll()
-//                )
-//                .addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION)
-//                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-//                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-//                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-//                .logout(logoutSpec -> logoutSpec
-//                        .logoutUrl("/api/auth/logout")
-//                        .logoutSuccessHandler(logoutSuccessHandler()))
-//                .exceptionHandling(
-//                        exceptionHandlingSpec -> exceptionHandlingSpec.authenticationEntryPoint((exchange, ex) -> Mono.fromRunnable(() -> {
-//                                    log.error("SecurityWebFilterChain 401 ", exchange.getRequest().getURI(), ex);
-//                                    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-//                                }))
-//                        .accessDeniedHandler((exchange, denied) -> Mono.fromRunnable(() -> {
-//                            log.info("SecurityWebFilterChain 403 ", exchange.getRequest().getURI(), denied);
-//                            exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
-//                        })));
-//        return http.build();
-//    }
-
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
                                                          ServerAuthenticationConverter converter,
@@ -96,9 +52,9 @@ public class WebSecurityConfig {
                         .pathMatchers("/api/post",POST, PUT, DELETE).hasRole("USER")
                         .pathMatchers("/api/post/likeposts").hasRole("USER")
                         .pathMatchers("/api/post/comments",POST).hasRole("USER")
-                        .pathMatchers("/api/comments/delete").hasRole("USER")
-                        .pathMatchers("/api/comments/like").hasRole("USER")
-                        .pathMatchers("/api/comments/liked").hasRole("USER")
+                        .pathMatchers("/api/post/comments/delete").hasRole("USER")
+                        .pathMatchers("/api/post/comments/like").hasRole("USER")
+                        .pathMatchers("/api/post/comments/liked").hasRole("USER")
                         .pathMatchers("/api/images**",POST, PUT, DELETE).hasRole("USER")
                         .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers("/api/users/**").permitAll()
