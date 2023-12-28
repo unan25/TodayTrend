@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Lemon:wght@400&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Knewave:wght@400&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
 
 body {
   all: unset;
@@ -54,4 +55,22 @@ ul {
   --br-81xl: 100px;
   --br-9980xl: 9999px;
   --br-11xl: 30px;
+
+
+  font-family: 'Nanum Gothic', sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 1rem;  /* 스크롤바의 너비 */
+}
+
+::-webkit-scrollbar-thumb {
+  height: 20%; /* 스크롤바의 길이 */
+  background: #7D7E83; /* 스크롤바의 색상 */
+  
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
 }
