@@ -86,11 +86,6 @@ public class WebSecurityConfig {
                         .logoutSuccessHandler(logoutSuccessHandler()))
                 .authenticationManager(manager)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/auth/**").permitAll()
-                        .pathMatchers("/api/users/**").permitAll()
-                        .pathMatchers("/api/post/**").permitAll()
-                        .pathMatchers("/api/images/**").permitAll()
-                        .pathMatchers("/api/notification/**").permitAll()
                         .pathMatchers("/api/users/follow").hasRole("USER")
                         .pathMatchers("/api/auth/deactivate").hasRole("USER")
                         .pathMatchers("/api/auth/change-password").hasRole("USER")
@@ -104,6 +99,11 @@ public class WebSecurityConfig {
                         .pathMatchers("/api/comments/like").hasRole("USER")
                         .pathMatchers("/api/comments/liked").hasRole("USER")
                         .pathMatchers("/api/images**",POST, DELETE, PUT).hasRole("USER")
+                        .pathMatchers("/api/auth/**").permitAll()
+                        .pathMatchers("/api/users/**").permitAll()
+                        .pathMatchers("/api/post/**").permitAll()
+                        .pathMatchers("/api/images/**").permitAll()
+                        .pathMatchers("/api/notification/**").permitAll()
                         .anyExchange().authenticated())
                 .addFilterAt(webFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .exceptionHandling(
