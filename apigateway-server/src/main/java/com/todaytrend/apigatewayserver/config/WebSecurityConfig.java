@@ -1,5 +1,6 @@
 package com.todaytrend.apigatewayserver.config;
 
+import com.todaytrend.apigatewayserver.config.customexceprion.CustomAuthenticationEntryPoint;
 import com.todaytrend.apigatewayserver.config.exceptionpath.ExceptionPathManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,8 @@ import reactor.core.publisher.Mono;
 @EnableWebFluxSecurity
 @Slf4j
 public class WebSecurityConfig {
+
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
 //    @Bean
 //    public SecurityWebFilterChain
@@ -93,7 +96,9 @@ public class WebSecurityConfig {
                         .anyExchange().authenticated())
                 .addFilterAt(webFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .exceptionHandling(
-                        exceptionHandlingSpec -> exceptionHandlingSpec.accessDeniedHandler((exchange, denied) -> Mono.fromRunnable(() -> {
+                        exceptionHandlingSpec -> exceptionHandlingSpec
+                                .authenticationEntryPoint((authenticationEntryPoint))
+                                .accessDeniedHandler((exchange, denied) -> Mono.fromRunnable(() -> {
                             log.error("SecurityWebFilterChain 401 {}", exchange.getRequest().getURI(), denied);
                             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                         })));
