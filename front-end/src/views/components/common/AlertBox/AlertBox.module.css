@@ -15,4 +15,9 @@
   padding: 0.5rem;
   position: absolute;
   bottom: 1rem;
+  text-align: center;
+  line-height: 2rem;
+  border-radius: 0.5rem;
+  height: 3rem;
+  width: 25rem;
 }

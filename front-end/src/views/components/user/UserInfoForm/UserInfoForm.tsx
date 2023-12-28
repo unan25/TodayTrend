@@ -32,6 +32,10 @@ const UserInfoForm: React.FC<Props> = ({
 }) => {
   // State
   const genders = ["", "MALE", "FEMALE"];
+  const [duplicationMessage, setDuplicationMessage] = useState<
+    string | undefined
+  >();
+  const [isDuplicated, setIsDuplicated] = useState<boolean | undefined>();
 
   const checkDuplication = async () => {
     try {
@@ -39,21 +43,28 @@ const UserInfoForm: React.FC<Props> = ({
         `/api/users/checkNickname?nickname=${fields.nickname}`
       );
 
-      console.log(response);
+      setDuplicationMessage(response.data);
+      setIsDuplicated(false);
     } catch (err: any) {
       console.error(err);
-      if (err.response.status === 409) console.log(err.response.data);
+      if (err.response.status === 409) {
+        setDuplicationMessage(err.response.data);
+        setIsDuplicated(true);
+      }
     }
   };
 
   useEffect(() => {
-    debounce(checkDuplication, 2000)();
+    if (fields.nickname !== "") {
+      debounce(checkDuplication, 0)(fields.nickname);
+      console.log(fields.nickname);
+    }
   }, [fields.nickname]);
 
   //------------------------------------------------------------------------------
 
   return (
-    <div className={formStyle.signup_form}>
+    <div className={formStyle.signup_form_userInfo}>
       <DropZone setFunction={setFunction} image={image} />
       <OnChangeInput
         type="text"
@@ -61,13 +72,18 @@ const UserInfoForm: React.FC<Props> = ({
         value={fields.name}
         onChange={handleChange("name")!}
       />
-      <OnChangeInput
-        type="text"
-        placeholder="사용자 이름"
-        value={fields.nickname}
-        onChange={handleChange("nickname")!}
-        required={true}
-      />
+      <div className={formStyle.signup_nickname}>
+        {duplicationMessage && (
+          <AlertBox isError={isDuplicated} message={duplicationMessage} />
+        )}
+        <OnChangeInput
+          type="text"
+          placeholder="사용자 이름"
+          value={fields.nickname}
+          onChange={handleChange("nickname")!}
+          required={true}
+        />
+      </div>
       <OnChangeInput
         type="date"
         placeholder="생년월일"

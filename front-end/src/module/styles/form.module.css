@@ -17,12 +17,28 @@
   }
 }
 
-.signup_form {
+.signup_form_account,
+.signup_form_userInfo {
   width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
+  justify-content: center;
   margin-bottom: 3rem;
   position: relative;
   padding-bottom: 3rem;
+}
+
+.signup_form_account {
+  height: 30rem;
+}
+
+.signup_email,
+.signup_nickname {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  height: 8rem;
+  margin-bottom: 3rem;
 }

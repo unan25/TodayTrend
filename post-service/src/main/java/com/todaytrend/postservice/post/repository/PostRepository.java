@@ -9,8 +9,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.awt.print.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -32,12 +34,18 @@ public interface PostRepository extends JpaRepository<Post,Long>{
     @Query(value = "SELECT p.userUuid FROM Post p WHERE p.postId = :postId")
     List<String> findUserUuidByPostId(@Param("postId") Long postId);
 
-
     @Query(value = "SELECT p.postId FROM Post p WHERE  p.userUuid = :userUuid")
     List<Long> findPostIdByUserUuid(@Param("userUuid") String userUuid);
 
-    @Query(value = "SELECT Post FROM Post p WHERE p.postId = :postId")
-    Post findByPostId(@Param("postId") Long postId);
+    @Query(value = "SELECT p FROM Post p WHERE p.postId = :postId")
+    Optional<Post> findByPostId(@Param("postId") Long postId);
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "WHERE p.postId IN :postId ")
+    List<Post> findAllByPostIds(@Param("postId") List<Long> postId);
+
+    List<Post> findAllByUserUuid(String uuid);
 
     Post findPostByPostId(Long postId);
 

@@ -65,18 +65,14 @@ public class CommentService {
     //---------------------------댓글 등록--------------------------
 
     //기본 댓글 등록
-    public String createComment(RequestCommentDto requestCommentDto) throws JsonProcessingException {
+    public void createComment(RequestCommentDto requestCommentDto) throws JsonProcessingException {
         Comment comment = requestCommentDto.toEntity();
         commentRepository.save(comment);
-
-        // 댓글 등록 알림보내기
-        publishCreateCommentMessage(requestCommentDto);
 
         //댓글 태그 등록
         if(requestCommentDto.getUserTagList() != null){
         makeCommentTag(requestCommentDto.getUserTagList() , comment.getCommentId());
         }
-        return "댓글 등록";
     }
 
     //---------------------------댓글 조회--------------------------
@@ -179,7 +175,7 @@ public class CommentService {
     // commentId로 선택한 댓글 삭제
     @Transactional
     public String deleteCommentByCommentId(RequestDeleteCommentDto requestDeleteCommentDto) {
-        String uuid = requestDeleteCommentDto.getUuid(); //삭제 요청하는 uuid
+        String uuid = requestDeleteCommentDto.getUuid();
         Long commentId = requestDeleteCommentDto.getCommentId();
         Comment comment = commentRepository.findByCommentId(commentId);
 
@@ -205,11 +201,6 @@ public class CommentService {
     //postId로 조회한 모든 댓글 삭제
     @Transactional
     public String deleteCommentByPostId(Long postId) {
-        List<Comment> comments = commentRepository.findAllByPostId(postId);
-        for (Comment comment : comments) {
-            commentLikeRepository.deleteAllByCommentId(comment.getCommentId());
-            commentTagRepository.deleteAllByCommentId(comment.getCommentId());
-        }
         commentRepository.deleteAllByPostId(postId);
         return postId +"인 댓글 삭제 완료.";
     }
@@ -298,6 +289,7 @@ public class CommentService {
     public void publishCreateCommentMessage(RequestCommentDto requestCommentDto) throws JsonProcessingException {
         // DTO를 json(String)으로 직렬화
         String message = objectMapper.writeValueAsString(requestCommentDto);
+        commentProducer.sendCreateCommentMessage(message);
 
         // 댓글 등록시 글작성자에게 알림
         if(requestCommentDto.getParentId() ==null) {
