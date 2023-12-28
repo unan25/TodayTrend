@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 
 //
 import { renderContentWithLinks } from "../../../../module/functions/renderContentWithTag/renderContentWithLinks";
+import { useSelector } from "react-redux";
+import { RootState } from "redux/store";
 
 type Comment = {
   commentId: number;
@@ -25,16 +27,24 @@ type Comment = {
 };
 
 type Props = {
+  type?: "me";
   comment: Comment;
   setParentComment: React.Dispatch<React.SetStateAction<number | undefined>>;
   parentId: number | undefined;
+  reRender?: () => void;
+  reCount?: () => void;
 };
 
 const MainComment: React.FC<Props> = ({
+  type,
   comment,
   setParentComment,
   parentId,
+  reRender,
+  reCount,
 }) => {
+  // store
+  const UUID = useSelector((state: RootState) => state.user.UUID);
   // state
   const [subCommentsCount, setSubCommentsCount] = useState<number>(1);
   const [createdBefore, setCreatedBefore] = useState<string>("");
@@ -49,8 +59,21 @@ const MainComment: React.FC<Props> = ({
       const node: ReactNode[] = [];
 
       if (currentId === comment.commentId) {
-        subComments.map((e, i) => {
-          node.push(<SubComment key={e.commentId} comment={e} />);
+        subComments.map((e) => {
+          if (e.uuid === UUID) {
+            node.push(
+              <SubComment
+                type="me"
+                key={e.commentId}
+                comment={e}
+                reCount={reCount}
+                reSubCount={getSubCommentsCount}
+                reRenderSub={getSubComments}
+              />
+            );
+          } else {
+            node.push(<SubComment key={e.commentId} comment={e} />);
+          }
         });
 
         return node;
@@ -112,6 +135,22 @@ const MainComment: React.FC<Props> = ({
       });
 
       setSubComments(response.data.commentList);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const deleteComment = async () => {
+    try {
+      const data = {
+        commentId: comment.commentId,
+        uuid: UUID,
+      };
+
+      await axios.post("/api/post/comments/delete", data);
+
+      if (reRender) reRender();
+      if (reCount) reCount();
     } catch (err) {
       console.error(err);
     }
@@ -188,6 +227,14 @@ const MainComment: React.FC<Props> = ({
           <div className={styles.comment__setSubComment} onClick={reply}>
             {parentId === comment.commentId ? "답글 취소" : "답글 달기"}
           </div>
+          {type === "me" && (
+            <div
+              className={styles.comment__button_delete}
+              onClick={deleteComment}
+            >
+              삭제
+            </div>
+          )}
         </div>
         <LikesButton type="comment" to={comment.commentId} />
       </div>
@@ -199,6 +246,7 @@ const MainComment: React.FC<Props> = ({
           {`- 답글 보기 (${subCommentsCount}) -`}
         </div>
       )}
+
       {subComments.length > 0 && (
         <div className={styles.box_subComments}>{renderSubComments()}</div>
       )}

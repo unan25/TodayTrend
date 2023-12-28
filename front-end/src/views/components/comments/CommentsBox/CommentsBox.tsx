@@ -35,9 +35,10 @@ type CommentUplaod = {
 
 type Props = {
   postId: string | undefined;
+  reCount?: () => void;
 };
 
-const CommentsBox: React.FC<Props> = ({ postId }) => {
+const CommentsBox: React.FC<Props> = ({ postId, reCount }) => {
   // store
   const UUID = useSelector((state: RootState) => state.user.UUID);
 
@@ -102,10 +103,13 @@ const CommentsBox: React.FC<Props> = ({ postId }) => {
       myComments?.map((e, i) => {
         comments.push(
           <MainComment
+            type="me"
             parentId={parentCommentId}
             key={e.commentId}
             comment={e}
             setParentComment={setParentCommentId}
+            reRender={getMyComments}
+            reCount={reCount}
           />
         );
       });
@@ -221,6 +225,7 @@ const CommentsBox: React.FC<Props> = ({ postId }) => {
         setParentCommentId(undefined);
         getMyComments();
         getMainComments(0);
+        if (reCount) reCount();
       }
     } catch (err) {
       console.error(err);

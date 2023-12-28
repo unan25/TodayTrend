@@ -1,0 +1,31 @@
+.component_body {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.reccomendation_body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.reccomendation_body__section_user,
+.reccomendation_body__section_category {
+  padding: 0 2rem;
+  width: 100%;
+  display: flex;
+  overflow-x: auto;
+  margin-bottom: 10rem;
+}
+
+.reccomendation_body__header_user,
+.reccomendation_body__header_category {
+  padding: 1rem;
+  display: flex;
+  margin-bottom: 2rem;
+}
+
+.reccomendation_link {
+  margin-right: 2rem;
+}

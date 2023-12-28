@@ -57,12 +57,11 @@ const Reccomendation: React.FC<Props> = ({ postId }) => {
 
   const getReccomendation = async () => {
     try {
-      const data = {
-        uuid: UUID,
-        postId: postId,
-      };
-
-      const response = await axios.post("/api/post/posts/detaillist", data);
+      const response = await axios.post("/api/post/posts/detaillist", null, {
+        params: {
+          postId: postId,
+        },
+      });
 
       const reccomendation: ReccomendationResponse = response.data;
 
@@ -85,7 +84,11 @@ const Reccomendation: React.FC<Props> = ({ postId }) => {
 
     reccomendationByUser?.postList.map((e) => {
       nodes.push(
-        <Link to={`/post/${e.postId}`}>
+        <Link
+          className={styles.reccomendation_link}
+          key={e.postId}
+          to={`/post/${e.postId}`}
+        >
           <PostImage imageUrl={e.imageUrl} postId={e.postId} />
         </Link>
       );
@@ -99,7 +102,11 @@ const Reccomendation: React.FC<Props> = ({ postId }) => {
 
     reccomendationByCategory?.postList.map((e) => {
       nodes.push(
-        <Link to={`/post/${e.postId}`}>
+        <Link
+          className={styles.reccomendation_link}
+          key={e.postId}
+          to={`/post/${e.postId}`}
+        >
           <PostImage imageUrl={e.imageUrl} postId={e.postId} />
         </Link>
       );
@@ -115,8 +122,14 @@ const Reccomendation: React.FC<Props> = ({ postId }) => {
   return (
     <div className={styles.component_body}>
       <div className={styles.reccomendation_body}>
+        <div className={styles.reccomendation_body__header_user}>
+          {reccomendationByUser?.title}
+        </div>
         <div className={styles.reccomendation_body__section_user}>
           {renderReccomendationByUser()}
+        </div>
+        <div className={styles.reccomendation_body__header_category}>
+          {reccomendationByCategory?.title}
         </div>
         <div className={styles.reccomendation_body__section_category}>
           {renderReccomendationByCategory()}

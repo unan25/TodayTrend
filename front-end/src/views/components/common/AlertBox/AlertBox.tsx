@@ -3,7 +3,7 @@ import styles from "./AlertBox.module.css";
 
 type Props = {
   isError?: boolean;
-  message: string;
+  message: string | undefined;
 };
 
 const AlertBox: React.FC<Props> = ({ isError, message }) => {
