@@ -18,6 +18,8 @@ import org.springframework.security.web.server.authentication.logout.ServerLogou
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
 import reactor.core.publisher.Mono;
 
+import static jakarta.ws.rs.HttpMethod.*;
+
 @Configuration
 @RequiredArgsConstructor
 @EnableWebFluxSecurity
@@ -89,7 +91,19 @@ public class WebSecurityConfig {
                         .pathMatchers("/api/post/**").permitAll()
                         .pathMatchers("/api/images/**").permitAll()
                         .pathMatchers("/api/notification/**").permitAll()
-                        .pathMatchers("/api/users/nickname").hasRole("USER")
+                        .pathMatchers("/api/users/follow").hasRole("USER")
+                        .pathMatchers("/api/auth/deactivate").hasRole("USER")
+                        .pathMatchers("/api/auth/change-password").hasRole("USER")
+                        .pathMatchers("/api/users/updateProfile").hasRole("USER")
+                        .pathMatchers("/api/post").hasRole("USER")
+                        .pathMatchers("/api/post/like").hasRole("USER")
+                        .pathMatchers("/api/post/liked").hasRole("USER")
+                        .pathMatchers("/api/post/likeposts").hasRole("USER")
+                        .pathMatchers("/api/post/comments",POST).hasRole("USER")
+                        .pathMatchers("/api/comments/delete").hasRole("USER")
+                        .pathMatchers("/api/comments/like").hasRole("USER")
+                        .pathMatchers("/api/comments/liked").hasRole("USER")
+                        .pathMatchers("/api/images**",POST, DELETE, PUT).hasRole("USER")
                         .anyExchange().authenticated())
                 .addFilterAt(webFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .exceptionHandling(
