@@ -40,4 +40,10 @@ public interface PostRepository extends JpaRepository<Post,Long>{
     Post findByPostId(@Param("postId") Long postId);
 
     Post findPostByPostId(Long postId);
+
+    //유저 페이지
+    @Query(value = "SELECT p.postId FROM Post p where p.userUuid =:userUuid ORDER BY p.createdAt desc ")
+    Page<Long> findPostIdByUserUuidOrderByCreatedAtDesc(String userUuid, PageRequest pageRequest);
+
+    Long countByUserUuid(String userUuid);
 }

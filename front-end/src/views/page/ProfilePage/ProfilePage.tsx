@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 //
-import { useSelector } from "react-redux";
-import { RootState } from "redux/store";
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 //
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from 'react-router-dom';
 //
-import axios from "../../../setUpAxios";
+import axios from '../../../setUpAxios';
 //
-import { UserInfo } from "interface/UserInterface";
+import { UserInfo } from 'interface/UserInterface';
 //
-import FollowButton from "../../../views/components/user/FollowButton/FollowButton";
+import FollowButton from '../../../views/components/user/FollowButton/FollowButton';
 //
-import styles from "./ProfilePage.module.css";
-import FollowListModal from "../../../views/components/user/FollowListModal/FollowListModal";
+import styles from './ProfilePage.module.css';
+import FollowListModal from '../../../views/components/user/FollowListModal/FollowListModal';
+//
+import { useInfiniteQuery } from 'react-query';
+import PostList from '../../components/post/PostList/PostList';
 
 type FollowCount = {
   follower: number;
@@ -24,12 +27,20 @@ type ListModal = {
   following: boolean;
 };
 
+type Posts = {
+  UUID: string;
+  page: number;
+  size: number;
+};
 const ProfilePage: React.FC = () => {
+  // hook
+  const navigate = useNavigate();
+
   // 현재 유저
   const me: string = useSelector((state: RootState) => state.user.UUID);
 
   // 대상 유저 UUID
-  const [UUID, setUUID] = useState<string>("");
+  const [UUID, setUUID] = useState<string>('');
 
   // state
   const [userInfo, setUserInfo] = useState<UserInfo>({});
@@ -41,6 +52,7 @@ const ProfilePage: React.FC = () => {
     follower: false,
     following: false,
   });
+  const [postCount, setPostCount] = useState<number>(0);
 
   // 대상 유저
   const { nickname } = useParams();
@@ -86,11 +98,57 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+  const getPostCount = async () => {
+    try {
+      const response = await axios.get(`/api/post/user-cnt?uuid=${UUID}`);
+      setPostCount(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // infinite scroll
+  const fetchUserPost = async ({ page, size, UUID }: Posts) => {
+    try {
+      if (UUID) {
+        const response = await axios.get(
+          `/api/post/user?uuid=${UUID}&page=${page}&size=${size}`
+        );
+        refetch();
+        return response.data;
+      }
+    } catch (error) {}
+  };
+
+  const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery(
+    ['userPost'],
+    ({ pageParam = 0 }) =>
+      fetchUserPost({
+        page: pageParam,
+        size: 4,
+        UUID: UUID,
+      }),
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage && lastPage.page < lastPage.totalPage
+          ? lastPage.page + 1
+          : undefined;
+      },
+      staleTime: 60000,
+      retry: false, // 1분주기 업데이트
+    }
+  );
+
   // useEffect
   useEffect(() => {
     getFollowCount();
     getUserInfo();
   }, [nickname]);
+
+  useEffect(() => {
+    fetchUserPost({ page: 0, size: 4, UUID: UUID });
+    getPostCount();
+  }, [UUID]);
 
   return (
     <div className="page-body">
@@ -121,7 +179,7 @@ const ProfilePage: React.FC = () => {
           <div className={styles.profile_section2__countBox}>
             <div className={styles.profile_section2__countBox__postCount}>
               <div>게시물</div>
-              <Link to="">?</Link>
+              <Link to="">{postCount}</Link>
             </div>
             <div className={styles.profile_section2__countBox__followCount}>
               <div>팔로워</div>
@@ -197,7 +255,14 @@ const ProfilePage: React.FC = () => {
           />
         )}
       </div>
-      <div className={styles.profile_postList}>바디</div>
+      <div className={styles.profile_postList}>
+        <PostList
+          data={data}
+          fetchNextPage={fetchNextPage}
+          hasNextPage={hasNextPage}
+          navigate={navigate}
+        />
+      </div>
     </div>
   );
 };

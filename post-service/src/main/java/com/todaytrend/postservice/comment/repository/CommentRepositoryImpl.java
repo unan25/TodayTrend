@@ -24,19 +24,20 @@ public class CommentRepositoryImpl {
         QCommentLike commentLike = QCommentLike.commentLike;
 
         List<Comment> result = queryFactory
-                .selectFrom(comment)
+                .select(comment)
+                .from(comment)
                 .leftJoin(commentLike).on(comment.commentId.eq(commentLike.commentId)) // 좋아요
                 .leftJoin(replyComment).on(comment.commentId.eq(replyComment.parentId)) // 대댓글
-                .groupBy(comment.commentId)
                 .where(
                         comment.uuid.ne(uuid),//자기 댓글 제외
                         comment.postId.eq(postId), // 게시물 지정
                         comment.parentId.isNull() //부모 댓글만
                 )
-                .orderBy(commentLike.commentLikeId.count().multiply(2).add(replyComment.commentId.count().multiply(1)).desc())
-                .distinct() // 중복 제거
-//                .limit(size)
-//                .offset((long) page * size)
+                .groupBy(comment.commentId)
+                .orderBy(commentLike.commentLikeId.count().multiply(2).add(replyComment.commentId.count()).desc(),
+                        comment.createAt.asc())
+                .limit(size)
+                .offset((long) page * size)
                 .fetch();
 
         return result;

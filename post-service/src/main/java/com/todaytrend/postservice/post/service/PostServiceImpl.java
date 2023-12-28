@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,6 +98,7 @@ public class PostServiceImpl implements PostService {
                     .sender(postRepo.findPostByPostId(postId).getUserUuid())
                     .receiver(nickName)
                     .content(postRepo.findPostByPostId(postId).getContent())
+                    .postId(postId)
                     .build();
             String message = objectMapper.writeValueAsString(messageDto);
             postProducer.sendNcPostTagMessage(message);
@@ -180,6 +182,7 @@ public class PostServiceImpl implements PostService {
                     .sender(userUuid)
                     .receiver(postRepo.findPostByPostId(postId).getUserUuid())
                     .content(postRepo.findPostByPostId(postId).getContent())
+                    .postId(postId)
                     .build();
             String message = objectMapper.writeValueAsString(messageDto);
             postProducer.sendNcPostLikeMessage(message);
@@ -459,5 +462,35 @@ public class PostServiceImpl implements PostService {
         return List.of(new FollowUserVO());
     }
 
+ // --------------------- 유저 페이지 게시물 리스트 --------------------------
+    @Override
+    public ResponseUserPostDto userPostList(RequestUserPostDto requestUserPostDto) {
+        String userUuid = requestUserPostDto.getUuid();
+        int page = requestUserPostDto.getPage();
+        int size = requestUserPostDto.getSize();
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Long> postIdList = postRepo.findPostIdByUserUuidOrderByCreatedAtDesc(userUuid, pageRequest);
+        ImgFeignDto imgFeignDto = imagesFeign(RequestImageListDto.builder()
+                .postIdList(postIdList.getContent())
+                .build());
+
+        return ResponseUserPostDto.builder()
+                .data(imgFeignDto.getData().stream()
+                        .filter(Objects::nonNull)
+                        .map(c->ResponsePostDto.builder()
+                                .postId(c.getPostId())
+                                .imageUrl(c.getImageUrl())
+                                .build()
+                        ).toList()
+                )
+                .totalPage(postIdList.getTotalPages())
+                .page(page)
+                .build();
+    }
+
+    @Override
+    public Long userPostCnt(String uuid) {
+      return postRepo.countByUserUuid(uuid);
+    }
 }
 

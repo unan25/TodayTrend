@@ -11,6 +11,7 @@ public class PostTagDto {
     private String sender;
     private String receiver;
     private String content;
+    private Long postId;
 
     public Notification toEntity(String uuid) {
         return  Notification.builder()
@@ -19,6 +20,7 @@ public class PostTagDto {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .type(NotificationType.POST_TAG)
+                .postId(postId)
                 .build();
     }
 }

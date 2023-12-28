@@ -101,7 +101,7 @@ function LandingPage() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery(
+  const { data, fetchNextPage, hasNextPage, refetch, error } = useInfiniteQuery(
     ['posts'],
     ({ pageParam = 0 }) =>
       fetchPost({
@@ -174,12 +174,18 @@ function LandingPage() {
           </div>
         </>
       )}
-      <PostList
-        data={data}
-        fetchNextPage={fetchNextPage}
-        hasNextPage={hasNextPage}
-        navigate={navigate}
-      />
+      {error ? (
+        <div>현재 게시물을 불러오는 중에 문제가 발생했습니다.</div>
+      ) : (
+        data && (
+          <PostList
+            data={data}
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
+            navigate={navigate}
+          />
+        )
+      )}
       {isModalOpen && (
         <CategoryModal
           categories={categories}

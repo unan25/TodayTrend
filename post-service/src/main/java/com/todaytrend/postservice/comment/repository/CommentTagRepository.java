@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CommentTagRepository extends JpaRepository<CommentTag, Long> {
+    void deleteAllByCommentId(Long commentId);
 }

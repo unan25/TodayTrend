@@ -11,6 +11,7 @@ public class CommentTagDto {
     private String sender;
     private String receiver;
     private String content;
+    private Long postId;
 
     public Notification toEntity(String uuid) {
         return  Notification.builder()
@@ -19,6 +20,7 @@ public class CommentTagDto {
                 .content(content)
                 .createdAt(LocalDateTime.now())
                 .type(NotificationType.COMMENT_TAG)
+                .postId(postId)
                 .build();
     }
 }
