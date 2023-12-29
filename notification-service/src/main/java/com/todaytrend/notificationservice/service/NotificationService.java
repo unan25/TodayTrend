@@ -59,6 +59,11 @@ public class NotificationService {
         for (RequestDto dto : requestDtoList) {
             notificationRepository.deleteById(dto.getNotificationId());
         }
+        return "알림 전체 삭제 완료";
+    }
+    @Transactional
+    public String checkNotification(Long notificationId) {
+        notificationRepository.deleteById(notificationId);
         return "알림 삭제 완료";
     }
 

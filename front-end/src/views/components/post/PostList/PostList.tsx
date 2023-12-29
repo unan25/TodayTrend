@@ -33,7 +33,7 @@ const PostList: React.FC<PostListProps> = ({
     ));
   };
   return (
-    <>
+    <div className={styles.component_body}>
       <InfiniteScroll
         hasMore={hasNextPage}
         loadMore={fetchNextPage}
@@ -41,7 +41,7 @@ const PostList: React.FC<PostListProps> = ({
       >
         {data ? renderData(data) : <div>현재 게시물이 없습니다.</div>}
       </InfiniteScroll>
-    </>
+    </div>
   );
 };
 

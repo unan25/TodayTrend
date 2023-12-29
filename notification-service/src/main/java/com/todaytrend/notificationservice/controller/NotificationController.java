@@ -24,7 +24,12 @@ public class NotificationController {
         return new ResponseEntity<>(notificationService.getCount(uuid) , HttpStatus.OK);
     }
     @PostMapping("")
-    public ResponseEntity<?> readNotification(@RequestBody List<RequestDto> notification){
+    public ResponseEntity<?> checkNotifications(@RequestBody List<RequestDto> notification){
         return new ResponseEntity<>(notificationService.checkNotifications(notification),HttpStatus.OK);
     }
+    @DeleteMapping("")
+    public ResponseEntity<?> checkNotification(Long notificationId) {
+        return new ResponseEntity<>(notificationService.checkNotification(notificationId), HttpStatus.OK);
+    }
+
 }

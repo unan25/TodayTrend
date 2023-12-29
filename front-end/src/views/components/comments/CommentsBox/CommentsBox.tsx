@@ -196,8 +196,6 @@ const CommentsBox: React.FC<Props> = ({ postId, reCount }) => {
         ...prevComments,
         ...response.data.commentList,
       ]);
-
-      console.log(page, hasNext);
     } catch (err) {
       console.error(err);
     }
