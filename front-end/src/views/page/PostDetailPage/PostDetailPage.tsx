@@ -1,17 +1,17 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 //
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 //
-import axios from 'axios';
-import LikesButton from '../../components/post/LikesButton/LikesButton';
+import axios from "axios";
+import LikesButton from "../../components/post/LikesButton/LikesButton";
 
 //
-import styles from './PostDetailPage.module.css';
-import commentIcon from '../../../images/comment/comments.png';
+import styles from "./PostDetailPage.module.css";
+import commentIcon from "../../../images/comment/comments.png";
 
 // component
-import CommentsBox from '../../../views/components/comments/CommentsBox/CommentsBox';
+import CommentsBox from "../../../views/components/comments/CommentsBox/CommentsBox";
 
 //
 import { renderContentWithLinks } from "../../../module/functions/renderContentWithTag/renderContentWithLinks";
@@ -36,11 +36,11 @@ const PostDetailPage: React.FC = () => {
   // state
   const [postDetail, setPostDetail] = useState<PostDetail>({
     postId: 0,
-    postUserUUID: '',
-    profileImage: '',
-    nickName: '',
-    content: '',
-    createdAt: '',
+    postUserUUID: "",
+    profileImage: "",
+    nickName: "",
+    content: "",
+    createdAt: "",
     postImgs: [],
   });
 
@@ -67,7 +67,7 @@ const PostDetailPage: React.FC = () => {
           onClick={() => setCurrentImage(i)}
           className={`${
             styles.post_body_section1__image_controller__iconBox__icon
-          } ${currentImage === i ? styles.checked : ''}`}
+          } ${currentImage === i ? styles.checked : ""}`}
         ></div>
       );
     }
@@ -119,7 +119,7 @@ const PostDetailPage: React.FC = () => {
     try {
       const params = { postId: postId };
 
-      const response = await axios.get('/api/post/comments/cnt', {
+      const response = await axios.get("/api/post/comments/cnt", {
         params: params,
       });
 
@@ -128,7 +128,7 @@ const PostDetailPage: React.FC = () => {
       console.error(err);
     }
   };
-  
+
   // ----------------------------추가------------------------------
 
   const deletePost = async () => {
@@ -138,7 +138,7 @@ const PostDetailPage: React.FC = () => {
         axios.delete(`/api/images/${postId}`),
         axios.delete(`/api/post/comments/${postId}`),
       ]);
-        if (response1.status === 200) navigate(`/profile/${postDetail.nickName}`);
+      if (response1.status === 200) navigate(`/profile/${postDetail.nickName}`);
     } catch (e) {
       console.error(e);
     }
