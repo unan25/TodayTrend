@@ -65,16 +65,17 @@ public class CommentService {
     //---------------------------댓글 등록--------------------------
 
     //기본 댓글 등록
-    public String createComment(RequestCommentDto requestCommentDto) throws JsonProcessingException {
+    public String  createComment(RequestCommentDto requestCommentDto) throws JsonProcessingException {
         Comment comment = requestCommentDto.toEntity();
         commentRepository.save(comment);
 
         publishCreateCommentMessage(requestCommentDto);
+
         //댓글 태그 등록
         if(requestCommentDto.getUserTagList() != null){
         makeCommentTag(requestCommentDto.getUserTagList() , comment.getCommentId());
         }
-        return "댓글 등록";
+        return "댓글 등록 완료";
     }
 
     //---------------------------댓글 조회--------------------------

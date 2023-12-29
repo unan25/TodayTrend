@@ -97,25 +97,22 @@
 }
 
 .profile_postList {
-  display: flex;
-  border: 1px dotted black;
-  width: 100%;
+  width: 80%;
 }
 
-
-.profile_section2__buttonBox__button2:hover{
-  background-color: #7D7E83;
+.profile_section2__buttonBox__button2:hover {
+  background-color: #7d7e83;
   color: white;
   font-weight: 600;
 }
 
-.profile_section2__countBox__followCount:hover{
-  background-color: #7D7E83;
+.profile_section2__countBox__followCount:hover {
+  background-color: #7d7e83;
   color: white;
   font-weight: 600;
 }
-.profile_section2__countBox__followingCount:hover{
-  background-color: #7D7E83;
+.profile_section2__countBox__followingCount:hover {
+  background-color: #7d7e83;
   color: white;
   font-weight: 600;
 }

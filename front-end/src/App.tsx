@@ -20,6 +20,7 @@ import NavBar from "./views/components/common/NavBar/NabBar";
 import PostDetailPage from "./views/page/PostDetailPage/PostDetailPage";
 import UserInfoUpdatePage from "./views/page/UserInfoUpdatePage/UserInfoUpdatePage";
 import EditPostPage from "./views/page/EditPostPage/EditPostPage";
+import FindPwpage from "./views/page/FindPwPage/FindPwPage";
 
 function App(): JSX.Element {
   return (
@@ -40,6 +41,7 @@ function App(): JSX.Element {
         />
         <Route path="/change-password" element={<ChangePwPage />} />
         <Route path="/edit-post/:postId" element={<EditPostPage />} />
+        <Route path="/user/find-pw" element={<FindPwpage />} />
       </Routes>
       <SideBar />
     </div>
