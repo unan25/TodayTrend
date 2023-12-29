@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './NotificationModal.module.css';
 import { useMutation, useQuery } from 'react-query';
 import axios from 'axios';
@@ -79,24 +79,34 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
   const uuid = useSelector((state: RootState) => state.user.UUID);
   const navigate = useNavigate();
 
-  const checkedNotification = async () => {
+  const checkedNotifications = async () => {
     await axios.post(`/api/notifications`, notification);
     setNotification([]);
   };
+  const checkedNotification = async (noti: NotificationType) => {
+    await axios
+      .delete(`/api/notifications?notificationId=${noti.notificationId}`)
+      .then(getNotification);
+    refetch();
+  };
 
-  const { data } = useQuery('notifications', async () => {
+  const getNotification = async () => {
     const response = await axios.get(`/api/notifications?uuid=${uuid}`);
     setNotification(response.data);
-  });
+  };
 
   const handleModalClose = () => {
     if (notification && notification.length > 0) {
-      checkedNotification().then(() => {
+      checkedNotifications().then(() => {
         refetch();
       });
     }
     onClose();
   };
+
+  useEffect(() => {
+    getNotification();
+  }, []);
 
   return (
     <div className={styles.modalContainer}>
@@ -104,7 +114,11 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
         전체삭제
       </button>
       {notification?.map((nc: NotificationType) => (
-        <div key={nc.notificationId} className={styles.notification}>
+        <div
+          key={nc.notificationId}
+          className={styles.notification}
+          onClick={() => checkedNotification(nc)}
+        >
           <img
             src={nc.senderImage}
             className={styles.profileImage}

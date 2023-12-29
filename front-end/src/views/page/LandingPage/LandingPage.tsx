@@ -123,8 +123,9 @@ function LandingPage() {
     }
   );
   if (!data) return <div>데이터 가져오는중</div>;
+
   return (
-    <div>
+    <div className={styles.body}>
       <div className={styles.nav}>
         <Nav variant="underline">
           <Nav.Item>
@@ -177,14 +178,16 @@ function LandingPage() {
       {error ? (
         <div>현재 게시물을 불러오는 중에 문제가 발생했습니다.</div>
       ) : (
-        data && (
-          <PostList
-            data={data}
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            navigate={navigate}
-          />
-        )
+        <div className={styles.postList}>
+          {data && (
+            <PostList
+              data={data}
+              fetchNextPage={fetchNextPage}
+              hasNextPage={hasNextPage}
+              navigate={navigate}
+            />
+          )}
+        </div>
       )}
       {isModalOpen && (
         <CategoryModal
