@@ -3,7 +3,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 // react-router-dom
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // redux
 import { useDispatch, useSelector } from "react-redux";
@@ -88,6 +88,9 @@ function SignInPage() {
         <button className={buttonStyle.submitButton} type="submit">
           로그인
         </button>
+        <Link to={"/user/find-pw"} className={buttonStyle.submitButton}>
+          비밀번호 찾기
+        </Link>
       </form>
       <div className={styles.social_login}>
         <GoogleLogin />
