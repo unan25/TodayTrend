@@ -30,7 +30,7 @@ public class CookieUtils {
 
     // 쿠키 설정
     public void setTokenCookies(UserInterface user, HttpServletResponse response) {
-        TokenInfo accessTokenInfo = tokenProvider.generateToken(user, Duration.ofMinutes(1), "access_token");
+        TokenInfo accessTokenInfo = tokenProvider.generateToken(user, Duration.ofHours(1), "access_token");
         TokenInfo refreshTokenInfo = tokenProvider.generateToken(user, Duration.ofDays(7), "refresh_token");
 
         Cookie accessTokenCookie = createCookie("access_token", accessTokenInfo.getToken(), accessTokenInfo.getExpiresIn());
