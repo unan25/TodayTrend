@@ -1,7 +1,7 @@
-import React from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
-import PostImage from '../PostImage/PostImage';
-import styles from './PostList.module.css';
+import React from "react";
+import InfiniteScroll from "react-infinite-scroller";
+import PostImage from "../PostImage/PostImage";
+import styles from "./PostList.module.css";
 
 interface PostListProps {
   data?: { pages?: { data?: { postId: number; imageUrl: string }[] }[] };

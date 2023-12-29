@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 //
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 //
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { RootState } from 'redux/store';
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { RootState } from "redux/store";
 
 //
-import { logOut } from '../../../../redux/_actions/user_action';
+import { logOut } from "../../../../redux/_actions/user_action";
 
 //
-import styles from './NabBar.module.css';
-import axios from 'axios';
+import styles from "./NabBar.module.css";
+import axios from "axios";
 //
-import NotificationModal from '../NotificationModal/NotificationModal';
-import { useQuery } from 'react-query';
+import NotificationModal from "../NotificationModal/NotificationModal";
+import { useQuery } from "react-query";
 
 const NavBar: React.FC = () => {
   const dispatch = useDispatch<any>();
@@ -52,7 +52,7 @@ const NavBar: React.FC = () => {
   }, [UUID]);
 
   const { data, refetch } = useQuery<number>(
-    'notificationCount',
+    "notificationCount",
     async () => {
       const response = await axios.get(`/api/notifications/cnt?uuid=${UUID}`);
       return response.data;
@@ -71,12 +71,12 @@ const NavBar: React.FC = () => {
   return (
     <nav className={styles.nav}>
       <div className={styles.section1}>
-      <Link className={styles.section2__signUpButton} to="/">
-        <img
+        <Link className={styles.section2__signUpButton} to="/">
+          <img
             className={styles.navBar_logo}
             src="https://todaytrend.s3.ap-northeast-2.amazonaws.com/5/84c99ce9-5079-41cd-a4c2-6cafffcb6c6cTodayTrendSmallLogo2.png"
-        />
-      </Link>
+          />
+        </Link>
       </div>
       <Link className={styles.section2__signUpButton} to="/">
         <img
@@ -84,7 +84,7 @@ const NavBar: React.FC = () => {
           src="https://todaytrend.s3.ap-northeast-2.amazonaws.com/7/d3b700f5-201c-4c7a-a907-5299716e7aeeTodayTrendLogoTitle2.png.jpg"
         />
       </Link>
-     
+
       {!UUID && (
         <div className={styles.section2}>
           <Link className={styles.section2__signUpButton} to="/signup">
@@ -95,7 +95,7 @@ const NavBar: React.FC = () => {
           </Link>
         </div>
       )}
-      {role === 'GUEST' && (
+      {role === "GUEST" && (
         <div className={styles.section2}>
           <Link className={styles.section2__signUpButton} to="/signup">
             회원가입
@@ -109,7 +109,7 @@ const NavBar: React.FC = () => {
         </div>
       )}
 
-      {role === 'USER' && (
+      {role === "USER" && (
         <div className={styles.section2}>
           <Link
             className={styles.nav_section_profile}
@@ -126,26 +126,26 @@ const NavBar: React.FC = () => {
             className={`${styles.nav_section2__notification} ${
               notificationCount > 0
                 ? styles.nav_section2__notification_animation
-                : ''
+                : ""
             }`}
             onClick={() => {
               setModal(!modal);
             }}
           >
             알림 ({notificationCount})
+            {modal && (
+              <NotificationModal
+                refetch={refetch}
+                onClose={() => {
+                  setModal(false);
+                }}
+              />
+            )}
           </div>
           <button className={styles.button_logout} onClick={onClickhandler}>
             로그아웃
           </button>
         </div>
-      )}
-      {modal && (
-        <NotificationModal
-          refetch={refetch}
-          onClose={() => {
-            setModal(false);
-          }}
-        />
       )}
     </nav>
   );

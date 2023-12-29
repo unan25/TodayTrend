@@ -1,7 +1,7 @@
 .modalContainer {
-  position: fixed;
-  top: 25%;
-  left: 85%;
+  position: absolute;
+  top: 5rem;
+  left: 1rem;
   width: 25rem;
   max-height: 20rem;
   transform: translate(-50%, -50%);
@@ -15,8 +15,9 @@
 }
 .close {
   position: fixed;
-  top: 5%;
-  left: 85%;
+  top: 0.5rem;
+  right: 1rem;
+  width: 20%;
 }
 .notification {
   border: 0.05rem solid var(--color-black);

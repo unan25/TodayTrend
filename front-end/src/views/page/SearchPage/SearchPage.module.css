@@ -1,19 +1,20 @@
 .input {
+  margin-top: 2rem;
   width: 25rem;
-  height: 2rem;
+  height: 3rem;
+  font-size: 1.1rem;
+  border-radius: 1rem;
   border: 0.1rem solid rgb(0, 0, 0);
 }
 
 .dropDownBox {
-  /* display: block; */
   margin: 0 auto;
-  /* padding: 1rem 0; */
-  background-color: white;
-  /* border: 0.1rem solid rgb(0, 0, 0); */
+  font-weight: 700;
   border-top: none;
   border-radius: 0 0 0.5rem 0.5rem;
   list-style-type: none;
   z-index: 1rem;
+  margin-bottom: 2rem;
 }
 
 .dropDownItem {
@@ -55,14 +56,15 @@
   display: flex;
   justify-content: space-between;
   flex-direction: row;
-  width: auto;
+  width: 100%;
 }
 
 .recentSearchBox {
+  margin-top: 3rem;
   display: flex;
   justify-content: space-between;
   flex-direction: row;
-  width: auto;
+  width: 100%;
 }
 
 .searchTitle {
