@@ -7,8 +7,8 @@
 }
 .nav {
   display: flex;
-  margin-left: 10rem;
   margin-bottom: 0.5rem;
+  width: 80%;
 }
 
 .category {
@@ -47,4 +47,14 @@
 .mainCategoryContainer {
   display: flex;
   justify-content: center;
+}
+.postList {
+  width: 80%;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

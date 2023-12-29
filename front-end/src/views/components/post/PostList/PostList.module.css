@@ -1,9 +1,14 @@
 .postList {
   display: flex;
+  width: fit-content;
   margin-top: 1rem;
-  margin-left: 14rem;
   flex-wrap: wrap;
   row-gap: 1rem;
   column-gap: 1rem;
-  width: 75%;
+  width: 80rem;
+}
+
+.component_body {
+  display: flex;
+  justify-content: center;
 }
