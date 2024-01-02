@@ -1,23 +1,28 @@
 # TodayTrend
-Today Trend Project
 
-Git Pull & Request 규칙
-1. 3명의 승인 및 관련된 사람들끼리 코드리뷰
-2. git rebase develop (자기 브런치)
-3. 리베이스 하면서 수정할 꺼 수정
-4. git add . -> commit & push
-5. Pull & Request
-6. 승인 후 Rebase & Merge 딸깍
-7. 한 줄 요약
-git reabase develop (자기 브런치에서) -> 리베이스 -- 수정 --> 에드 커밋 푸시 -> 풀리퀘 -> 리베이스 머지 딸깍
+---
 
-Git 명령어
-- git branch 생성 : git bracnh feature/1-user-signup
-- git branch 변경 : git checkout feature/1-user-signup
-- 현재 git branch 확인 : git branch
-- 이전 git 삭제 : git branch -d feture/0-test-branch
-- 현재 git branch push :
-  git add .
-  git push -> 하면 명령어 알려줌 그거 복붙 ex) git push --set-upstream origin develop
+## | 📖프로젝트 소개
 
-  Notion : https://unnan.notion.site/T-T-Today-Trend-41ade0c0b40e4ebcad54a886fd86d6fc?pvs=4
+- 프로젝트 : Today Trend
+- 개발 기간 : 2023.10.25 ~ 2023.12.28
+- 개발인원 : 4명
+  - 조장 : 권윤환
+  - 부조장 : 임승혁
+  - 팀원 : 최성민, 호지원
+- 내용 : 패션 Web SNS
+
+---
+
+## | 👨‍👩‍👧‍👧역할 분담
+
+- **권윤환 (조장)**
+  - 프로젝트 관리 (Github, Jira, Notion 등)
+  - 회원, 인증/인가, 데브옵스
+- **임승혁 (부조장 👑)**
+  - React, 소셜 로그인, Redis
+- **최성민**
+  - React, 이미지 업로드, 댓글, RabbitMQ
+- **호지원**
+  - SNS 전반적인 부분, Resilience
+- **상세보기 : *[역할분담](https://www.notion.so/2958fc434c614c41a3110d99aa686850?pvs=21)***
